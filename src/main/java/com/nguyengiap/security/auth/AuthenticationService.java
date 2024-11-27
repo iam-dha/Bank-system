@@ -1,5 +1,7 @@
 package com.nguyengiap.security.auth;
 
+import com.nguyengiap.security.auth.model.request_model.AuthenticationRequest;
+import com.nguyengiap.security.auth.model.request_model.RegisterRequest;
 import com.nguyengiap.security.config.JwtService;
 import com.nguyengiap.security.user.Role;
 import com.nguyengiap.security.user.User;
@@ -20,11 +22,14 @@ public class AuthenticationService {
 
     public AuthenticationResponse register(RegisterRequest request) {
         var user = User.builder()
+                .account(request.getAccount())
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .email(request.getEmail())
+                .account(request.getAccount())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.USER)
+                .fund(0)
                 .build();
         userRepository.save(user);
         var jwtToken = jwtService.generateToken(user);
@@ -36,11 +41,11 @@ public class AuthenticationService {
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
+                        request.getAccount(),
                         request.getPassword()
                 )
         );
-        var user = userRepository.findByEmail(request.getEmail())
+        var user = userRepository.findByAccount(request.getAccount())
                 .orElseThrow();
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
