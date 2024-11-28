@@ -1,4 +1,4 @@
-package com.nguyengiap.security.auth;
+package com.security.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChangePasswordRequest {
-    private String currentPassword;
-    private String newPassword;
+public class AuthenticationResponse {
+    private String token;
 }

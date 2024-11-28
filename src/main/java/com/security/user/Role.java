@@ -1,4 +1,4 @@
-package com.nguyengiap.security.user;
+package com.security.user;
 
 public enum Role {
     USER,

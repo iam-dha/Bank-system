@@ -1,5 +1,9 @@
-package com.nguyengiap.security.auth;
+package com.security.controller;
 
+import com.security.request.AuthenticationRequest;
+import com.security.request.RegisterRequest;
+import com.security.response.AuthenticationResponse;
+import com.security.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

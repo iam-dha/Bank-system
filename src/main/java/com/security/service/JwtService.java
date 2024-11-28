@@ -1,4 +1,4 @@
-package com.nguyengiap.security.config;
+package com.security.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
