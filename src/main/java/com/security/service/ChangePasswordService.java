@@ -11,12 +11,13 @@ import java.util.Optional;
 public class ChangePasswordService {
     private final UserRepository userRepository;
 
-    public Boolean ChangePassword(ChangePasswordRequest request) {
+    public String ChangePassword(ChangePasswordRequest request) {
         Optional<User> user = userRepository.findByEmail(request.getEmail());
+        if(!user.isPresent()) return "Email address invalid";
         User updatedUser = user.get();
         updatedUser.setPassword(request.getNewPassword());
         userRepository.save(updatedUser);
-        return true;
+        return "Password changed successfully";
     }
 
 }
