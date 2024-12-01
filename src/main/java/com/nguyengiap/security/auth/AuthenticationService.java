@@ -3,6 +3,8 @@ package com.nguyengiap.security.auth;
 import com.nguyengiap.security.auth.model.request_model.AuthenticationRequest;
 import com.nguyengiap.security.auth.model.request_model.RegisterRequest;
 import com.nguyengiap.security.config.JwtService;
+import com.nguyengiap.security.database_model.history_transistion.TransitionHistory;
+import com.nguyengiap.security.database_model.history_transistion.TransitionHistoryRepository;
 import com.nguyengiap.security.database_model.user.Role;
 import com.nguyengiap.security.database_model.user.User;
 import com.nguyengiap.security.database_model.user.UserRepository;
