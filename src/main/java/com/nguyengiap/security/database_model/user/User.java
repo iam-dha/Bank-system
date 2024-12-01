@@ -1,4 +1,4 @@
-package com.nguyengiap.security.user;
+package com.nguyengiap.security.database_model.user;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -23,6 +23,9 @@ public class User implements UserDetails {
     private String lastName;
     private String email;
     private String password;
+    private String address;
+    private String createDate;
+    private String phoneNumber;
     @Setter
     @Getter
     private Integer fund;

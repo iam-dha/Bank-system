@@ -1,13 +1,7 @@
 package com.nguyengiap.security.service;
 
-import com.nguyengiap.security.user.User;
-import com.nguyengiap.security.user.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
-
+import com.nguyengiap.security.database_model.user.User;
+import com.nguyengiap.security.database_model.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

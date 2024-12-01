@@ -1,6 +1,6 @@
 package com.nguyengiap.security.config;
 
-import com.nguyengiap.security.user.UserRepository;
+import com.nguyengiap.security.database_model.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

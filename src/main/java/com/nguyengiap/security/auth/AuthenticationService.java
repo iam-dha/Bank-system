@@ -3,9 +3,9 @@ package com.nguyengiap.security.auth;
 import com.nguyengiap.security.auth.model.request_model.AuthenticationRequest;
 import com.nguyengiap.security.auth.model.request_model.RegisterRequest;
 import com.nguyengiap.security.config.JwtService;
-import com.nguyengiap.security.user.Role;
-import com.nguyengiap.security.user.User;
-import com.nguyengiap.security.user.UserRepository;
+import com.nguyengiap.security.database_model.user.Role;
+import com.nguyengiap.security.database_model.user.User;
+import com.nguyengiap.security.database_model.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,8 +28,11 @@ public class AuthenticationService {
                 .email(request.getEmail())
                 .account(request.getAccount())
                 .password(passwordEncoder.encode(request.getPassword()))
+                .address(request.getAddress())
+                .phoneNumber(request.getPhoneNumber())
+                .createDate(request.getCreateDate())
                 .role(Role.USER)
-                .fund(0)
+                .fund(request.getFund())
                 .build();
         userRepository.save(user);
         var jwtToken = jwtService.generateToken(user);

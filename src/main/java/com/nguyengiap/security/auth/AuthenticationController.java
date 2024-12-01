@@ -2,7 +2,6 @@ package com.nguyengiap.security.auth;
 
 import com.nguyengiap.security.auth.model.request_model.AuthenticationRequest;
 import com.nguyengiap.security.auth.model.request_model.RegisterRequest;
-import com.nguyengiap.security.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
