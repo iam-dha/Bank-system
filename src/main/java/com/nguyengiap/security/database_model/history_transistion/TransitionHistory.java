@@ -25,5 +25,8 @@ public class TransitionHistory {
 
     private int balance;
     private String dateTime;
+    private String time;
+    private String fromUserName;
+    private String toUserName;
     private String message;
 }

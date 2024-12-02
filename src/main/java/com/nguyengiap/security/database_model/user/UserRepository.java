@@ -1,6 +1,6 @@
 package com.nguyengiap.security.database_model.user;
 
-import com.nguyengiap.security.auth.model.request_model.response_model.BalanceWithAccount;
+import com.nguyengiap.security.auth.model.response_model.BalanceWithAccount;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -18,7 +18,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("SELECT u FROM User u WHERE u.account = :account")
     Optional<User> findByAccount(@Param("account") String account);
 
-    @Query("SELECT new com.nguyengiap.security.auth.model.request_model.response_model.BalanceWithAccount(u.account, u.fund) " +
+    @Query("SELECT new com.nguyengiap.security.auth.model.response_model.BalanceWithAccount(u.account, u.fund) " +
             "FROM User u WHERE u.account = :account")
     Optional<BalanceWithAccount> findBalanceByAccount(@Param("account") String account);
 
@@ -31,4 +31,9 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Transactional
     @Query("UPDATE User u Set u.fund = u.fund - :fund WHERE u.account = :account")
     void bankingToAccount2(@Param("account") String account, @Param("fund") Integer fund);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE User u Set u.password = :password WHERE u.account = :account")
+    void changePassword(@Param("account") String account, @Param("password") String password);
 }
