@@ -7,8 +7,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-
 public class SceneController {
 
     private static Stage stage;
@@ -17,7 +15,7 @@ public class SceneController {
 
     public static void switchToLogin(ActionEvent event)  {
         try {
-            root = FXMLLoader.load(SceneController.class.getResource("/views/sample.fxml"));
+            root = FXMLLoader.load(SceneController.class.getResource("/views/Login.fxml"));
             stage = (Stage)((Node)event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             //String css = SceneController.class.getClass().getResource("/resources/css/style.css").toExternalForm();
@@ -36,8 +34,8 @@ public class SceneController {
             stage = (Stage)((Node)event.getSource()).getScene().getWindow();
             scene = new Scene(root);
 
-            String css = SceneController.class.getClassLoader().getResource("resources/css/forget.css").toExternalForm();
-            scene.getStylesheets().add(css);
+           // String css = SceneController.class.getClassLoader().getResource("/webapp/css/style.css").toExternalForm();
+           // scene.getStylesheets().add(css);
 
 
             stage.setScene(scene);

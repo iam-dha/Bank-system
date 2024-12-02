@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+
 public class Main extends Application {
     public static void main(String[] args) {
         launch(args);
@@ -15,10 +16,10 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/views/sample.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/views/Login.fxml"));
             Scene scene = new Scene(root);
-            String css = this.getClass().getResource("/resources/css/style.css").toExternalForm();
-            scene.getStylesheets().add(css);
+            //String css = this.getClass().getResource("webapp/css/style.css").toExternalForm();
+            //scene.getStylesheets().add(css);
             stage.setScene(scene);
             //stage.setWidth(1080);
             //stage.setHeight(768);
