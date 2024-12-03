@@ -1,8 +1,10 @@
 package com.nguyengiap.security.application_api;
 
 import com.nguyengiap.security.auth.model.request_model.BankingRequest;
+import com.nguyengiap.security.auth.model.request_model.BankingRequestOTP;
 import com.nguyengiap.security.auth.model.response_model.BalanceWithAccount;
 import com.nguyengiap.security.database_model.history_transistion.TransitionHistory;
+import com.nguyengiap.security.service.OtpService;
 import com.nguyengiap.security.service.TransitionHistoryService;
 import com.nguyengiap.security.service.UserService;
 import com.nguyengiap.security.database_model.user.User;
@@ -21,10 +23,14 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/bank-api")
 public class BankingApi {
-    final private TransitionHistoryService transitionHistoryService;
+    @Autowired
+    private TransitionHistoryService transitionHistoryService;
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private OtpService otpService;
 
     @Transactional
     @PostMapping("/banking")
@@ -38,12 +44,32 @@ public class BankingApi {
 
         //Kiểm tra xem tài khoản c tồn tại không
         Optional<User> checkFromAccount = userService.findByAccount(request.getFromAccount());
+
+
+        checkFromAccount.ifPresent(user -> otpService.generateOtp(user.getEmail()));
+
+        return ResponseEntity.ok("Success sent otp");
+    }
+
+    @PostMapping("/banking-otp")
+    public ResponseEntity<?> bankingOTP(@RequestBody BankingRequestOTP request){
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String formattedDate = now.format(formatter);
+
+        DateTimeFormatter formatterTime = DateTimeFormatter.ofPattern("HH:mm:ss");
+        String formattedHour = now.format(formatterTime);
+
+        //Kiểm tra xem tài khoản c tồn tại không
+        Optional<User> checkFromAccount = userService.findByAccount(request.getFromAccount());
+
         Optional<User> checkToAccount = userService.findByAccount(request.getToAccount());
 
         //Nếu không tồn tại
         if (checkFromAccount.isEmpty() || checkToAccount.isEmpty()) {
             return ResponseEntity.status(404).body("Account not found");
         } else { //Nếu tồn tại
+            if(otpService.validOtp(checkFromAccount.get().getEmail(), request.getOtp())) {
             //Tra cứu số dư tài khoản gửi
             Optional<BalanceWithAccount> checkFromAccountBalance = userService.findBalanceByAccount(request.getFromAccount());
             if(checkFromAccountBalance.isPresent()) {
@@ -73,6 +99,10 @@ public class BankingApi {
                     return ResponseEntity.ok("Banking successful");
                 } else {
                     return ResponseEntity.status(401).body("Not enough money");
+                }
+            }
+                else {
+                    return ResponseEntity.status(403).body("Wrong OTP");
                 }
             } else {
                 return ResponseEntity.status(401).body("Something error");

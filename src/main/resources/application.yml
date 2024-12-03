@@ -13,3 +13,14 @@
           format_sql: true
       database: postgresql
       database-platform: org.hibernate.dialect.PostgreSQLDialect
+    mail:
+      host: smtp.gmail.com
+      port: 587
+      username: "giaphocdoi@gmail.com"
+      password: "giap10t2"
+      properties:
+        mail:
+          smtp:
+            auth: true
+            starttls:
+              enable: true
