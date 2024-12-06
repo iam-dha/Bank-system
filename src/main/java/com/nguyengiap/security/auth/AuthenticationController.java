@@ -4,10 +4,13 @@ import com.nguyengiap.security.auth.model.request_model.AuthenticationRequest;
 import com.nguyengiap.security.auth.model.request_model.ForgetPasswordOtpRequest;
 import com.nguyengiap.security.auth.model.request_model.OnlyAccountRequest;
 import com.nguyengiap.security.auth.model.request_model.RegisterRequest;
+import com.nguyengiap.security.auth.model.request_model.RegisterRequestOtp;
+import com.nguyengiap.security.auth.model.request_model.BuffMoneyRequest;
+import com.nguyengiap.security.database_model.history_transistion.TransitionHistory;
 import com.nguyengiap.security.database_model.user.User;
-import com.nguyengiap.security.service.EmailService;
 import com.nguyengiap.security.service.OtpService;
 import com.nguyengiap.security.service.UserService;
+import com.nguyengiap.security.service.TransitionHistoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +36,9 @@ public class AuthenticationController {
     @Autowired
     private final PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private final TransitionHistoryService transitionHistoryService;
+
     @PostMapping("/register")
     public ResponseEntity<?> register(
             @RequestBody RegisterRequest request
@@ -42,7 +48,21 @@ public class AuthenticationController {
         if(user.isPresent()) {
             return ResponseEntity.status(403).body("Account is exist");
         }
-        return ResponseEntity.ok(authenticationService.register(request));
+        else {
+            otpService.generateOtp(request.getEmail());
+            return ResponseEntity.ok("Success to send otp");
+        }
+    }
+
+    @PostMapping("/register-otp")
+    public ResponseEntity<?> registerOtp(
+            @RequestBody RegisterRequestOtp request
+    ) {
+        if(otpService.validOtp(request.getEmail(), request.getOtp())) {
+            return ResponseEntity.ok(authenticationService.register(request));
+        } else {
+            return ResponseEntity.status(403).body("Wrong otp");
+        }
     }
 
     @PostMapping("/authenticate")
@@ -81,6 +101,30 @@ public class AuthenticationController {
             }
         } else {
             return ResponseEntity.status(403).body("Account not found");
+        }
+    }
+
+    @PostMapping("/buff-money")
+    public ResponseEntity<?> buffMoney(
+            @RequestBody BuffMoneyRequest request
+    ) {
+        Optional<User> user = userService.findByAccount(request.getAccount());
+        if(user.isPresent()) {
+            userService.bankingToAccount(request.getAccount(), request.getFund());
+            return ResponseEntity.ok("Buff money successful");
+        } else {
+            return ResponseEntity.status(403).body("Account not found");
+        }
+    }
+
+        @PostMapping("/create-fake-transaction")
+    public ResponseEntity<?> createFakeTransaction(@RequestBody TransitionHistory request) {
+        try {
+            // Save the fake transaction directly
+            transitionHistoryService.saveTransitionHistory(request);
+            return ResponseEntity.ok("Fake transaction created successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error creating fake transaction: " + e.getMessage());
         }
     }
 }

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterRequest {
+public class BuffMoneyRequest {
     private String account;
-    private String email;
-}
+    private Integer fund;
+} 

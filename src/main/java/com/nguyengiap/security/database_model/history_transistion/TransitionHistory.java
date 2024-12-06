@@ -16,13 +16,8 @@ public class TransitionHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    @Column(name = "from_account")
     private String fromAccount;
-
-    @Column(name = "to_account")
     private String toAccount;
-
     private int balance;
     private String dateTime;
     private String time;

@@ -3,8 +3,8 @@ package com.nguyengiap.security.service;
 import com.nguyengiap.security.database_model.history_transistion.TransitionHistory;
 import com.nguyengiap.security.database_model.history_transistion.TransitionHistoryRepository;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,6 +12,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class TransitionHistoryService {
+    @Autowired
     final TransitionHistoryRepository transitionHistoryRepository;
 
     public void saveTransitionHistory(TransitionHistory request) {
