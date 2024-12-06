@@ -16,6 +16,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) {
         try {
+            System.out.println("Working Directory = " + System.getProperty("user.dir"));
             Parent root = FXMLLoader.load(getClass().getResource("/views/Login.fxml"));
             Scene scene = new Scene(root);
             //String css = this.getClass().getResource("webapp/css/style.css").toExternalForm();

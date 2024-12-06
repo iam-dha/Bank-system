@@ -5,17 +5,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
-import javafx.event.*;
-import java.io.IOException;
-
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class ForgetLoginController implements Initializable {
-    @FXML
-    private AnchorPane head;
     @FXML
     private Label error;
     @FXML
@@ -32,14 +25,14 @@ public class ForgetLoginController implements Initializable {
         notifi.setVisible(false);
     }
 
-    public void switchLoginScene(ActionEvent event) throws IOException {
+    public void switchLoginScene(ActionEvent event) {
         SceneController sceneCotroller = new SceneController();
         sceneCotroller.switchToLogin(event);
     }
 
     public void sumbit(ActionEvent event){
         //check = false;
-        if(check == true){
+        if(check){
             notifi.setVisible(true);
             text1.getStyleClass().remove("error");
             text2.getStyleClass().remove("error");

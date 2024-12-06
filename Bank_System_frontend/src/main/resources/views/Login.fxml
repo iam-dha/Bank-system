@@ -82,13 +82,13 @@
                            </children>
                         </StackPane>
                         <Hyperlink onAction="#switchForgetLoginScene" text="Forgotten password" />
-                        <Label fx:id="invalid" prefHeight="28.0" prefWidth="222.0" text="Invalid password. Please try again." textFill="#ff0c0c" />
-                        <Button fx:id="signInButton" mnemonicParsing="false" onAction="#login" prefHeight="43.0" prefWidth="325.0" stylesheets="@../webapp/css/style.css" text="Sign in">
+                        <Label fx:id="notification" prefHeight="28.0" prefWidth="222.0" text="Invalid password. Please try again." textFill="#ff0c0c" />
+                        <Button fx:id="signInButton" mnemonicParsing="false" onAction="#signIn" prefHeight="43.0" prefWidth="325.0" stylesheets="@../webapp/css/style.css" text="Sign in">
                            <font>
                               <Font size="16.0" />
                            </font></Button>
                         <Region prefHeight="14.0" prefWidth="271.0" />
-                        <Hyperlink alignment="CENTER" prefHeight="25.0" prefWidth="325.0" text="Create account" />
+                        <Hyperlink fx:id="createAccount" alignment="CENTER" onAction="#switchCreateAccountScene" prefHeight="25.0" prefWidth="325.0" text="Create account" />
                      </children>
                   </VBox>
                   <VBox layoutX="249.0" layoutY="80.0" prefHeight="131.0" prefWidth="158.0">
