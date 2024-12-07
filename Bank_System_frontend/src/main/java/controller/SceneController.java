@@ -66,13 +66,12 @@ public class SceneController {
     }
     public void switchToMainScene(ActionEvent event)  {
         try{
-            root = FXMLLoader.load(SceneController.class.getResource("/views/mainScene.fxml"));
+            root = FXMLLoader.load(Objects.requireNonNull(SceneController.class.getResource("/views/mainScene.fxml")));
             stage = (Stage)((Node)event.getSource()).getScene().getWindow();
             scene = new Scene(root);
 
             // String css = SceneController.class.getClassLoader().getResource("/webapp/css/style.css").toExternalForm();
             // scene.getStylesheets().add(css);
-
 
             stage.setScene(scene);
             stage.show();

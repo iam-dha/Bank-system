@@ -1,5 +1,7 @@
 package controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import model.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -9,6 +11,10 @@ import java.net.URI;
 import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class ControllerLogin implements Initializable {
@@ -32,6 +38,8 @@ public class ControllerLogin implements Initializable {
         notification.setVisible(false);
     }
 
+
+    private User s;
     public void togglePasswordVisibility() {
         //isPasswordVisible = !isPasswordVisible;
         if (hide.isSelected()) {
@@ -66,21 +74,51 @@ public class ControllerLogin implements Initializable {
     public void signIn(ActionEvent event) {
         String user_name = username.getText();
         String password = passwordText.getText();
+        SceneController sceneCotroller = new SceneController();
+        sceneCotroller.switchToMainScene(event);
         if (user_name.trim().isEmpty() || password.isEmpty()) {
             notification.setText("Please fill in the blank.");
             notification.setVisible(true);
         }
         else {
             System.out.println(password);
-//            try {
-//                HttpClient client = HttpClient.newHttpClient();
-//
-//                HttpRequest request = HttpRequest.newBuilder()
-//                        .uri(new URI(''))
-//            }
+            try {
+                HttpClient client = HttpClient.newHttpClient();
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(new URI("https://jsonplaceholder.typicode.com/posts"))
+                        .POST(HttpRequest.BodyPublishers.ofString(
+                                String.format("{\"account\":\"%s\", \"password\":\"%s\"}", user_name, password)
+                        ))
+                        .GET()
+                        .build();
+                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+                if (response.statusCode() == 200){
+                    ObjectMapper mapper = new ObjectMapper();
+
+                }
+                ObjectMapper mapper = new ObjectMapper();
+
+                // Deserialize the JSON response to a list of Users
+                List<User> users = Arrays.asList(mapper.readValue(response.body(), User[].class));
+
+                // Access a specific user
+                User user = new User();
+                user.setAccount("DCM");
+                s = user;
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
 
+    }
+    public User getS() {
+        return s;
+    }
+
+    public void setS(User s) {
+        this.s = s;
     }
 
 }

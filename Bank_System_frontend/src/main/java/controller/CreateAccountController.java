@@ -25,6 +25,8 @@ public class CreateAccountController implements Initializable {
     private TextField otpField5;
     @FXML
     private TextField otpField6;
+    @FXML
+    private VBox tranfer;
 
     public void initialize(URL url, ResourceBundle rb) {
         Verify.setVisible(false);
@@ -76,6 +78,9 @@ public class CreateAccountController implements Initializable {
         registerScene.setVisible(false);
         registerScene.setMouseTransparent(true);
         Verify.setMouseTransparent(false);
+    }
+    public void switchTranfer(){
+
     }
     public void switchLoginScene(ActionEvent event) {
         SceneController sceneCotroller = new SceneController();
