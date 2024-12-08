@@ -1,8 +1,10 @@
 package controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import model.Credential;
@@ -22,43 +24,10 @@ public class MainController implements Initializable {
     private VBox history;
     @FXML
     private HBox overview;
+    @FXML
+    private Label balanceLabel;
     private User user;
     private Credential credetial;
-    public void initialize(URL url, ResourceBundle rb) {
-        getUserInformation();
-        tranfer.setVisible(false);
-        tranfer.setMouseTransparent(true);
-        history.setVisible(false);
-        history.setMouseTransparent(true);
-        overview.setVisible(true);
-        overview.setMouseTransparent(false);
-    }
-    public void switchToTranfer(){
-        getUserInformation();
-        tranfer.setVisible(true);
-        tranfer.setMouseTransparent(false);
-        overview.setVisible(false);
-        overview.setMouseTransparent(true);
-        history.setVisible(false);
-        history.setMouseTransparent(true);
-    }
-    public void switchToOverview(){
-        tranfer.setVisible(false);
-        tranfer.setMouseTransparent(true);
-        overview.setVisible(true);
-        overview.setMouseTransparent(false);
-        history.setVisible(false);
-        history.setMouseTransparent(true);
-    }
-    public void switchToHistory(){
-        getUserInformation();
-        tranfer.setVisible(false);
-        tranfer.setMouseTransparent(true);
-        overview.setVisible(false);
-        overview.setMouseTransparent(true);
-        history.setVisible(true);
-        history.setMouseTransparent(false);
-    }
     public void getUserInformation(){
         Credential credential = User.getCredential();
         String _token = credential.getToken();
@@ -88,7 +57,46 @@ public class MainController implements Initializable {
             e.printStackTrace();
         }
     }
-
+    public void initialize(URL url, ResourceBundle rb) {
+        getUserInformation();
+        balanceLabel.setText(user.getFund());
+        tranfer.setVisible(false);
+        tranfer.setMouseTransparent(true);
+        history.setVisible(false);
+        history.setMouseTransparent(true);
+        overview.setVisible(true);
+        overview.setMouseTransparent(false);
+    }
+    public void switchToTranfer(){
+        getUserInformation();
+        balanceLabel.setText(user.getFund());
+        tranfer.setVisible(true);
+        tranfer.setMouseTransparent(false);
+        overview.setVisible(false);
+        overview.setMouseTransparent(true);
+        history.setVisible(false);
+        history.setMouseTransparent(true);
+    }
+    public void switchToOverview(){
+        tranfer.setVisible(false);
+        tranfer.setMouseTransparent(true);
+        overview.setVisible(true);
+        overview.setMouseTransparent(false);
+        history.setVisible(false);
+        history.setMouseTransparent(true);
+    }
+    public void switchToHistory(){
+        getUserInformation();
+        tranfer.setVisible(false);
+        tranfer.setMouseTransparent(true);
+        overview.setVisible(false);
+        overview.setMouseTransparent(true);
+        history.setVisible(true);
+        history.setMouseTransparent(false);
+    }
+    public void transaction(ActionEvent event) {
+        
+    }
 
 
 }
