@@ -74,6 +74,12 @@
 
 
 }
+.totalVbox {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 8px;
+     -fx-border-radius: 8px;
+}
+
 .submit-button {
   -fx-background-color: #576aca;
   -fx-text-fill: white;
@@ -94,3 +100,43 @@
 .submit-button:pressed {
   -fx-background-color: #404a93; /* Màu nền đậm hơn nữa khi click */
 }
+
+
+/* =====================
+   AreaChart Styling
+===================== */
+.chart {
+  -fx-background-color: #ffffff;
+  -fx-axis-line-visible: false;
+}
+
+.chart-series-area-line {
+  -fx-background-radius: 10px;
+}
+
+
+/* =====================
+   Area Colors
+===================== */
+/* Income Area (Green) */
+.default-color0.chart-series-area-fill {
+    -fx-fill: #1FC7A2; /* Semi-transparent green */
+    -fx-opacity: 0.5
+}
+
+.default-color0.chart-series-line {
+    -fx-stroke: #ffffff; /* Green line */
+    -fx-stroke-width: 2px; /* Line thickness */
+}
+
+/* Expense Area (Red) */
+.default-color1.chart-series-area-fill {
+    -fx-fill: #FF5977; /* Semi-transparent red */
+    -fx-opacity: 0.5
+}
+
+.default-color1.chart-series-line {
+    -fx-stroke: #cc0000; /* Red line */
+    -fx-stroke-width: 2px; /* Line thickness */
+}
+
