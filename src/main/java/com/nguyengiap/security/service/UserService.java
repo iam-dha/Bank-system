@@ -6,17 +6,15 @@ import com.nguyengiap.security.database_model.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UserService {
-
     @Autowired
     private UserRepository userRepository;
 
-    public List<User> findAccountByEmail(String email) {
-        return userRepository.findAccountByEmail(email);
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     public Optional<User> findByAccount(String account) {

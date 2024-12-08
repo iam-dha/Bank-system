@@ -7,16 +7,14 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
-    List<User> findAccountByEmail(String email);
-
+    @Query("SELECT u FROM User u WHERE u.email = :email")
     Optional<User> findByEmail(String email);
 
     @Query("SELECT u FROM User u WHERE u.account = :account")
-    Optional<User> findByAccount(@Param("account") String account);
+    Optional<User> findByAccount(String account);
 
     @Query("SELECT new com.nguyengiap.security.auth.model.response_model.BalanceWithAccount(u.account, u.fund) " +
             "FROM User u WHERE u.account = :account")

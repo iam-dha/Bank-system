@@ -1,11 +1,11 @@
 package com.nguyengiap.security.service;
 
-import com.nguyengiap.security.config.MailConfig;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
+
+import com.nguyengiap.security.config.mail_config.MailConfig;
 
 @Service
 @AllArgsConstructor

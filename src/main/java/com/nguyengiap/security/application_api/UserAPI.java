@@ -2,16 +2,17 @@ package com.nguyengiap.security.application_api;
 
 import com.nguyengiap.security.auth.model.request_model.ChangePasswordRequest;
 import com.nguyengiap.security.auth.model.response_model.BalanceWithAccount;
+import com.nguyengiap.security.auth.model.response_model.FindByAccountResponse;
+import com.nguyengiap.security.auth.model.response_model.UnauthorizedAccount;
 import com.nguyengiap.security.database_model.user.User;
-import com.nguyengiap.security.service.EmailService;
 import com.nguyengiap.security.service.UserService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -21,18 +22,26 @@ public class UserAPI {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private EmailService emailService;
-
-    @GetMapping("/list_account_by_email")
-    public ResponseEntity<?> getListAccountWithEmail(
-            @RequestParam String email
+    @GetMapping("/information")
+    public ResponseEntity<?> getInformation(
+            @RequestParam String account
     ) {
-        List<User> users = userService.findAccountByEmail(email);
-        if (users.isEmpty()) {
-            return ResponseEntity.status(404).body("No account found");
+        Optional<User> users = userService.findByAccount(account);
+        if (!users.isPresent()) {
+            return ResponseEntity.status(401).body(UnauthorizedAccount.builder().status(401).message("Account not found").build());
         }
-        return ResponseEntity.ok(users);
+
+        FindByAccountResponse response = FindByAccountResponse.builder()
+                .account(users.get().getAccount())
+                .address(users.get().getAddress())
+                .email(users.get().getEmail())
+                .firstName(users.get().getFirstName())
+                .lastName(users.get().getLastName())
+                .phoneNumber(users.get().getPhoneNumber())
+                .fund(users.get().getFund())
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/change-password")
@@ -52,23 +61,22 @@ public class UserAPI {
 
                 return ResponseEntity.ok("Change Password Successful");
             } else {
-                return ResponseEntity.status(403).body("Password is incorrect");
+                return ResponseEntity.status(401).body(UnauthorizedAccount.builder().status(401).message("Password is incorrect").build());
             }
         } else {
-            return ResponseEntity.status(403).body("Account not found");
+            return ResponseEntity.status(401).body(UnauthorizedAccount.builder().status(401).message("Account not found").build());
         }
     }
-
-    @GetMapping("/check-profile-balance")
+    @GetMapping("/check-profile-balance") 
     public ResponseEntity<?> checkProfileBalance(@RequestParam String account) {
         Optional<BalanceWithAccount> balance = userService.findBalanceByAccount(account);
-        return balance.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @GetMapping("/send-email")
-    public String sendEmail() {
-        emailService.sendEmail("giapbacvan@gmail.com", "Subject of the email", "Content of the email");
-        return "Email sent successfully!";
+        if (!balance.isPresent()) {
+            return ResponseEntity.status(401)
+                    .body(UnauthorizedAccount.builder()
+                            .status(404)
+                            .message("Not found")
+                            .build());
+        }
+        return ResponseEntity.ok(balance.get());
     }
 }

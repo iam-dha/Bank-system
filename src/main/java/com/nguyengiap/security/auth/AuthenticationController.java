@@ -5,6 +5,7 @@ import com.nguyengiap.security.auth.model.request_model.ForgetPasswordOtpRequest
 import com.nguyengiap.security.auth.model.request_model.OnlyAccountRequest;
 import com.nguyengiap.security.auth.model.request_model.RegisterRequest;
 import com.nguyengiap.security.auth.model.request_model.RegisterRequestOtp;
+import com.nguyengiap.security.auth.model.response_model.UnauthorizedAccount;
 import com.nguyengiap.security.auth.model.request_model.BuffMoneyRequest;
 import com.nguyengiap.security.database_model.history_transistion.TransitionHistory;
 import com.nguyengiap.security.database_model.user.User;
@@ -18,7 +19,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
-
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -41,90 +41,99 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(
-            @RequestBody RegisterRequest request
-    ) {
+            @RequestBody RegisterRequest request) {
         Optional<User> user = userService.findByAccount(request.getAccount());
+        Optional<User> userByEmail = userService.findByEmail(request.getEmail());
+        if (user.isPresent()) {
+            return ResponseEntity.status(401)
+                    .body(UnauthorizedAccount.builder().status(401).message("Account is exist").build());
+        }
+        if (userByEmail.isPresent()) {
+            return ResponseEntity.status(401)
+                    .body(UnauthorizedAccount.builder().status(401).message("Email is exist").build());
+        }
 
-        if(user.isPresent()) {
-            return ResponseEntity.status(403).body("Account is exist");
-        }
-        else {
-            otpService.generateOtp(request.getEmail());
-            return ResponseEntity.ok("Success to send otp");
-        }
+        otpService.generateOtp(request.getEmail());
+        return ResponseEntity.ok(UnauthorizedAccount.builder().status(200).message("Success to send otp").build());
     }
 
     @PostMapping("/register-otp")
     public ResponseEntity<?> registerOtp(
-            @RequestBody RegisterRequestOtp request
-    ) {
-        if(otpService.validOtp(request.getEmail(), request.getOtp())) {
+            @RequestBody RegisterRequestOtp request) {
+        if (otpService.validOtp(request.getEmail(), request.getOtp())) {
             return ResponseEntity.ok(authenticationService.register(request));
         } else {
-            return ResponseEntity.status(403).body("Wrong otp");
+            return ResponseEntity.status(401)
+                    .body(UnauthorizedAccount.builder().status(401).message("Wrong otp").build());
         }
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> authenticate(
-            @RequestBody AuthenticationRequest request
-    ) {
-        return ResponseEntity.ok(authenticationService.authenticate(request));
+    public ResponseEntity<?> authenticate(
+            @RequestBody AuthenticationRequest request) {
+        Optional<User> user = userService.findByAccount(request.getAccount());
+        if (user.isPresent()) {
+            return ResponseEntity.ok(authenticationService.authenticate(request));
+        } else {
+            return ResponseEntity.status(401)
+                    .body(UnauthorizedAccount.builder().status(401).message("Account not found").build());
+        }
     }
 
     @PostMapping("/forget-password")
-    public ResponseEntity<?> forgetPassword (
-        @RequestBody OnlyAccountRequest request
-    ) {
+    public ResponseEntity<?> forgetPassword(
+            @RequestBody OnlyAccountRequest request) {
         Optional<User> user = userService.findByAccount(request.getAccount());
-        if(user.isPresent()) {
+        if (user.isPresent()) {
             otpService.generateOtp(user.get().getEmail());
-            return ResponseEntity.ok("Request Otp");
+            return ResponseEntity.ok(UnauthorizedAccount.builder().status(200).message("Request Otp").build());
         } else {
-            return ResponseEntity.status(403).body("Account not found");
+            return ResponseEntity.status(401)
+                    .body(UnauthorizedAccount.builder().status(401).message("Account not found").build());
         }
     }
 
     @PostMapping("/forget-password-otp")
     public ResponseEntity<?> forgetPasswordOtp(
-            @RequestBody ForgetPasswordOtpRequest request
-    ) {
+            @RequestBody ForgetPasswordOtpRequest request) {
         Optional<User> user = userService.findByAccount(request.getAccount());
 
-        if(user.isPresent()) {
-            if(otpService.validOtp(user.get().getEmail(), request.getOtp())) {
+        if (user.isPresent()) {
+            if (otpService.validOtp(user.get().getEmail(), request.getOtp())) {
                 String newEncodedPassword = passwordEncoder.encode(request.getNewPassword());
                 userService.changePassword(request.getAccount(), newEncodedPassword);
-                return ResponseEntity.ok("Change password Successful");
+                return ResponseEntity.ok(UnauthorizedAccount.builder().status(200).message("Change password Successful").build());
             } else {
-                return ResponseEntity.status(403).body("Wrong otp");
+                return ResponseEntity.status(401)
+                        .body(UnauthorizedAccount.builder().status(401).message("Wrong otp").build());
             }
         } else {
-            return ResponseEntity.status(403).body("Account not found");
+            return ResponseEntity.status(401)
+                    .body(UnauthorizedAccount.builder().status(401).message("Account not found").build());
         }
     }
 
     @PostMapping("/buff-money")
     public ResponseEntity<?> buffMoney(
-            @RequestBody BuffMoneyRequest request
-    ) {
+            @RequestBody BuffMoneyRequest request) {
         Optional<User> user = userService.findByAccount(request.getAccount());
-        if(user.isPresent()) {
+        if (user.isPresent()) {
             userService.bankingToAccount(request.getAccount(), request.getFund());
-            return ResponseEntity.ok("Buff money successful");
+            return ResponseEntity.ok(UnauthorizedAccount.builder().status(200).message("Buff money successful").build());
         } else {
-            return ResponseEntity.status(403).body("Account not found");
+            return ResponseEntity.status(401)
+                    .body(UnauthorizedAccount.builder().status(401).message("Account not found").build());
         }
     }
 
-        @PostMapping("/create-fake-transaction")
+    @PostMapping("/create-fake-transaction")
     public ResponseEntity<?> createFakeTransaction(@RequestBody TransitionHistory request) {
         try {
             // Save the fake transaction directly
             transitionHistoryService.saveTransitionHistory(request);
-            return ResponseEntity.ok("Fake transaction created successfully");
+            return ResponseEntity.ok(UnauthorizedAccount.builder().status(200).message("Fake transaction created successfully").build());
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error creating fake transaction: " + e.getMessage());
+            return ResponseEntity.status(500).body(UnauthorizedAccount.builder().status(500).message("Error creating fake transaction: " + e.getMessage()).build());
         }
     }
 }
