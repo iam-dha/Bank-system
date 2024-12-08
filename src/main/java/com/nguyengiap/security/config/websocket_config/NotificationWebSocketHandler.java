@@ -1,6 +1,7 @@
 package com.nguyengiap.security.config.websocket_config;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -9,18 +10,32 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import com.nguyengiap.security.database_model.notification.NotiticationTable;
+import com.nguyengiap.security.database_model.notification.NotificationTableService;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.lang.NonNull;
 
 @Slf4j
 public class NotificationWebSocketHandler extends TextWebSocketHandler {
+    private final NotificationTableService notificationTableService;
+
     private final Map<String, WebSocketSession> userSessions = new ConcurrentHashMap<>();
+
+    public NotificationWebSocketHandler(NotificationTableService notificationTableService) {
+        this.notificationTableService = notificationTableService;
+    }
 
     @Override
     public void afterConnectionEstablished(@NonNull WebSocketSession session) {
         String userId = getUserIdFromSession(session);
         userSessions.put(userId, session);
+        List<NotiticationTable> notiticationTables = notificationTableService.getMessageWithAccount(userId);
+        for (NotiticationTable notiticationTable : notiticationTables) {
+            sendNotificationToUser(userId, notiticationTable.getMessage());
+        }
+        notificationTableService.deleteMessageWithAccount(userId);
     }
 
     @Override
@@ -29,14 +44,17 @@ public class NotificationWebSocketHandler extends TextWebSocketHandler {
         userSessions.remove(userId);
     }
 
-    public void sendNotificationToUser(String userId, String message) {
-        WebSocketSession session = userSessions.get(userId);
+    public void sendNotificationToUser(String account, String message) {
+        WebSocketSession session = userSessions.get(account);
         if (session != null && session.isOpen()) {
             try {
                 session.sendMessage(new TextMessage(message));
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else {
+            NotiticationTable notiticationTable = new NotiticationTable(account, message);
+            notificationTableService.saveMessage(notiticationTable);
         }
     }
 

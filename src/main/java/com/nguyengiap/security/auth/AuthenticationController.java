@@ -53,7 +53,7 @@ public class AuthenticationController {
                     .body(UnauthorizedAccount.builder().status(401).message("Email is exist").build());
         }
 
-        otpService.generateOtp(request.getEmail());
+        otpService.generateOtp(request.getEmail(), "Mã xác thực đăng ký.");
         return ResponseEntity.ok(UnauthorizedAccount.builder().status(200).message("Success to send otp").build());
     }
 
@@ -85,7 +85,7 @@ public class AuthenticationController {
             @RequestBody OnlyAccountRequest request) {
         Optional<User> user = userService.findByAccount(request.getAccount());
         if (user.isPresent()) {
-            otpService.generateOtp(user.get().getEmail());
+            otpService.generateOtp(user.get().getEmail(), "Mã xác thực quên mật khẩu.");
             return ResponseEntity.ok(UnauthorizedAccount.builder().status(200).message("Request Otp").build());
         } else {
             return ResponseEntity.status(401)
@@ -102,7 +102,8 @@ public class AuthenticationController {
             if (otpService.validOtp(user.get().getEmail(), request.getOtp())) {
                 String newEncodedPassword = passwordEncoder.encode(request.getNewPassword());
                 userService.changePassword(request.getAccount(), newEncodedPassword);
-                return ResponseEntity.ok(UnauthorizedAccount.builder().status(200).message("Change password Successful").build());
+                return ResponseEntity
+                        .ok(UnauthorizedAccount.builder().status(200).message("Change password Successful").build());
             } else {
                 return ResponseEntity.status(401)
                         .body(UnauthorizedAccount.builder().status(401).message("Wrong otp").build());
@@ -119,7 +120,8 @@ public class AuthenticationController {
         Optional<User> user = userService.findByAccount(request.getAccount());
         if (user.isPresent()) {
             userService.bankingToAccount(request.getAccount(), request.getFund());
-            return ResponseEntity.ok(UnauthorizedAccount.builder().status(200).message("Buff money successful").build());
+            return ResponseEntity
+                    .ok(UnauthorizedAccount.builder().status(200).message("Buff money successful").build());
         } else {
             return ResponseEntity.status(401)
                     .body(UnauthorizedAccount.builder().status(401).message("Account not found").build());
@@ -131,9 +133,11 @@ public class AuthenticationController {
         try {
             // Save the fake transaction directly
             transitionHistoryService.saveTransitionHistory(request);
-            return ResponseEntity.ok(UnauthorizedAccount.builder().status(200).message("Fake transaction created successfully").build());
+            return ResponseEntity.ok(
+                    UnauthorizedAccount.builder().status(200).message("Fake transaction created successfully").build());
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(UnauthorizedAccount.builder().status(500).message("Error creating fake transaction: " + e.getMessage()).build());
+            return ResponseEntity.status(500).body(UnauthorizedAccount.builder().status(500)
+                    .message("Error creating fake transaction: " + e.getMessage()).build());
         }
     }
 }

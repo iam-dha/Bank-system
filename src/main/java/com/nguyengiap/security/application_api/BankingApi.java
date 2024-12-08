@@ -3,7 +3,9 @@ package com.nguyengiap.security.application_api;
 import com.nguyengiap.security.auth.model.request_model.BankingRequest;
 import com.nguyengiap.security.auth.model.request_model.BankingRequestOTP;
 import com.nguyengiap.security.auth.model.response_model.BalanceWithAccount;
+import com.nguyengiap.security.auth.model.response_model.UnauthorizedAccount;
 import com.nguyengiap.security.database_model.history_transistion.TransitionHistory;
+import com.nguyengiap.security.service.EmailService;
 import com.nguyengiap.security.service.OtpService;
 import com.nguyengiap.security.service.TransitionHistoryService;
 import com.nguyengiap.security.service.UserService;
@@ -36,22 +38,23 @@ public class BankingApi {
     @Autowired
     private NotificationService notificationService;
 
+    @Autowired
+    private EmailService emailService;
+
     @Transactional
     @PostMapping("/banking")
     public ResponseEntity<?> banking(@RequestBody BankingRequest request) {
-        LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        String formattedDate = now.format(formatter);
-
-        DateTimeFormatter formatterTime = DateTimeFormatter.ofPattern("HH:mm:ss");
-        String formattedHour = now.format(formatterTime);
-
         // Kiểm tra xem tài khoản c tồn tại không
         Optional<User> checkFromAccount = userService.findByAccount(request.getFromAccount());
 
-        checkFromAccount.ifPresent(user -> otpService.generateOtp(user.getEmail()));
+        Optional<User> checkToAccount = userService.findByAccount(request.getToAccount());
 
-        return ResponseEntity.ok("Success sent otp");
+        if (!checkFromAccount.isPresent() || !checkToAccount.isPresent()) {
+            return ResponseEntity.status(404).body("Account not found");
+        } else {
+            otpService.generateOtp(checkFromAccount.get().getEmail(), "Mã xác thực chuyển khoản.");
+            return ResponseEntity.status(200).body(UnauthorizedAccount.builder().message("Success sent otp").build());
+        }
     }
 
     @PostMapping("/banking-otp")
@@ -94,7 +97,7 @@ public class BankingApi {
                                 .findBalanceByAccount(request.getFromAccount());
                         Optional<BalanceWithAccount> checkToAccountRemainBalance = userService
                                 .findBalanceByAccount(request.getToAccount());
-
+                        // Check số tiền còn lại của người chuyển
                         String fromUserNotification = notificationFormart(request.getFund(), request.getFromAccount(),
                                 request.getMessage(), checkFromAccountRemainBalance.get().getFund(), formattedDate,
                                 formattedHour, true);
@@ -102,10 +105,17 @@ public class BankingApi {
                                 request.getMessage(), checkToAccountRemainBalance.get().getFund(), formattedDate,
                                 formattedHour, false);
 
+                        // Thông báo biến động số dư qua WebSocket
                         notificationService.sendNotificationToUser(request.getToAccount(), "Thông báo biến động số dư",
                                 toUserNotification);
                         notificationService.sendNotificationToUser(request.getFromAccount(),
                                 "Thông báo biến động số dư", fromUserNotification);
+
+                        // Gửi email thông báo biến động số dư
+                        emailService.sendEmail(checkFromAccount.get().getEmail(), "Thông báo biến động số dư",
+                                fromUserNotification);
+                        emailService.sendEmail(checkToAccount.get().getEmail(), "Thông báo biến động số dư",
+                                toUserNotification);
 
                         var transitionHistory = TransitionHistory.builder()
                                 .fromAccount(request.getFromAccount())
@@ -119,15 +129,15 @@ public class BankingApi {
                                 .build();
                         // Lưu giao dịch
                         transitionHistoryService.saveTransitionHistory(transitionHistory);
-                        return ResponseEntity.ok("Banking successful");
+                        return ResponseEntity.ok(UnauthorizedAccount.builder().message("Banking successful").build());
                     } else {
-                        return ResponseEntity.status(401).body("Not enough money");
+                        return ResponseEntity.status(401).body(UnauthorizedAccount.builder().message("Not enough money").build());
                     }
                 } else {
-                    return ResponseEntity.status(403).body("Wrong OTP");
+                    return ResponseEntity.status(403).body(UnauthorizedAccount.builder().message("Wrong OTP").build());
                 }
             } else {
-                return ResponseEntity.status(401).body("Something error");
+                return ResponseEntity.status(401).body(UnauthorizedAccount.builder().message("Something error").build());
             }
         }
     }

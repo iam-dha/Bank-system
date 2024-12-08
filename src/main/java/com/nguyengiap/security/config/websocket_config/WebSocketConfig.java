@@ -6,11 +6,17 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
-import jakarta.activation.DataHandler;
+import com.nguyengiap.security.database_model.notification.NotificationTableService;
 
 @Configuration
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
+    private final NotificationTableService notificationTableService;
+
+    public WebSocketConfig(NotificationTableService notificationTableService) {
+        this.notificationTableService = notificationTableService;
+    }
+
     /*
      * http://localhost:8080/notifications
      * @param WebSocketHandlerRegistry
@@ -24,7 +30,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
 
     @Bean
     NotificationWebSocketHandler getNotificationWebSocketHandler() {
-        return new NotificationWebSocketHandler();
+        return new NotificationWebSocketHandler(notificationTableService);
     }
 }
 

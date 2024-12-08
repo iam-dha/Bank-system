@@ -14,17 +14,17 @@ public class OtpService {
     @Autowired
     private final EmailService emailService;
 
-    public String generateOtp(String email) {
+    public String generateOtp(String email, String subject) {
         String otp = String.format("%06d", random.nextInt(999999));
         otpStorage.put(email, otp);
 
-        emailService.sendEmail(email, "Your banking otp", otp);
+        emailService.sendEmail(email, subject, "Mã xác thực OTP:" + otp);
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
                 otpStorage.remove(email);
             }
-        }, 5 * 60 * 1000);
+        }, 2 * 60 * 1000);
 
         return otp;
     }
