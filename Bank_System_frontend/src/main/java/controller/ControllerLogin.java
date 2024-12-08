@@ -74,8 +74,7 @@ public class ControllerLogin implements Initializable {
     public void signIn(ActionEvent event) {
         String user_name = username.getText();
         String password = passwordText.getText();
-        SceneController sceneCotroller = new SceneController();
-        sceneCotroller.switchToMainScene(event);
+        System.out.println(user_name + password);
         if (user_name.trim().isEmpty() || password.isEmpty()) {
             notification.setText("Please fill in the blank.");
             notification.setVisible(true);
@@ -85,26 +84,26 @@ public class ControllerLogin implements Initializable {
             try {
                 HttpClient client = HttpClient.newHttpClient();
                 HttpRequest request = HttpRequest.newBuilder()
-                        .uri(new URI("https://jsonplaceholder.typicode.com/posts"))
+                        .uri(new URI("http://3.27.209.207:8080/api/v1/auth/authenticate"))
+                        .header("Content-Type", "application/json")
                         .POST(HttpRequest.BodyPublishers.ofString(
                                 String.format("{\"account\":\"%s\", \"password\":\"%s\"}", user_name, password)
                         ))
-                        .GET()
                         .build();
                 HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
                 if (response.statusCode() == 200){
-                    ObjectMapper mapper = new ObjectMapper();
-
+                    String responseBody = response.body();
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    Credential credential = objectMapper.readValue(responseBody, Credential.class);
+                    System.out.println(responseBody);
+                    User.setCredential(credential);
+                    SceneController sceneCotroller = new SceneController();
+                    sceneCotroller.switchToMainScene(event);
                 }
-                ObjectMapper mapper = new ObjectMapper();
-
-                // Deserialize the JSON response to a list of Users
-                List<User> users = Arrays.asList(mapper.readValue(response.body(), User[].class));
-
-                // Access a specific user
-                User user = new User();
-                user.setAccount("DCM");
-                s = user;
+                else {
+                    System.out.println(response.statusCode());
+                    System.out.println("hdhahadhf");
+                }
             }
             catch (Exception e) {
                 e.printStackTrace();
