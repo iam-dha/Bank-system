@@ -25,7 +25,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
    <children>
       <VBox prefHeight="560.0" prefWidth="247.0" style="-fx-background-color: #576aca;">
          <children>
@@ -79,41 +79,6 @@
       </VBox>
       <StackPane prefHeight="720.0" prefWidth="777.0">
          <children>
-            <VBox fx:id="tranfer" opacity="0.0" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #F2F5FA;">
-               <children>
-                  <Region prefHeight="75.0" prefWidth="778.0" style="-fx-background-color: #ffffff;" />
-                  <Label prefHeight="38.0" prefWidth="136.0" text="Transfer" />
-                  <HBox prefHeight="614.0" prefWidth="778.0">
-                     <children>
-                        <VBox prefHeight="612.0" prefWidth="270.0" />
-                        <VBox prefHeight="612.0" prefWidth="528.0">
-                           <children>
-                              <HBox prefHeight="298.0" prefWidth="518.0">
-                                 <children>
-                                    <VBox prefHeight="100.0" prefWidth="240.0">
-                                       <children>
-                                          <Label text="From" />
-                                          <ChoiceBox fx:id="bankList" prefWidth="150.0" />
-                                          <Label text="Message" />
-                                          <TextField fx:id="decripstionTextFiel" />
-                                          <Label text="Amount" />
-                                          <TextField fx:id="amountTextField" />
-                                          <Button fx:id="submitButton" mnemonicParsing="false" text="Button" />
-                                       </children>
-                                    </VBox>
-                                    <VBox prefHeight="298.0" prefWidth="278.0">
-                                       <children>
-                                          <Label text="To" />
-                                          <TextField fx:id="receiverAccTextfield" />
-                                       </children>
-                                    </VBox>
-                                 </children>
-                              </HBox>
-                           </children>
-                        </VBox>
-                     </children>
-                  </HBox>
-               </children></VBox>
             <HBox fx:id="overview" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #F2F5FA;">
                <children>
                   <VBox prefHeight="720.0" prefWidth="277.0">
@@ -125,7 +90,7 @@
                            <font>
                               <Font name="System Bold" size="24.0" />
                            </font></Label>
-                        <Label text="Welcome, User" textFill="#414c69">
+                        <Label fx:id="welcomeLabel" text="Welcome, User" textFill="#414c69">
                            <font>
                               <Font size="18.0" />
                            </font>
@@ -223,7 +188,43 @@
                   </VBox>
                </children>
             </HBox>
-            <VBox fx:id="history" disable="true" opacity="0.0" prefHeight="200.0" prefWidth="100.0">
+            <VBox fx:id="tranfer" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #F2F5FA;">
+               <children>
+                  <Region prefHeight="75.0" prefWidth="778.0" style="-fx-background-color: #ffffff;" />
+                  <Label prefHeight="38.0" prefWidth="136.0" text="Transfer" />
+                  <HBox prefHeight="614.0" prefWidth="778.0">
+                     <children>
+                        <VBox prefHeight="612.0" prefWidth="270.0" />
+                        <VBox prefHeight="612.0" prefWidth="528.0">
+                           <children>
+                              <HBox prefHeight="298.0" prefWidth="518.0">
+                                 <children>
+                                    <VBox prefHeight="100.0" prefWidth="240.0">
+                                       <children>
+                                          <Label text="From" />
+                                          <ChoiceBox fx:id="bankList" prefWidth="150.0" />
+                                          <Label text="Message" />
+                                          <TextField fx:id="decripstionTextFiel" />
+                                          <Label text="Amount" />
+                                          <TextField fx:id="amountTextField" />
+                                          <Button fx:id="submitButton" mnemonicParsing="false" text="Button" />
+                                       </children>
+                                    </VBox>
+                                    <VBox prefHeight="298.0" prefWidth="278.0">
+                                       <children>
+                                          <Label text="To" />
+                                          <TextField fx:id="receiverAccTextfield" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <VBox fx:id="history" disable="true" prefHeight="200.0" prefWidth="100.0">
                <children>
                   <Label prefHeight="18.0" prefWidth="222.0" text="HISTORY" />
                   <TextField />

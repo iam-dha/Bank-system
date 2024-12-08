@@ -26,6 +26,8 @@ public class MainController implements Initializable {
     private HBox overview;
     @FXML
     private Label balanceLabel;
+    @FXML
+    private Label welcomeLabel;
     private User user;
     private Credential credetial;
     public void getUserInformation(){
@@ -58,18 +60,9 @@ public class MainController implements Initializable {
         }
     }
     public void initialize(URL url, ResourceBundle rb) {
-        getUserInformation();
-        balanceLabel.setText(user.getFund());
-        tranfer.setVisible(false);
-        tranfer.setMouseTransparent(true);
-        history.setVisible(false);
-        history.setMouseTransparent(true);
-        overview.setVisible(true);
-        overview.setMouseTransparent(false);
+        switchToOverview();
     }
-    public void switchToTranfer(){
-        getUserInformation();
-        balanceLabel.setText(user.getFund());
+    public void switchToTranfer(ActionEvent e){
         tranfer.setVisible(true);
         tranfer.setMouseTransparent(false);
         overview.setVisible(false);
@@ -78,6 +71,9 @@ public class MainController implements Initializable {
         history.setMouseTransparent(true);
     }
     public void switchToOverview(){
+        getUserInformation();
+        balanceLabel.setText(user.getFund());
+        welcomeLabel.setText("Welcome, " + user.getFirstname());
         tranfer.setVisible(false);
         tranfer.setMouseTransparent(true);
         overview.setVisible(true);

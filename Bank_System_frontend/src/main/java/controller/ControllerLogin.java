@@ -36,10 +36,8 @@ public class ControllerLogin implements Initializable {
     @FXML
     public void initialize(URL url, ResourceBundle rb) {
         notification.setVisible(false);
+        togglePasswordVisibility();
     }
-
-
-    private User s;
     public void togglePasswordVisibility() {
         //isPasswordVisible = !isPasswordVisible;
         if (hide.isSelected()) {
@@ -48,13 +46,12 @@ public class ControllerLogin implements Initializable {
             hidden_eye.setVisible(true);
             passwordText.setVisible(true);
             passwordField.setVisible(false);
-
         } else {
             passwordField.setText(passwordText.getText());
             eye.setVisible(true);
             hidden_eye.setVisible(false);
-            passwordField.setVisible(true);
             passwordText.setVisible(false);
+            passwordField.setVisible(true);
         }
     }
 
@@ -73,7 +70,7 @@ public class ControllerLogin implements Initializable {
 
     public void signIn(ActionEvent event) {
         String user_name = username.getText();
-        String password = passwordText.getText();
+        String password = passwordField.getText();
         System.out.println(user_name + password);
         if (user_name.trim().isEmpty() || password.isEmpty()) {
             notification.setText("Please fill in the blank.");
@@ -91,7 +88,8 @@ public class ControllerLogin implements Initializable {
                         ))
                         .build();
                 HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-                if (response.statusCode() == 200){
+                int statusCode = response.statusCode();
+                if (statusCode == 200){
                     String responseBody = response.body();
                     ObjectMapper objectMapper = new ObjectMapper();
                     Credential credential = objectMapper.readValue(responseBody, Credential.class);
@@ -100,9 +98,17 @@ public class ControllerLogin implements Initializable {
                     SceneController sceneCotroller = new SceneController();
                     sceneCotroller.switchToMainScene(event);
                 }
+                else if (statusCode == 401) {
+                    notification.setText("Invalid Account!");
+                    notification.setVisible(true);
+                }
+                else if (statusCode == 403) {
+                    notification.setText("Wrong password. Please try again.!");
+                    notification.setVisible(true);
+                }
                 else {
-                    System.out.println(response.statusCode());
-                    System.out.println("hdhahadhf");
+                    notification.setText("Something went wrong. Try again.!");
+                    notification.setVisible(true);
                 }
             }
             catch (Exception e) {
@@ -111,13 +117,6 @@ public class ControllerLogin implements Initializable {
         }
 
 
-    }
-    public User getS() {
-        return s;
-    }
-
-    public void setS(User s) {
-        this.s = s;
     }
 
 }

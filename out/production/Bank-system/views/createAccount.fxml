@@ -16,7 +16,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="512.0" prefWidth="720.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.CreateAccountController">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="512.0" prefWidth="720.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.CreateAccountController">
    <children>
       <VBox prefHeight="512.0" prefWidth="343.0" styleClass="left" stylesheets="@../webapp/css/create.css">
          <children>
@@ -79,7 +79,7 @@
                   </Pane>
                   <HBox prefHeight="43.0" prefWidth="388.0" stylesheets="@../webapp/css/style.css">
                      <children>
-                        <TextField fx:id="fnameTextField" promptText="Firstname" stylesheets="@../webapp/css/create.css">
+                        <TextField promptText="Firstname" stylesheets="@../webapp/css/create.css">
                            <opaqueInsets>
                               <Insets />
                            </opaqueInsets>
@@ -90,53 +90,48 @@
                               <Insets top="10.0" />
                            </padding>
                         </TextField>
-                        <TextField fx:id="lnameTextField" promptText="Lastname" stylesheets="@../webapp/css/create.css">
+                        <TextField promptText="Lastname" stylesheets="@../webapp/css/create.css">
                            <HBox.margin>
                               <Insets right="30.0" />
                            </HBox.margin>
                         </TextField>
                      </children>
                   </HBox>
-                  <TextField fx:id="emailTextField" layoutX="10.0" layoutY="172.0" promptText="Email Address" stylesheets="@../webapp/css/create.css">
+                  <TextField layoutX="10.0" layoutY="172.0" promptText="Email Address" stylesheets="@../webapp/css/create.css">
                      <VBox.margin>
                         <Insets bottom="10.0" left="30.0" right="30.0" />
                      </VBox.margin>
                   </TextField>
-                  <TextField fx:id="userTextField" layoutX="40.0" layoutY="228.0" promptText="Username" stylesheets="@../webapp/css/create.css">
+                  <TextField layoutX="40.0" layoutY="228.0" promptText="Username" stylesheets="@../webapp/css/create.css">
                      <VBox.margin>
                         <Insets bottom="10.0" left="30.0" right="30.0" />
                      </VBox.margin>
                   </TextField>
-                  <PasswordField fx:id="newPwdField" promptText="Password" stylesheets="@../webapp/css/create.css">
+                  <PasswordField promptText="Password" stylesheets="@../webapp/css/create.css">
                      <VBox.margin>
                         <Insets bottom="10.0" left="30.0" right="30.0" />
                      </VBox.margin>
                   </PasswordField>
-                  <PasswordField fx:id="confirmPwdField" layoutX="10.0" layoutY="251.0" promptText="Confirm Password" stylesheets="@../webapp/css/create.css">
+                  <PasswordField layoutX="10.0" layoutY="251.0" promptText="Confirm Password" stylesheets="@../webapp/css/create.css">
                      <VBox.margin>
                         <Insets bottom="10.0" left="30.0" right="30.0" />
                      </VBox.margin>
                   </PasswordField>
-                  <TextField fx:id="phoneTextField" promptText="Phone" stylesheets="@../webapp/css/create.css">
+                  <TextField promptText="Phone" stylesheets="@../webapp/css/create.css">
                      <VBox.margin>
                         <Insets bottom="10.0" left="30.0" right="30.0" />
                      </VBox.margin>
                   </TextField>
-                  <TextField fx:id="addrTextField" promptText="Address" stylesheets="@../webapp/css/create.css">
+                  <TextField promptText="Address" stylesheets="@../webapp/css/create.css">
                      <VBox.margin>
                         <Insets bottom="10.0" left="30.0" right="30.0" />
                      </VBox.margin>
                   </TextField>
-                  <Button fx:id="signInButton" mnemonicParsing="false" onAction="#registerSubmit" prefHeight="43.0" prefWidth="339.0" stylesheets="@../webapp/css/create.css" text="Register">
+                  <Button fx:id="signInButton" mnemonicParsing="false" onAction="#VerifyCode" prefHeight="43.0" prefWidth="339.0" stylesheets="@../webapp/css/create.css" text="Register">
                      <VBox.margin>
                         <Insets left="30.0" right="30.0" top="10.0" />
                      </VBox.margin>
                   </Button>
-                  <Label fx:id="notificationLabel" textFill="#ff001a">
-                     <VBox.margin>
-                        <Insets left="30.0" top="10.0" />
-                     </VBox.margin>
-                  </Label>
                </children>
             </VBox>
             <VBox fx:id="Verify" layoutX="10.0" layoutY="10.0" prefHeight="512.0" prefWidth="398.0">
@@ -189,7 +184,7 @@
                            </HBox.margin></TextField>
                      </children>
                   </HBox>
-                  <Button mnemonicParsing="false" onAction="#verifyCode" prefHeight="43.0" prefWidth="339.0" styleClass="submit-button" stylesheets="@../webapp/css/create.css" text="Verify">
+                  <Button mnemonicParsing="false" prefHeight="43.0" prefWidth="339.0" styleClass="submit-button" stylesheets="@../webapp/css/create.css" text="Verify">
                      <VBox.margin>
                         <Insets left="110.0" right="110.0" top="10.0" />
                      </VBox.margin>
