@@ -334,22 +334,66 @@
                   </VBox>
                </children>
             </HBox>
-            <VBox fx:id="history" disable="true" prefHeight="200.0" prefWidth="100.0">
+            <VBox fx:id="history" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #F2F5FA;">
                <children>
-                  <Label prefHeight="18.0" prefWidth="222.0" text="HISTORY" />
-                  <TextField />
+                  <Label prefHeight="38.0" prefWidth="136.0" text="HISTORY" textFill="#414c69">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets left="30.0" top="30.0" />
+                     </VBox.margin>
+                  </Label>
+                  <HBox prefHeight="45.0" prefWidth="778.0">
+                     <children>
+                        <TextField prefHeight="46.0" prefWidth="632.0" promptText="Search for name, description.." styleClass="text-field" stylesheets="@../webapp/css/history.css">
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                           <padding>
+                              <Insets left="40.0" />
+                           </padding>
+                        </TextField>
+                        <ImageView fitHeight="31.0" fitWidth="32.0" opacity="0.7" pickOnBounds="true" preserveRatio="true">
+                           <HBox.margin>
+                              <Insets left="-625.0" top="7.0" />
+                           </HBox.margin>
+                           <image>
+                              <Image url="@../webapp/image/search.png" />
+                           </image>
+                        </ImageView>
+                        <Button mnemonicParsing="false" prefHeight="53.0" prefWidth="82.0" styleClass="signInButton" stylesheets="@../webapp/css/history.css" text="Search">
+                           <HBox.margin>
+                              <Insets left="600.0" />
+                           </HBox.margin>
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                        </Button>
+                     </children>
+                     <VBox.margin>
+                        <Insets left="30.0" top="20.0" />
+                     </VBox.margin>
+                  </HBox>
                   <HBox prefHeight="100.0" prefWidth="200.0">
                      <children>
-                        <DatePicker />
-                        <DatePicker />
-                        <MenuButton mnemonicParsing="false" text="MenuButton">
-                          <items>
-                            <MenuItem mnemonicParsing="false" text="All status" />
-                            <MenuItem mnemonicParsing="false" text="Successfully" />
-                              <MenuItem mnemonicParsing="false" text="Canceled" />
-                          </items>
-                        </MenuButton>
+                        <DatePicker styleClass="date-picker" stylesheets="@../webapp/css/history.css">
+                           <HBox.margin>
+                              <Insets left="30.0" />
+                           </HBox.margin></DatePicker>
+                        <DatePicker stylesheets="@../webapp/css/history.css">
+                           <HBox.margin>
+                              <Insets left="30.0" />
+                           </HBox.margin></DatePicker>
+                        <ChoiceBox prefWidth="150.0">
+                           <HBox.margin>
+                              <Insets left="20.0" />
+                           </HBox.margin>
+                        </ChoiceBox>
                      </children>
+                     <VBox.margin>
+                        <Insets top="20.0" />
+                     </VBox.margin>
                   </HBox>
                   <TableView prefHeight="200.0" prefWidth="200.0">
                     <columns>
