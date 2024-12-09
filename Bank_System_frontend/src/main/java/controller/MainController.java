@@ -23,16 +23,8 @@ import javafx.stage.Stage;
 import model.Credential;
 import model.Transaction;
 import model.User;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
 import java.net.URI;
 import java.net.URL;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.util.Objects;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
