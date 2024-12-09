@@ -29,6 +29,8 @@ import model.Credential;
 import model.Transaction;
 import model.User;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -88,11 +90,19 @@ public class MainController implements Initializable {
     private TableColumn<Transaction, String> toAccountColumn;
     @FXML
     private TableColumn<Transaction, String> messageColumn;
+    @FXML
+    private DatePicker fromDate;
+    @FXML
+    private DatePicker toDate;
+    @FXML
+    private Label historyError;
 
 
     private Transaction tran;
     private User user;
     private Credential credetial;
+    private String _fromdate = "01/01/2024";
+    private String _todate = "10/12/2024";
     public void getUserInformation(){
         Credential credential = User.getCredential();
         String _token = credential.getToken();
@@ -125,71 +135,80 @@ public class MainController implements Initializable {
     public void getHistoryTransaction() {
         Credential credential = User.getCredential();
         String _token = credential.getToken();
-        String _account = "giapbacvan";
-        String _startDate = "06/12/2024"; // Không bắt buộc
-        String _endDate = "11/12/2024"; // Không bắt buộc
-        String reqEndpoint = "http://3.27.209.207:8080/api/v1/bank-api/check-banking-transition-date-range";
-        String enpoint = String.format("%s?account=%s&startDate=%s&endDate=%s", reqEndpoint, _account, _startDate, _endDate);
-        HttpResponse<String> response = null ;
-        // Get by range
-        try {
-            HttpClient client = HttpClient.newHttpClient();
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI(enpoint))
-                    .header("Content-Type", "application/json")
-                    .header("Authorization", String.format("Bearer %s", _token))
-                    .GET()
-                    .build();
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println("response:" + response.body());
-        }
-        catch (Exception e) {
-            System.out.println("ducngu");
-        }
-        int response_code = response.statusCode();
-        if (response_code == 200) {
-            try {
-                ObjectMapper objectMapper = new ObjectMapper();
-                ArrayList<Transaction> transactionArrayList = objectMapper.readValue(response.body(), new TypeReference<ArrayList<Transaction>>() {
-                });
-                Collections.sort(transactionArrayList, new Comparator<Transaction>() {
-                    @Override
-                    public int compare(Transaction t1, Transaction t2) {
-                        // First compare by dateTime
-                        int dateTimeComparison = t1.getDateTime().compareTo(t2.getDateTime());
-                        if (dateTimeComparison != 0) {
-                            return dateTimeComparison;
-                        }
-
-                        // If dateTime is equal, compare by time
-                        return t1.getTime().compareTo(t2.getTime());
-                    }
-                });
-                ObservableList<Transaction> observableTransactions = FXCollections.observableArrayList(transactionArrayList);
-                // Set Cell Value Factories
-                timeColumn.setCellValueFactory(new PropertyValueFactory<>("dateTime"));
-                fromAccountColumn.setCellValueFactory(new PropertyValueFactory<>("fromAccount"));
-                toAccountColumn.setCellValueFactory(new PropertyValueFactory<>("toAccount"));
-                messageColumn.setCellValueFactory(new PropertyValueFactory<>("message"));
-
-                // Bind data to TableView
-                transactionTable.setItems(observableTransactions);
-            }
-            catch (Exception except){
-                System.out.println("NULL");
-            }
-        }
-        else if (response_code == 404){
-
-        }
-        else if(response_code == 403){
-
+        String _account = user.getAccount();
+        String _startDate = _fromdate;
+        String _endDate = _todate;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate startDate = LocalDate.parse(_startDate, formatter);
+        LocalDate endDate = LocalDate.parse(_endDate, formatter);
+        if (startDate.isAfter(endDate)) {
+            historyError.setVisible(true);
+            historyError.setText("From Search Date need to be before To Search Date");
         }
         else {
+            if(startDate.isBefore(LocalDate.of(2024, 1, 1)) || endDate.isAfter(LocalDate.of(2024, 12, 31))){
+                historyError.setVisible(true);
+                historyError.setText("Search Date need to be in 2024");
+            }
+            else{
+                String reqEndpoint = "http://3.27.209.207:8080/api/v1/bank-api/check-banking-transition-date-range";
+                String endpoint = String.format("%s?account=%s&startDate=%s&endDate=%s", reqEndpoint, _account, _startDate, _endDate);
+                System.out.println(endpoint);
+                HttpResponse<String> response = null ;
+                // Get by range
+                try {
+                    HttpClient client = HttpClient.newHttpClient();
+                    HttpRequest request = HttpRequest.newBuilder()
+                            .uri(new URI(endpoint))
+                            .header("Content-Type", "application/json")
+                            .header("Authorization", String.format("Bearer %s", _token))
+                            .GET()
+                            .build();
+                    response = client.send(request, HttpResponse.BodyHandlers.ofString());
+                    System.out.println("response:" + response.body());
+                }
+                catch (Exception e) {
+                    System.out.println("Error");
+                }
+                int response_code = response.statusCode();
+                if (response_code == 200) {
+                    try {
+                        ObjectMapper objectMapper = new ObjectMapper();
+                        ArrayList<Transaction> transactionArrayList = objectMapper.readValue(response.body(), new TypeReference<ArrayList<Transaction>>() {
+                        });
+                        Collections.sort(transactionArrayList, new Comparator<Transaction>() {
+                            @Override
+                            public int compare(Transaction t1, Transaction t2) {
+                                // First compare by dateTime
+                                int dateTimeComparison = t1.getDateTime().compareTo(t2.getDateTime());
+                                if (dateTimeComparison != 0) {
+                                    return dateTimeComparison;
+                                }
 
+                                // If dateTime is equal, compare by time
+                                return t1.getTime().compareTo(t2.getTime());
+                            }
+                        });
+                        ObservableList<Transaction> observableTransactions = FXCollections.observableArrayList(transactionArrayList);
+                        // Set Cell Value Factories
+                        timeColumn.setCellValueFactory(new PropertyValueFactory<>("dateTime"));
+                        fromAccountColumn.setCellValueFactory(new PropertyValueFactory<>("fromAccount"));
+                        toAccountColumn.setCellValueFactory(new PropertyValueFactory<>("toAccount"));
+                        messageColumn.setCellValueFactory(new PropertyValueFactory<>("message"));
+
+                        // Bind data to TableView
+                        transactionTable.setItems(observableTransactions);
+                    }
+                    catch (Exception except){
+                        System.out.println("NULL");
+                    }
+                }
+                else {
+                    historyError.setVisible(true);
+                    historyError.setText("Something went wrong");
+                }
+            }
         }
-
-
     }
 
     private String OTP;
@@ -202,6 +221,26 @@ public class MainController implements Initializable {
         overview.setMouseTransparent(false);
         initialize();
         switchToOverview();
+        fromDate.setOnAction(e -> {
+            LocalDate selectedDate = fromDate.getValue(); // Get selected date
+            if (selectedDate != null) {
+                // Format the date to "dd-MM-yyyy"
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                _fromdate = selectedDate.format(formatter);
+            } else {
+                System.out.println("No date selected.");
+            }
+        });
+        toDate.setOnAction(e -> {
+            LocalDate selectedDate = toDate.getValue(); // Get selected date
+            if (selectedDate != null) {
+                // Format the date to "dd-MM-yyyy"
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                _todate = selectedDate.format(formatter);
+            } else {
+                System.out.println("No date selected.");
+            }
+        });
     }
     public void switchToTranfer(ActionEvent e){
         getUserInformation();
@@ -228,14 +267,16 @@ public class MainController implements Initializable {
         history.setMouseTransparent(true);
     }
     public void switchToHistory(){
+        historyError.setVisible(false);
         getUserInformation();
-        getHistoryTransaction();
         tranfer.setVisible(false);
         tranfer.setMouseTransparent(true);
         overview.setVisible(false);
         overview.setMouseTransparent(true);
         history.setVisible(true);
         history.setMouseTransparent(false);
+        fromDate.setValue(LocalDate.of(2024, 1, 1));
+        toDate.setValue(LocalDate.now());
     }
 
     public void cleartransfer(){
@@ -306,6 +347,35 @@ public class MainController implements Initializable {
 
         // Thêm Series vào AreaChart
         areaChart.getData().addAll(incomeSeries, expenseSeries);
+    }
+    @FXML
+    public void logOut(ActionEvent event){
+        try {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Logout Confirmation"); // Changed to English
+            alert.setHeaderText(null);
+            alert.setContentText("Are you sure you want to logout?"); // Changed to English
+
+            // Change the message text color
+            alert.getDialogPane().lookup(".content.label").setStyle("-fx-text-fill: #576aca;");
+
+            // Change the OK button color
+            ButtonType okButton = new ButtonType("OK");
+            alert.getButtonTypes().setAll(okButton, ButtonType.CANCEL);
+            alert.getDialogPane().lookupButton(okButton).setStyle("-fx-background-color: #576aca; -fx-text-fill: white;");
+
+            alert.showAndWait().ifPresent(response -> {
+                if (response == okButton) {
+                    // Perform logout here
+                    System.out.println("Logging out...");
+                    // Example:
+                    // Platform.exit(); // Exit the application
+                    // or redirect to the login scene
+                }
+            });
+        } catch(Exception e){
+            System.out.println(e.getMessage());
+        }
     }
     @FXML
     public void popOtp(ActionEvent event) {

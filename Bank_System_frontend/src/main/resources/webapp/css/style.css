@@ -67,3 +67,14 @@
  .password-field.show-password {
      -fx-echo-char: null; /* Không ẩn mật khẩu */
  }
+ .custom-alert .header-panel {
+     -fx-text-fill: #576aca;
+     -fx-font-size: 18px;
+     -fx-font-weight: bold;
+ }
+
+ .custom-alert .content {
+     -fx-text-fill: black;
+     -fx-font-size: 14px;
+     -fx-padding: 10px;
+ }
