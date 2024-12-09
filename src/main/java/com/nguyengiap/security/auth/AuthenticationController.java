@@ -72,9 +72,25 @@ public class AuthenticationController {
     @PostMapping("/authenticate")
     public ResponseEntity<?> authenticate(
             @RequestBody AuthenticationRequest request) {
-        Optional<User> user = userService.findByAccount(request.getAccount());
+        if (request.getAccount() == null) {
+            return ResponseEntity.status(400)
+                    .body(UnauthorizedAccount.builder().status(400).message("Account is required").build());
+        }
+
+        Optional<User> user;
+        AuthenticationRequest newRequest;
+        if (request.getAccount().contains("@")) {
+            user = userService.findByEmail(request.getAccount());
+            newRequest = AuthenticationRequest.builder().account(user.get().getAccount()).password(request.getPassword())
+                    .build();
+        } else {
+            user = userService.findByAccount(request.getAccount());
+            newRequest = AuthenticationRequest.builder().account(user.get().getAccount()).password(request.getPassword())
+                    .build();
+        }
+
         if (user.isPresent()) {
-            return ResponseEntity.ok(authenticationService.authenticate(request));
+            return ResponseEntity.ok(authenticationService.authenticate(newRequest));
         } else {
             return ResponseEntity.status(401)
                     .body(UnauthorizedAccount.builder().status(401).message("Account not found").build());

@@ -50,10 +50,14 @@ public class BankingApi {
         Optional<User> checkToAccount = userService.findByAccount(request.getToAccount());
 
         if (!checkFromAccount.isPresent() || !checkToAccount.isPresent()) {
-            return ResponseEntity.status(404).body("Account not found");
+            return ResponseEntity.status(404).body(UnauthorizedAccount.builder().status(404).message("Account not found").build());
         } else {
-            otpService.generateOtp(checkFromAccount.get().getEmail(), "Mã xác thực chuyển khoản.");
-            return ResponseEntity.status(200).body(UnauthorizedAccount.builder().message("Success sent otp").build());
+            if(checkFromAccount.get().getFund() < request.getFund()) {
+                return ResponseEntity.status(401).body(UnauthorizedAccount.builder().status(401).message("Not enough money").build());
+            } else {
+                otpService.generateOtp(checkFromAccount.get().getEmail(), "Mã xác thực chuyển khoản.");
+                return ResponseEntity.status(200).body(UnauthorizedAccount.builder().status(200).message("Success sent otp").build());
+            }
         }
     }
 
@@ -73,7 +77,7 @@ public class BankingApi {
 
         // Nếu không tồn tại
         if (checkFromAccount.isEmpty() || checkToAccount.isEmpty()) {
-            return ResponseEntity.status(404).body("Account not found");
+            return ResponseEntity.status(404).body(UnauthorizedAccount.builder().status(404).message("Account not found").build());
         } else { // Nếu tồn tại
             if (otpService.validOtp(checkFromAccount.get().getEmail(), request.getOtp())) {
                 // Tra cứu số dư tài khoản gửi
@@ -129,15 +133,17 @@ public class BankingApi {
                                 .build();
                         // Lưu giao dịch
                         transitionHistoryService.saveTransitionHistory(transitionHistory);
-                        return ResponseEntity.ok(UnauthorizedAccount.builder().message("Banking successful").build());
+                        return ResponseEntity.ok(UnauthorizedAccount.builder().status(200).message("Banking successful").build());
                     } else {
-                        return ResponseEntity.status(401).body(UnauthorizedAccount.builder().message("Not enough money").build());
+                        return ResponseEntity.status(401)
+                                .body(UnauthorizedAccount.builder().status(401).message("Not enough money").build());
                     }
                 } else {
-                    return ResponseEntity.status(403).body(UnauthorizedAccount.builder().message("Wrong OTP").build());
+                    return ResponseEntity.status(401).body(UnauthorizedAccount.builder().status(401).message("Something error").build());
                 }
             } else {
-                return ResponseEntity.status(401).body(UnauthorizedAccount.builder().message("Something error").build());
+                return ResponseEntity.status(401)
+                        .body(UnauthorizedAccount.builder().status(403).message("Wrong OTP").build());
             }
         }
     }

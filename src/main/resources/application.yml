@@ -6,7 +6,7 @@
       driver-class-name: org.postgresql.Driver
     jpa:
       hibernate:
-        ddl-auto: create-drop
+        ddl-auto: update
       show-sql: true
       properties:
         hibernate:
@@ -16,8 +16,8 @@
     mail:
       host: smtp.gmail.com
       port: 587
-      username: "giaphocdoi@gmail.com"
-      password: "giap10t2"
+      username: "bankhust@gmail.com"
+      password: "Giap123@"
       properties:
         mail:
           smtp:
