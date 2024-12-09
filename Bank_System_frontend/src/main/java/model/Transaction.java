@@ -1,14 +1,25 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Transaction {
+    @JsonProperty("id")
     private int id;
+    @JsonProperty("fromAccount")
     private String fromAccount;
+    @JsonProperty("toAccount")
     private String toAccount;
+    @JsonProperty("balance")
     private long balance;
+    @JsonProperty("dateTime")
     private String dateTime;
+    @JsonProperty("time")
     private String time;
+    @JsonProperty("fromUserName")
     private String fromUserName;
+    @JsonProperty("toUserName")
     private String toUserName;
+    @JsonProperty("message")
     private String message;
 
     public Transaction(int id, String fromAccount, String toAccount, long balance, String dateTime, String time, String fromUserName, String toUserName, String message) {

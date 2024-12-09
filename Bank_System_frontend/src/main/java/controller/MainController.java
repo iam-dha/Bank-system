@@ -21,6 +21,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Credential;
+import model.Transaction;
 import model.User;
 
 import java.io.File;
@@ -73,7 +74,7 @@ public class MainController implements Initializable {
     @FXML
     private Label transactionErrLabel;
 
-
+    private Transaction tran;
     private User user;
     private Credential credetial;
     public void getUserInformation(){
@@ -106,22 +107,25 @@ public class MainController implements Initializable {
         }
     }
     public void getHistoryTransaction() {
+        Credential credential = User.getCredential();
+        String _token = credential.getToken();
         String baseUrl = "http://3.27.209.207:8080/api/v1/bank-api/check-banking-transition";
         String account = "giapbacvan"; // Account bắt buộc
-        String dateTime = "01/12/2024"; // Không bắt buộc
+        String dateTime = "06/12/2024"; // Không bắt buộc
         String message = "test";       // Không bắt buộc
 
         try {
             // Tạo URL với tham số
-            String url = String.format("%s?account=%s&dateTime=%s&message=%s",
+            String endpoint = String.format("%s?account=%s&dateTime=%s",
                     baseUrl,
                     account,
-                    dateTime,
-                    message);
+                    dateTime);
 
             // Xây dựng HttpRequest
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(url))
+                    .uri(new URI(endpoint))
+                    .header("Content-Type", "application/json")
+                    .header("Authorization", String.format("Bearer %s", _token))
                     .GET()
                     .build();
 
@@ -131,9 +135,18 @@ public class MainController implements Initializable {
             // Gửi yêu cầu và nhận phản hồi
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
+            if (response.statusCode() == 200) {
+                String responseBody = response.body();
+                ObjectMapper objectMapper = new ObjectMapper();
+                tran = objectMapper.readValue(responseBody, Transaction.class);
+                System.out.println(tran.getId());
+            }
+            else if (response.statusCode() == 403) {
+                System.out.println("Back to login");
+            }
             // In ra kết quả phản hồi
-            System.out.println("HTTP Status Code: " + response.statusCode());
-            System.out.println("Response Body: " + response.body());
+            //System.out.println("HTTP Status Code: " + response.statusCode());
+            //System.out.println("Response Body: " + response.body());
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -142,7 +155,6 @@ public class MainController implements Initializable {
 
     private String OTP;
     public void initialize(URL url, ResourceBundle rb) {
-        getHistoryTransaction();
         tranfer.setVisible(false);
         tranfer.setMouseTransparent(true);
         history.setVisible(false);
@@ -178,6 +190,7 @@ public class MainController implements Initializable {
     }
     public void switchToHistory(){
         getUserInformation();
+        getHistoryTransaction();
         tranfer.setVisible(false);
         tranfer.setMouseTransparent(true);
         overview.setVisible(false);
