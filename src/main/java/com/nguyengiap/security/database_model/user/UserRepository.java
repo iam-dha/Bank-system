@@ -17,7 +17,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("SELECT u FROM User u WHERE u.account = :account")
     Optional<User> findByAccount(String account);
 
-    @Query("SELECT new com.nguyengiap.security.auth.model.response_model.BalanceWithAccount(u.account, u.fund) " +
+    @Query("SELECT new com.nguyengiap.security.model.response_model.BalanceWithAccount(u.account, u.fund) " +
             "FROM User u WHERE u.account = :account")
     Optional<BalanceWithAccount> findBalanceByAccount(@Param("account") String account);
 
