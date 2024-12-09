@@ -1,12 +1,15 @@
 package controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -16,6 +19,8 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -24,6 +29,7 @@ import model.Credential;
 import model.Transaction;
 import model.User;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -32,11 +38,10 @@ import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Objects;
+import java.util.*;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
     @FXML
@@ -73,6 +78,17 @@ public class MainController implements Initializable {
     private TextField receiverAccTextfield;
     @FXML
     private Label transactionErrLabel;
+    @FXML
+    private TableView<Transaction> transactionTable;
+    @FXML
+    private TableColumn<Transaction, String> timeColumn;
+    @FXML
+    private TableColumn<Transaction, String> fromAccountColumn;
+    @FXML
+    private TableColumn<Transaction, String> toAccountColumn;
+    @FXML
+    private TableColumn<Transaction, String> messageColumn;
+
 
     private Transaction tran;
     private User user;
@@ -109,48 +125,71 @@ public class MainController implements Initializable {
     public void getHistoryTransaction() {
         Credential credential = User.getCredential();
         String _token = credential.getToken();
-        String baseUrl = "http://3.27.209.207:8080/api/v1/bank-api/check-banking-transition";
-        String account = "giapbacvan"; // Account bắt buộc
-        String dateTime = "06/12/2024"; // Không bắt buộc
-        String message = "test";       // Không bắt buộc
-
+        String _account = "giapbacvan";
+        String _startDate = "06/12/2024"; // Không bắt buộc
+        String _endDate = "11/12/2024"; // Không bắt buộc
+        String reqEndpoint = "http://3.27.209.207:8080/api/v1/bank-api/check-banking-transition-date-range";
+        String enpoint = String.format("%s?account=%s&startDate=%s&endDate=%s", reqEndpoint, _account, _startDate, _endDate);
+        HttpResponse<String> response = null ;
+        // Get by range
         try {
-            // Tạo URL với tham số
-            String endpoint = String.format("%s?account=%s&dateTime=%s",
-                    baseUrl,
-                    account,
-                    dateTime);
-
-            // Xây dựng HttpRequest
+            HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI(endpoint))
+                    .uri(new URI(enpoint))
                     .header("Content-Type", "application/json")
                     .header("Authorization", String.format("Bearer %s", _token))
                     .GET()
                     .build();
-
-            // Tạo HttpClient
-            HttpClient client = HttpClient.newHttpClient();
-
-            // Gửi yêu cầu và nhận phản hồi
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-            if (response.statusCode() == 200) {
-                String responseBody = response.body();
-                ObjectMapper objectMapper = new ObjectMapper();
-                tran = objectMapper.readValue(responseBody, Transaction.class);
-                System.out.println(tran.getId());
-            }
-            else if (response.statusCode() == 403) {
-                System.out.println("Back to login");
-            }
-            // In ra kết quả phản hồi
-            //System.out.println("HTTP Status Code: " + response.statusCode());
-            //System.out.println("Response Body: " + response.body());
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println("response:" + response.body());
         }
+        catch (Exception e) {
+            System.out.println("ducngu");
+        }
+        int response_code = response.statusCode();
+        if (response_code == 200) {
+            try {
+                ObjectMapper objectMapper = new ObjectMapper();
+                ArrayList<Transaction> transactionArrayList = objectMapper.readValue(response.body(), new TypeReference<ArrayList<Transaction>>() {
+                });
+                Collections.sort(transactionArrayList, new Comparator<Transaction>() {
+                    @Override
+                    public int compare(Transaction t1, Transaction t2) {
+                        // First compare by dateTime
+                        int dateTimeComparison = t1.getDateTime().compareTo(t2.getDateTime());
+                        if (dateTimeComparison != 0) {
+                            return dateTimeComparison;
+                        }
+
+                        // If dateTime is equal, compare by time
+                        return t1.getTime().compareTo(t2.getTime());
+                    }
+                });
+                ObservableList<Transaction> observableTransactions = FXCollections.observableArrayList(transactionArrayList);
+                // Set Cell Value Factories
+                timeColumn.setCellValueFactory(new PropertyValueFactory<>("dateTime"));
+                fromAccountColumn.setCellValueFactory(new PropertyValueFactory<>("fromAccount"));
+                toAccountColumn.setCellValueFactory(new PropertyValueFactory<>("toAccount"));
+                messageColumn.setCellValueFactory(new PropertyValueFactory<>("message"));
+
+                // Bind data to TableView
+                transactionTable.setItems(observableTransactions);
+            }
+            catch (Exception except){
+                System.out.println("NULL");
+            }
+        }
+        else if (response_code == 404){
+
+        }
+        else if(response_code == 403){
+
+        }
+        else {
+
+        }
+
+
     }
 
     private String OTP;

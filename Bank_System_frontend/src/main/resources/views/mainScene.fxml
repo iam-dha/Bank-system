@@ -426,13 +426,13 @@
                         <Insets top="20.0" />
                      </VBox.margin>
                   </HBox>
-                  <TableView prefHeight="200.0" prefWidth="200.0">
-                    <columns>
-                      <TableColumn prefWidth="75.0" text="Time" />
-                      <TableColumn prefWidth="119.20001220703125" text="From Account" />
-                        <TableColumn prefWidth="116.79997253417969" text="To Account" />
-                        <TableColumn prefWidth="75.0" text="Message" />
-                    </columns>
+                  <TableView fx:id="transactionTable" prefHeight="200.0" prefWidth="400.0">
+                     <columns>
+                        <TableColumn fx:id="timeColumn" prefWidth="75.0" text="Time" />
+                        <TableColumn fx:id="fromAccountColumn" prefWidth="120.0" text="From Account" />
+                        <TableColumn fx:id="toAccountColumn" prefWidth="120.0" text="To Account" />
+                        <TableColumn fx:id="messageColumn" prefWidth="85.0" text="Message" />
+                     </columns>
                      <VBox.margin>
                         <Insets left="30.0" right="20.0" />
                      </VBox.margin>
