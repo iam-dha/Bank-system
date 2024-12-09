@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -30,9 +31,9 @@ public class ForgetLoginController implements Initializable {
     @FXML
     private TextField otpField6;
     @FXML
-    private TextField newPassword;
+    private PasswordField newPassword;
     @FXML
-    private TextField confirmPassword;
+    private PasswordField confirmPassword;
     @FXML
     private Label error;
     @FXML
@@ -51,6 +52,8 @@ public class ForgetLoginController implements Initializable {
     private VBox VerifyScene;
     @FXML
     private VBox newPasswordSceen;
+    @FXML
+    private Label resentOTP;
 
     private String _account;
     private String _newpassword;
@@ -58,6 +61,7 @@ public class ForgetLoginController implements Initializable {
 
     public void initialize(URL url, ResourceBundle rb) {
         error.setVisible(false);
+        resentOTP.setVisible(false);
         forgotScene.setVisible(true);
         forgotScene.setMouseTransparent(false);
         VerifyScene.setVisible(false);
@@ -150,7 +154,7 @@ public class ForgetLoginController implements Initializable {
                     .uri(new URI("http://3.27.209.207:8080/api/v1/auth/forget-password"))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(
-                            String.format("{\"account\" : \"%s\"}", _account)
+                            String.format("{\"account\" : \"%s\", \"email\" : \"%s\"}", _account, _email)
                     ))
                     .build();
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -159,7 +163,16 @@ public class ForgetLoginController implements Initializable {
         catch (Exception e){
             error.setText("Something went wrong. Try again later!");
             error.setVisible(true);
+            resentOTP.setVisible(false);
         }
+        if (response.statusCode() == 200){
+            clearOTP();
+            resentOTP.setVisible(true);
+        }
+        else {
+            System.out.println(response.statusCode());
+        }
+
 
     }
 
@@ -226,7 +239,6 @@ public class ForgetLoginController implements Initializable {
             succesNoti.setVisible(true);
             VerifyScene.setMouseTransparent(true);
         }
-
         else if (response.statusCode() == 500) {
             error.setText("Error: Something went wrong. Please try again.");
             clearOTP();

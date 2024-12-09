@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import model.Credential;
 import model.User;
 
@@ -149,7 +150,7 @@ public class CreateAccountController implements Initializable {
                 userTextField.clear();
             }
             else {
-                System.out.println(response.statusCode());
+                System.out.println("dha" + response.statusCode());
             }
         }
     }
@@ -206,11 +207,12 @@ public class CreateAccountController implements Initializable {
         else {
             clearOTP();
             notificationOTP.setText("Error: Wrong OTP. Try again.");
+            notificationOTP.textFillProperty().set(Color.RED);
             notificationOTP.setVisible(true);
         }
     }
 
-    public void resendOtp(){
+    public void resendOtp(ActionEvent event){
         HttpResponse<String> response = null;
         String _account = userTextField.getText();
         String _email = emailTextField.getText();
@@ -227,6 +229,15 @@ public class CreateAccountController implements Initializable {
         }
         catch (Exception e){
             System.out.println("Cannot");
+        }
+        if(response.statusCode() == 200) {
+            clearOTP();
+            notificationOTP.setText("Successfully send OTP.");
+            notificationOTP.textFillProperty().set(Color.BLUE);
+            notificationOTP.setVisible(true);
+        }
+        else {
+            System.out.println("Resent ERROR " + response.statusCode());
         }
     }
 
