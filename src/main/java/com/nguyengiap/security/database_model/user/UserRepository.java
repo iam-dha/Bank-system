@@ -1,11 +1,12 @@
 package com.nguyengiap.security.database_model.user;
 
-import com.nguyengiap.security.auth.model.response_model.BalanceWithAccount;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import com.nguyengiap.security.model.response_model.BalanceWithAccount;
 
 import java.util.Optional;
 
