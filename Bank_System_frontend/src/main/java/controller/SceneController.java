@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.util.Objects;
@@ -70,8 +71,8 @@ public class SceneController {
             stage = (Stage)((Node)event.getSource()).getScene().getWindow();
             scene = new Scene(root);
 
-            // String css = SceneController.class.getClassLoader().getResource("/webapp/css/style.css").toExternalForm();
-            // scene.getStylesheets().add(css);
+            String css = Objects.requireNonNull(SceneController.class.getResource("/webapp/css/create.css")).toExternalForm();
+            scene.getStylesheets().add(css);
 
             stage.setScene(scene);
             stage.show();

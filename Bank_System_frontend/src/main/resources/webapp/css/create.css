@@ -107,13 +107,16 @@
 ===================== */
 .chart {
   -fx-background-color: #ffffff;
-  -fx-axis-line-visible: false;
+
 }
 
 .chart-series-area-line {
   -fx-background-radius: 10px;
 }
 
+.chart-plot-background{
+    -fx-background-color: transparent;
+}
 
 /* =====================
    Area Colors
@@ -139,4 +142,33 @@
     -fx-stroke: #cc0000; /* Red line */
     -fx-stroke-width: 2px; /* Line thickness */
 }
+.totalVbox1 {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 12px;
+    -fx-border-radius: 12px;
+}
+.axis .x-axis .tick-label {
+    -fx-fill: #3498db; /* Màu xanh dương */
+    -fx-font-size: 14px; /* Kích thước font */
+    -fx-font-weight: bold; /* In đậm */
+}
 
+/* Đặt màu cho tick labels trên trục Y */
+.axis .y-axis .tick-label {
+    -fx-fill: #e74c3c; /* Màu đỏ */
+    -fx-font-size: 14px;
+    -fx-font-style: italic; /* Chữ in nghiêng */
+}
+.axis .x-axis .axis-line {
+    -fx-stroke: #34495e; /* Màu xám đậm */
+    -fx-stroke-width: 100px; /* Độ dày của trục */
+}
+
+/* Đặt màu cho trục Y */
+.axis .y-axis .axis-line {
+    -fx-stroke: #f39c12; /* Màu cam */
+    -fx-stroke-width: 3px;
+}
+.test {
+
+}

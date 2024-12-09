@@ -19,7 +19,6 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Line?>
@@ -79,35 +78,104 @@
       </VBox>
       <StackPane prefHeight="720.0" prefWidth="777.0">
          <children>
-            <VBox fx:id="tranfer" opacity="0.0" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #F2F5FA;">
+            <VBox fx:id="tranfer" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #F2F5FA;">
                <children>
-                  <Region prefHeight="75.0" prefWidth="778.0" style="-fx-background-color: #ffffff;" />
-                  <Label prefHeight="38.0" prefWidth="136.0" text="Transfer" />
+                  <Label prefHeight="38.0" prefWidth="136.0" text="Transfer" textFill="#414c69">
+                     <VBox.margin>
+                        <Insets left="30.0" top="30.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font></Label>
                   <HBox prefHeight="614.0" prefWidth="778.0">
                      <children>
-                        <VBox prefHeight="612.0" prefWidth="270.0" />
-                        <VBox prefHeight="612.0" prefWidth="528.0">
+                        <VBox prefHeight="614.0" prefWidth="782.0">
                            <children>
-                              <HBox prefHeight="298.0" prefWidth="518.0">
+                              <HBox prefHeight="322.0" prefWidth="698.0" styleClass="tranferHbox" stylesheets="@../webapp/css/refer.css">
                                  <children>
-                                    <VBox prefHeight="100.0" prefWidth="240.0">
+                                    <VBox prefHeight="322.0" prefWidth="292.0">
                                        <children>
-                                          <Label text="From" />
-                                          <ChoiceBox fx:id="bankList" prefWidth="150.0" />
-                                          <Label text="Message" />
-                                          <TextField fx:id="decripstionTextFiel" />
-                                          <Label text="Amount" />
-                                          <TextField fx:id="amountTextField" />
-                                          <Button fx:id="submitButton" mnemonicParsing="false" text="Button" />
+                                          <Label text="From" textFill="#696969">
+                                             <VBox.margin>
+                                                <Insets left="30.0" top="20.0" />
+                                             </VBox.margin>
+                                             <font>
+                                                <Font name="System Bold" size="16.0" />
+                                             </font></Label>
+                                          <Label prefHeight="37.0" prefWidth="311.0" styleClass="label1" text="0000 0000 0000">
+                                             <VBox.margin>
+                                                <Insets left="30.0" top="45.0" />
+                                             </VBox.margin>
+                                             <padding>
+                                                <Insets left="20.0" />
+                                             </padding></Label>
+                                          <Label text="Message" textFill="DIMGRAY">
+                                             <VBox.margin>
+                                                <Insets left="30.0" top="10.0" />
+                                             </VBox.margin></Label>
+                                          <TextField fx:id="decripstionTextFiel" prefHeight="37.0" prefWidth="311.0" styleClass="text1" stylesheets="@../webapp/css/refer.css">
+                                             <VBox.margin>
+                                                <Insets left="30.0" />
+                                             </VBox.margin>
+                                             <padding>
+                                                <Insets left="20.0" />
+                                             </padding></TextField>
+                                          <Label text="Amount" textFill="DIMGRAY">
+                                             <VBox.margin>
+                                                <Insets left="30.0" top="10.0" />
+                                             </VBox.margin></Label>
+                                          <TextField fx:id="amountTextField" prefHeight="37.0" prefWidth="311.0" promptText="\$" styleClass="text1">
+                                             <VBox.margin>
+                                                <Insets left="30.0" />
+                                             </VBox.margin>
+                                             <padding>
+                                                <Insets left="20.0" />
+                                             </padding></TextField>
+                                          <Button fx:id="send" mnemonicParsing="false" onAction="#popOtp" prefHeight="38.0" prefWidth="108.0" styleClass="signInButton" text="Send">
+                                             <VBox.margin>
+                                                <Insets left="30.0" top="10.0" />
+                                             </VBox.margin>
+                                             <font>
+                                                <Font name="System Bold" size="13.0" />
+                                             </font></Button>
                                        </children>
                                     </VBox>
-                                    <VBox prefHeight="298.0" prefWidth="278.0">
+                                    <Pane prefHeight="298.0" prefWidth="70.0">
                                        <children>
-                                          <Label text="To" />
-                                          <TextField fx:id="receiverAccTextfield" />
+                                          <ImageView fitHeight="34.0" fitWidth="46.0" layoutX="30.0" layoutY="87.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../webapp/image/arrow.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </Pane>
+                                    <VBox prefHeight="322.0" prefWidth="289.0">
+                                       <children>
+                                          <Label text="To" textFill="DIMGRAY">
+                                             <font>
+                                                <Font name="System Bold" size="16.0" />
+                                             </font>
+                                             <VBox.margin>
+                                                <Insets left="20.0" top="20.0" />
+                                             </VBox.margin></Label>
+                                          <ChoiceBox fx:id="myChoiceBox" prefHeight="26.0" prefWidth="281.0" styleClass="list-cell">
+                                             <VBox.margin>
+                                                <Insets left="20.0" />
+                                             </VBox.margin>
+                                          </ChoiceBox>
+                                          <TextField fx:id="receiverAccTextfield" prefHeight="37.0" prefWidth="258.0" promptText="Account" styleClass="text1">
+                                             <VBox.margin>
+                                                <Insets left="20.0" top="10.0" />
+                                             </VBox.margin>
+                                             <padding>
+                                                <Insets left="20.0" />
+                                             </padding></TextField>
                                        </children>
                                     </VBox>
                                  </children>
+                                 <VBox.margin>
+                                    <Insets left="30.0" right="50.0" />
+                                 </VBox.margin>
                               </HBox>
                            </children>
                         </VBox>
@@ -196,17 +264,30 @@
                   </Line>
                   <VBox prefHeight="720.0" prefWidth="502.0">
                      <children>
-                        <VBox prefHeight="411.0" prefWidth="461.0" styleClass="totalVbox" stylesheets="@../webapp/css/create.css">
+                        <VBox prefHeight="411.0" prefWidth="461.0" styleClass="totalVbox1" stylesheets="@../webapp/css/create.css">
                            <VBox.margin>
                               <Insets left="20.0" right="20.0" top="85.0" />
                            </VBox.margin>
                            <children>
+                              <HBox prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <Label text="Income" />
+                                 </children>
+                              </HBox>
                               <AreaChart fx:id="areaChart" style="-fx-background-color: #ffffff;" stylesheets="@../webapp/css/create.css">
                                 <xAxis>
-                                  <CategoryAxis side="BOTTOM" fx:id="xAxis" />
+                                  <CategoryAxis side="BOTTOM" stylesheets="@../webapp/css/create.css" tickLabelFill="#d42626" fx:id="xAxis">
+                                       <styleClass>
+                                          <String fx:value="x-axis" />
+                                          <String fx:value="axis-line" />
+                                       </styleClass></CategoryAxis>
                                 </xAxis>
                                 <yAxis>
-                                  <NumberAxis fx:id="yAxis" side="LEFT" />
+                                  <NumberAxis fx:id="yAxis" side="LEFT" stylesheets="@../webapp/css/create.css">
+                                       <styleClass>
+                                          <String fx:value="axis-line" />
+                                          <String fx:value="y-axis" />
+                                       </styleClass></NumberAxis>
                                 </yAxis>
                                  <VBox.margin>
                                     <Insets top="80.0" />

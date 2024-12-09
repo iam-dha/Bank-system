@@ -35,6 +35,7 @@ public class ControllerLogin implements Initializable {
     private Label notification;
     @FXML
     public void initialize(URL url, ResourceBundle rb) {
+
         notification.setVisible(false);
     }
 

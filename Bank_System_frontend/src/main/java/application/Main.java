@@ -7,6 +7,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.util.Objects;
+
 
 public class Main extends Application {
     public static void main(String[] args) {
@@ -18,7 +20,7 @@ public class Main extends Application {
     public void start(Stage stage) {
         try {
             System.out.println("Working Directory = " + System.getProperty("user.dir"));
-            Parent root = FXMLLoader.load(getClass().getResource("/views/Login.fxml"));
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/views/Login.fxml")));
             Scene scene = new Scene(root);
             //String css = this.getClass().getResource("webapp/css/style.css").toExternalForm();
             //scene.getStylesheets().add(css);
