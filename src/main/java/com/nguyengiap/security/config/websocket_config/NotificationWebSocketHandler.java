@@ -32,10 +32,12 @@ public class NotificationWebSocketHandler extends TextWebSocketHandler {
         String userId = getUserIdFromSession(session);
         userSessions.put(userId, session);
         List<NotiticationTable> notiticationTables = notificationTableService.getMessageWithAccount(userId);
-        for (NotiticationTable notiticationTable : notiticationTables) {
-            sendNotificationToUser(userId, notiticationTable.getMessage());
+        if (notiticationTables != null && !notiticationTables.isEmpty()) {
+            for (NotiticationTable notiticationTable : notiticationTables) {
+                sendNotificationToUser(userId, notiticationTable.getMessage());
+            }
+            notificationTableService.deleteMessageWithAccount(userId);
         }
-        notificationTableService.deleteMessageWithAccount(userId);
     }
 
     @Override

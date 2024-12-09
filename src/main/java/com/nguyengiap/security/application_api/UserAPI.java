@@ -24,11 +24,11 @@ public class UserAPI {
 
     @GetMapping("/information")
     public ResponseEntity<?> getInformation(
-            @RequestParam String account
-    ) {
+            @RequestParam String account) {
         Optional<User> users = userService.findByAccount(account);
         if (!users.isPresent()) {
-            return ResponseEntity.status(401).body(UnauthorizedAccount.builder().status(401).message("Account not found").build());
+            return ResponseEntity.status(401)
+                    .body(UnauthorizedAccount.builder().status(401).message("Account not found").build());
         }
 
         FindByAccountResponse response = FindByAccountResponse.builder()
@@ -59,15 +59,19 @@ public class UserAPI {
                 String newEncodedPassword = passwordEncoder.encode(request.getNewPassword());
                 userService.changePassword(request.getAccount(), newEncodedPassword);
 
-                return ResponseEntity.ok("Change Password Successful");
+                return ResponseEntity.status(200)
+                        .body(UnauthorizedAccount.builder().status(200).message("Change Password Successful").build());
             } else {
-                return ResponseEntity.status(401).body(UnauthorizedAccount.builder().status(401).message("Password is incorrect").build());
+                return ResponseEntity.status(401)
+                        .body(UnauthorizedAccount.builder().status(401).message("Password is incorrect").build());
             }
         } else {
-            return ResponseEntity.status(401).body(UnauthorizedAccount.builder().status(401).message("Account not found").build());
+            return ResponseEntity.status(401)
+                    .body(UnauthorizedAccount.builder().status(401).message("Account not found").build());
         }
     }
-    @GetMapping("/check-profile-balance") 
+
+    @GetMapping("/check-profile-balance")
     public ResponseEntity<?> checkProfileBalance(@RequestParam String account) {
         Optional<BalanceWithAccount> balance = userService.findBalanceByAccount(account);
         if (!balance.isPresent()) {

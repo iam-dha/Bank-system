@@ -5,6 +5,7 @@ import com.nguyengiap.security.auth.model.request_model.ForgetPasswordOtpRequest
 import com.nguyengiap.security.auth.model.request_model.OnlyAccountRequest;
 import com.nguyengiap.security.auth.model.request_model.RegisterRequest;
 import com.nguyengiap.security.auth.model.request_model.RegisterRequestOtp;
+import com.nguyengiap.security.auth.model.response_model.ChangePasswordSuccessfull;
 import com.nguyengiap.security.auth.model.response_model.UnauthorizedAccount;
 import com.nguyengiap.security.auth.model.request_model.BuffMoneyRequest;
 import com.nguyengiap.security.database_model.history_transistion.TransitionHistory;
@@ -83,13 +84,34 @@ public class AuthenticationController {
     @PostMapping("/forget-password")
     public ResponseEntity<?> forgetPassword(
             @RequestBody OnlyAccountRequest request) {
+        if (request.getAccount() == null || request.getEmail() == null) {
+            return ResponseEntity.status(400)
+                    .body(UnauthorizedAccount.builder().status(400).message("Account and email are required").build());
+        }
+
         Optional<User> user = userService.findByAccount(request.getAccount());
-        if (user.isPresent()) {
-            otpService.generateOtp(user.get().getEmail(), "Mã xác thực quên mật khẩu.");
-            return ResponseEntity.ok(UnauthorizedAccount.builder().status(200).message("Request Otp").build());
-        } else {
+        if (!user.isPresent()) {
             return ResponseEntity.status(401)
                     .body(UnauthorizedAccount.builder().status(401).message("Account not found").build());
+        }
+
+        if (!user.get().getEmail().equals(request.getEmail())) {
+            return ResponseEntity.status(401)
+                    .body(UnauthorizedAccount.builder().status(401).message("Wrong email").build());
+        }
+
+        try {
+            otpService.generateOtp(user.get().getEmail(), "Mã xác thực quên mật khẩu.");
+            return ResponseEntity.ok(UnauthorizedAccount.builder()
+                    .status(200)
+                    .message("Request Otp successful")
+                    .build());
+        } catch (Exception e) {
+            return ResponseEntity.status(500)
+                    .body(UnauthorizedAccount.builder()
+                            .status(500)
+                            .message("Error generating OTP: " + e.getMessage())
+                            .build());
         }
     }
 
@@ -103,7 +125,8 @@ public class AuthenticationController {
                 String newEncodedPassword = passwordEncoder.encode(request.getNewPassword());
                 userService.changePassword(request.getAccount(), newEncodedPassword);
                 return ResponseEntity
-                        .ok(UnauthorizedAccount.builder().status(200).message("Change password Successful").build());
+                        .ok(ChangePasswordSuccessfull.builder().message("Change password Successful")
+                                .newPassword(request.getNewPassword()).build());
             } else {
                 return ResponseEntity.status(401)
                         .body(UnauthorizedAccount.builder().status(401).message("Wrong otp").build());
