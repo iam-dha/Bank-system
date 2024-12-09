@@ -9,8 +9,6 @@
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.MenuButton?>
-<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -121,7 +119,7 @@
                      <children>
                         <VBox prefHeight="614.0" prefWidth="782.0">
                            <children>
-                              <HBox prefHeight="322.0" prefWidth="698.0" styleClass="tranferHbox" stylesheets="@../webapp/css/refer.css">
+                              <HBox prefHeight="360.0" prefWidth="697.0" styleClass="tranferHbox" stylesheets="@../webapp/css/refer.css">
                                  <children>
                                     <VBox prefHeight="322.0" prefWidth="292.0">
                                        <children>
@@ -161,13 +159,22 @@
                                              <padding>
                                                 <Insets left="20.0" />
                                              </padding></TextField>
+                                          <Label fx:id="transactionErrLabel" prefHeight="38.0" prefWidth="292.0" textFill="RED" wrapText="true">
+                                             <VBox.margin>
+                                                <Insets top="10.0" />
+                                             </VBox.margin>
+                                             <padding>
+                                                <Insets left="30.0" />
+                                             </padding>
+                                          </Label>
                                           <Button fx:id="send" mnemonicParsing="false" onAction="#popOtp" prefHeight="38.0" prefWidth="108.0" styleClass="signInButton" text="Send">
                                              <VBox.margin>
                                                 <Insets left="30.0" top="10.0" />
                                              </VBox.margin>
                                              <font>
                                                 <Font name="System Bold" size="13.0" />
-                                             </font></Button>
+                                             </font>
+                                          </Button>
                                        </children>
                                     </VBox>
                                     <Pane prefHeight="298.0" prefWidth="70.0">

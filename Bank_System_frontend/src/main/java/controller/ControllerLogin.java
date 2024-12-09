@@ -72,7 +72,13 @@ public class ControllerLogin implements Initializable {
 
     public void signIn(ActionEvent event) {
         String user_name = username.getText();
-        String password = passwordField.getText();
+        String password = null;
+        if(!passwordField.getText().equals("")) {
+            password = passwordField.getText();
+        }
+        else {
+            password = passwordText.getText();
+        }
         System.out.println(user_name + password);
         if (user_name.trim().isEmpty() || password.isEmpty()) {
             notification.setText("Please fill in the blank.");
