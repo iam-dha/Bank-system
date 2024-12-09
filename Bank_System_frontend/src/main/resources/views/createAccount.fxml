@@ -158,7 +158,7 @@
                      </children>
                   </Pane>
                   <Region prefHeight="52.0" prefWidth="378.0" />
-                  <HBox prefHeight="100.0" prefWidth="200.0">
+                  <HBox prefHeight="100.0" prefWidth="378.0">
                      <children>
                         <TextField fx:id="otpField1" styleClass="text-field-code" stylesheets="@../webapp/css/create.css">
                            <HBox.margin>
@@ -189,6 +189,7 @@
                            </HBox.margin></TextField>
                      </children>
                   </HBox>
+                  <Label fx:id="notificationOTP" prefHeight="34.0" prefWidth="378.0" style="-fx-alignment: center;" textFill="#d00c0c" />
                   <Button mnemonicParsing="false" onAction="#verifyCode" prefHeight="43.0" prefWidth="339.0" styleClass="submit-button" stylesheets="@../webapp/css/create.css" text="Verify">
                      <VBox.margin>
                         <Insets left="110.0" right="110.0" top="10.0" />
@@ -197,7 +198,7 @@
                   <Pane prefHeight="200.0" prefWidth="200.0">
                      <children>
                         <Label layoutX="112.0" layoutY="21.0" text="Didn't get a code?" />
-                        <Hyperlink layoutX="223.0" layoutY="18.0" text="Resent" />
+                        <Hyperlink layoutX="223.0" layoutY="18.0" onAction="#resendOtp" text="Resent" />
                      </children>
                   </Pane>
                </children>

@@ -62,7 +62,7 @@
      -fx-padding: 10px;
  }
 
- /* Nội dung Alert */
+ /* Nội dung Alert thành công*/
  .success-alert .content {
      -fx-text-fill: #2e7d32; /* Màu chữ xanh đậm */
      -fx-font-size: 14px;
@@ -85,5 +85,39 @@
 
  .success-alert .button-bar .button:pressed {
      -fx-background-color: #3e8e41; /* Nút tối hơn khi bấm */
+ }
+ /* Tiêu đề của Alert cho Invalid OTP */
+ .invalid-otp-alert .header-panel {
+     -fx-background-color: #f44336; /* Nền màu đỏ */
+     -fx-text-fill: white;          /* Chữ màu trắng */
+     -fx-font-size: 18px;           /* Kích thước chữ */
+     -fx-font-weight: bold;         /* Chữ in đậm */
+     -fx-padding: 10px;             /* Khoảng cách */
+ }
+
+ /* Nội dung Alert Invalid OTP */
+
+ .invalid-otp-alert .content {
+     -fx-text-fill: #d32f2f; /* Màu chữ đỏ */
+     -fx-font-size: 14px;
+     -fx-padding: 10px;
+ }
+
+ /* Nút bấm */
+ .invalid-otp-alert .button-bar .button {
+     -fx-background-color: #f44336; /* Nút đỏ */
+     -fx-text-fill: white;          /* Chữ nút màu trắng */
+     -fx-font-weight: bold;
+     -fx-background-radius: 5;
+     -fx-border-color: transparent;
+     -fx-cursor: hand;
+ }
+
+ .invalid-otp-alert .button-bar .button:hover {
+     -fx-background-color: #e53935; /* Nút đậm hơn khi hover */
+ }
+
+ .invalid-otp-alert .button-bar .button:pressed {
+     -fx-background-color: #d32f2f; /* Nút tối hơn khi bấm */
  }
 

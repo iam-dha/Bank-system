@@ -48,6 +48,30 @@ public class MainController implements Initializable {
     private Label balanceLabel;
     @FXML
     private Label welcomeLabel;
+    @FXML
+    private AreaChart<String, Number> areaChart;
+    @FXML
+    private HBox otpBox;
+    @FXML
+    private Label currentBalance;
+    @FXML
+    private Button send;
+    @FXML
+    private CategoryAxis xAxis; // Trục X, biểu diễn các tháng
+    @FXML
+    private NumberAxis yAxis; // Trục Y, biểu diễn số tiền
+    @FXML
+    private Label senderLabel;
+    @FXML
+    private TextField decripstionTextFiel;
+    @FXML
+    private TextField amountTextField;
+    @FXML
+    private ChoiceBox myChoiceBox;
+    @FXML
+    private TextField receiverAccTextfield;
+
+
     private User user;
     private Credential credetial;
     public void getUserInformation(){
@@ -92,6 +116,10 @@ public class MainController implements Initializable {
         switchToOverview();
     }
     public void switchToTranfer(ActionEvent e){
+        getUserInformation();
+        cleartransfer();
+        senderLabel.setText(user.getAccount());
+        currentBalance.setText(user.getFund());
         tranfer.setVisible(true);
         tranfer.setMouseTransparent(false);
         overview.setVisible(false);
@@ -119,22 +147,13 @@ public class MainController implements Initializable {
         history.setVisible(true);
         history.setMouseTransparent(false);
     }
-    @FXML
-    private TextField decripstionTextFiel;
-    private String test;
-    @FXML
-    private AreaChart<String, Number> areaChart;
-    @FXML
-    private HBox otpBox;
-    @FXML
-    private Button send;
-    @FXML
-    private CategoryAxis xAxis; // Trục X, biểu diễn các tháng
 
-    @FXML
-    private NumberAxis yAxis; // Trục Y, biểu diễn số tiền
-    @FXML
-    private ChoiceBox myChoiceBox;
+    public void cleartransfer(){
+        decripstionTextFiel.clear();
+        amountTextField.clear();
+        receiverAccTextfield.clear();
+        myChoiceBox.setValue(null);
+    }
 
     public void initialize() {
 
@@ -199,56 +218,110 @@ public class MainController implements Initializable {
         areaChart.getData().addAll(incomeSeries, expenseSeries);
     }
     @FXML
-    public void popOtp(ActionEvent event)  {
-        try{
-            FXMLLoader loader =new FXMLLoader(getClass().getResource("/views/changeOtp.fxml"));
-            //Parent root = FXMLLoader.load(getClass().getResource("/views/changeOtp.fxml"));
-            Parent root = loader.load();
-            Stage stage = new Stage();
-            Scene scene = new Scene(root);
-            ControllerOTP otpController = loader.getController();
-            otpController.setOnSubmitListener(otp -> {
-                System.out.println("Received OTP: " + otp); // Xử lý OTP
-                decripstionTextFiel.setText(otp);
-//                HttpClient client = HttpClient.newHttpClient();
-//                HttpRequest request = HttpRequest.newBuilder()
-//                        .uri(new URI("http://localhost:8080/api/v1/auth/register"))
-//                        .POST(HttpRequest.BodyPublishers.ofString(
-//                                String.format("{\"account\":\"%s\", \"password\":\"%s\"}", user_name, password)
-//                        ))
-//                        .GET()
-//                        .build();
-//                    try {
-//
-//                        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+    public void popOtp(ActionEvent event) {
+        String _token = User.getCredential().getToken();
+        System.out.println(_token);
+        String _fromaccount = senderLabel.getText();
+        String _message = decripstionTextFiel.getText();
+        String _amount = amountTextField.getText();
+        String _receiverBank = myChoiceBox.getValue().toString();
+        String _toaccount = receiverAccTextfield.getText();
+        HttpResponse<String> response = null;
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI("http://3.27.209.207:8080/api/v1/bank-api/banking"))
+                    .header("Content-Type", "application/json")
+                    .header("Authorization", String.format("Bearer %s", _token))
+                    .POST(HttpRequest.BodyPublishers.ofString(
+                            String.format("{\"fromAccount\":\"%s\"," +
+                                    "\"toAccount\":\"%s\"," +
+                                    "\"fund\":\"%s\"," +
+                                    "\"message\":\"%s\" }", _fromaccount, _toaccount, _amount, _message)
+                    ))
+                    .build();
 
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Transaction Successful");
-                alert.setHeaderText("Transfer Completed!");
-                alert.setContentText("Your transfer was processed successfully.\nThank you for using our service!");
-
-                // Thêm nút tùy chỉnh (nếu cần)
-                alert.getButtonTypes().setAll(ButtonType.OK);
-
-                // Thêm CSS để tùy chỉnh giao diện
-                alert.getDialogPane().getStylesheets().add(
-                        getClass().getResource("/webapp/css/refer.css").toExternalForm()
-                );
-                alert.getDialogPane().getStyleClass().add("success-alert");
-
-                // Hiển thị alert
-                alert.showAndWait();
-
-            });
-
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.initOwner(send.getScene().getWindow());
-            //stage.initOwner(((Node) event.getSource()).getScene().getWindow());
-            stage.setScene(scene);
-            stage.show();
-
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("DHA");
+        }
+        if (response.statusCode() == 400) {
+            System.out.println(response.statusCode());
+        } else {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/changeOtp.fxml"));
+                //Parent root = FXMLLoader.load(getClass().getResource("/views/changeOtp.fxml"));
+                Parent root = loader.load();
+                Stage stage = new Stage();
+                Scene scene = new Scene(root);
+                ControllerOTP otpController = loader.getController();
+                otpController.setOnSubmitListener(otp -> {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    System.out.println("Received OTP: " + otp.length()); // Xử lý OTP
+                    System.out.println(decripstionTextFiel.getText()); //debug
+                    // Send request to Process payment
+                    HttpResponse<String> transaction_res = null;
+                    try {
+                        HttpClient client = HttpClient.newHttpClient();
+                        HttpRequest request = HttpRequest.newBuilder()
+                                .uri(new URI("http://3.27.209.207:8080/api/v1/bank-api/banking-otp"))
+                                .header("Content-Type", "application/json")
+                                .header("Authorization", String.format("Bearer %s", _token))
+                                .POST(HttpRequest.BodyPublishers.ofString(
+                                        String.format("{\"fromAccount\":\"%s\"," +
+                                                "\"toAccount\":\"%s\"," +
+                                                "\"fund\":\"%s\"," +
+                                                "\"message\":\"%s\", \"otp\":\"%s\"}", _fromaccount, _toaccount, _amount, _message, otp)
+                                ))
+                                .build();
+                        transaction_res = client.send(request, HttpResponse.BodyHandlers.ofString());
+                    } catch (Exception e) {
+                        System.out.println("DHA");
+                    }
+                    int response_code = transaction_res.statusCode();
+                    if (response_code == 200) {
+                        alert.setTitle("Transaction Successful");
+                        alert.setHeaderText("Transfer Completed!");
+                        alert.setContentText("Your transfer was processed successfully.\nThank you for using our service!");
+                        // Thêm nút tùy chỉnh (nếu cần)
+                        alert.getButtonTypes().setAll(ButtonType.OK);
+
+                        // Thêm CSS để tùy chỉnh giao diện
+                        alert.getDialogPane().getStylesheets().add(
+                                getClass().getResource("/webapp/css/refer.css").toExternalForm()
+                        );
+                        alert.getDialogPane().getStyleClass().add("success-alert");
+
+                        // Hiển thị alert
+                        alert.showAndWait();
+                    }
+                    else if (response_code != 200) {
+                        System.out.println(response_code);
+                        alert.setTitle("The transaction was not approved.");
+                        alert.setHeaderText("Transfer Failed!");
+                        alert.setContentText("Your transaction was unsuccessful due to an incorrect OTP code.\nTry another transaction.");
+                        // Thêm nút tùy chỉnh (nếu cần)
+                        alert.getButtonTypes().setAll(ButtonType.OK);
+
+                        // Thêm CSS để tùy chỉnh giao diện
+                        alert.getDialogPane().getStylesheets().add(
+                                getClass().getResource("/webapp/css/refer.css").toExternalForm()
+                        );
+                        alert.getDialogPane().getStyleClass().add("invalid-otp-alert");
+
+                        // Hiển thị alert
+                        alert.showAndWait();
+                    }
+                switchToTranfer(event);
+                });
+                stage.initModality(Modality.WINDOW_MODAL);
+                stage.initOwner(send.getScene().getWindow());
+                //stage.initOwner(((Node) event.getSource()).getScene().getWindow());
+                stage.setScene(scene);
+                stage.show();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

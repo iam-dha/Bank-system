@@ -53,6 +53,8 @@ public class CreateAccountController implements Initializable {
     @FXML
     private Label notificationLabel;
     @FXML
+    private Label notificationOTP;
+    @FXML
     private PasswordField newPwdField;
     @FXML
     private PasswordField confirmPwdField;
@@ -74,6 +76,10 @@ public class CreateAccountController implements Initializable {
         setupTextFieldNavigation(otpField3,otpField4, otpField5);
         setupTextFieldNavigation(otpField4,otpField5, otpField6);
         setupTextFieldNavigation(otpField5,otpField6, null); // Field cuối cùng
+    }
+
+    public void clearOTP(){
+        otpField1.clear();otpField2.clear();otpField3.clear();otpField4.clear();otpField5.clear();otpField6.clear();
     }
 
     private void setupTextFieldNavigation(TextField preField, TextField currentField, TextField nextField) {
@@ -154,7 +160,6 @@ public class CreateAccountController implements Initializable {
         String _fname = fnameTextField.getText();
         String _lname = lnameTextField.getText();
         String _password = newPwdField.getText();
-        String _repassword = confirmPwdField.getText();
         String _address = addrTextField.getText();
         String _phone = phoneTextField.getText();
         String _createdate = LocalDate.now().toString();
@@ -183,7 +188,7 @@ public class CreateAccountController implements Initializable {
         catch (Exception e) {
             System.out.println("Nahh");
         }
-
+        System.out.println(response.statusCode());
         if (response.statusCode() == 200) {
             try {
                 String responseBody = response.body();
@@ -198,8 +203,33 @@ public class CreateAccountController implements Initializable {
                 e.printStackTrace();
             }
         }
-
+        else {
+            clearOTP();
+            notificationOTP.setText("Error: Wrong OTP. Try again.");
+            notificationOTP.setVisible(true);
+        }
     }
+
+    public void resendOtp(){
+        HttpResponse<String> response = null;
+        String _account = userTextField.getText();
+        String _email = emailTextField.getText();
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI("http://3.27.209.207:8080/api/v1/auth/register"))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(
+                            String.format("{\"account\" : \"%s\",\"email\": \"%s\"}", _account, _email)
+                    ))
+                    .build();
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        }
+        catch (Exception e){
+            System.out.println("Cannot");
+        }
+    }
+
     public void switchLoginScene(ActionEvent event) {
         SceneController sceneCotroller = new SceneController();
         sceneCotroller.switchToLogin(event);
