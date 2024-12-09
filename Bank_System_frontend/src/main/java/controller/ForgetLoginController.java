@@ -103,7 +103,7 @@ public class ForgetLoginController implements Initializable {
                             .uri(new URI("http://3.27.209.207:8080/api/v1/auth/forget-password"))
                             .header("Content-Type", "application/json")
                             .POST(HttpRequest.BodyPublishers.ofString(
-                                    String.format("{\"account\" : \"%s\"}", _account)
+                                    String.format("{\"account\" : \"%s\", \"email\" : \"%s\"}", _account, _email)
                             ))
                             .build();
                     response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -177,7 +177,7 @@ public class ForgetLoginController implements Initializable {
             error.setText("Something went wrong. Try again later!");
             error.setVisible(true);
         }
-        
+
     }
 
 
