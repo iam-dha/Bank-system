@@ -34,13 +34,12 @@ public class ControllerLogin implements Initializable {
     @FXML
     private Label notification;
     @FXML
+
     public void initialize(URL url, ResourceBundle rb) {
 
         notification.setVisible(false);
+        togglePasswordVisibility();
     }
-
-
-    private User s;
     public void togglePasswordVisibility() {
         //isPasswordVisible = !isPasswordVisible;
         if (hide.isSelected()) {
@@ -49,13 +48,12 @@ public class ControllerLogin implements Initializable {
             hidden_eye.setVisible(true);
             passwordText.setVisible(true);
             passwordField.setVisible(false);
-
         } else {
             passwordField.setText(passwordText.getText());
             eye.setVisible(true);
             hidden_eye.setVisible(false);
-            passwordField.setVisible(true);
             passwordText.setVisible(false);
+            passwordField.setVisible(true);
         }
     }
 
@@ -74,9 +72,8 @@ public class ControllerLogin implements Initializable {
 
     public void signIn(ActionEvent event) {
         String user_name = username.getText();
-        String password = passwordText.getText();
-        SceneController sceneCotroller = new SceneController();
-        sceneCotroller.switchToMainScene(event);
+        String password = passwordField.getText();
+        System.out.println(user_name + password);
         if (user_name.trim().isEmpty() || password.isEmpty()) {
             notification.setText("Please fill in the blank.");
             notification.setVisible(true);
@@ -86,26 +83,35 @@ public class ControllerLogin implements Initializable {
             try {
                 HttpClient client = HttpClient.newHttpClient();
                 HttpRequest request = HttpRequest.newBuilder()
-                        .uri(new URI("https://jsonplaceholder.typicode.com/posts"))
+                        .uri(new URI("http://3.27.209.207:8080/api/v1/auth/authenticate"))
+                        .header("Content-Type", "application/json")
                         .POST(HttpRequest.BodyPublishers.ofString(
                                 String.format("{\"account\":\"%s\", \"password\":\"%s\"}", user_name, password)
                         ))
-                        .GET()
                         .build();
                 HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-                if (response.statusCode() == 200){
-                    ObjectMapper mapper = new ObjectMapper();
-
+                int statusCode = response.statusCode();
+                if (statusCode == 200){
+                    String responseBody = response.body();
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    Credential credential = objectMapper.readValue(responseBody, Credential.class);
+                    System.out.println(responseBody);
+                    User.setCredential(credential);
+                    SceneController sceneCotroller = new SceneController();
+                    sceneCotroller.switchToMainScene(event);
                 }
-                ObjectMapper mapper = new ObjectMapper();
-
-                // Deserialize the JSON response to a list of Users
-                List<User> users = Arrays.asList(mapper.readValue(response.body(), User[].class));
-
-                // Access a specific user
-                User user = new User();
-                user.setAccount("DCM");
-                s = user;
+                else if (statusCode == 401) {
+                    notification.setText("Invalid Account!");
+                    notification.setVisible(true);
+                }
+                else if (statusCode == 403) {
+                    notification.setText("Wrong password. Please try again.!");
+                    notification.setVisible(true);
+                }
+                else {
+                    notification.setText("Something went wrong. Try again.!");
+                    notification.setVisible(true);
+                }
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -113,13 +119,6 @@ public class ControllerLogin implements Initializable {
         }
 
 
-    }
-    public User getS() {
-        return s;
-    }
-
-    public void setS(User s) {
-        this.s = s;
     }
 
 }

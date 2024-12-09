@@ -6,17 +6,22 @@ public class User {
 
     private static Credential credential;
 
-    public User(String account, String firstname, String lastname, String email, String password, String address, String createdate, String phonenumber, String fund, String token) {
-        this.credential = new Credential(token, account);
+    public User(String account, String firstname, String lastname, String email, String password, String address, String createdate, String phonenumber) {
         this.account = account;
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
-        this.password = password;
         this.address = address;
-        this.createdate = createdate;
         this.phonenumber = phonenumber;
         this.fund = fund;
+    }
+
+    public static void setCredential(Credential credential) {
+        User.credential = credential;
+    }
+
+    public static Credential getCredential(){
+        return User.credential;
     }
 
     public User(){
@@ -33,14 +38,14 @@ public class User {
     @JsonProperty("email")
     private String email;
 
-    @JsonProperty("password")
-    private String password;
+//    @JsonProperty("password")
+//    private String password;
 
     @JsonProperty("address")
     private String address;
 
-    @JsonProperty("createDate")
-    private String createdate;
+//    @JsonProperty("createDate")
+//    private String createdate;
 
     @JsonProperty("phoneNumber")
     private String phonenumber;
@@ -64,17 +69,17 @@ public class User {
         return email;
     }
 
-    public String getPassword() {
-        return password;
-    }
+//    public String getPassword() {
+//        return password;
+//    }
 
     public String getAddress() {
         return address;
     }
 
-    public String getCreatedate() {
-        return createdate;
-    }
+//    public String getCreatedate() {
+//        return createdate;
+//    }
 
     public String getPhonenumber() {
         return phonenumber;
@@ -100,17 +105,17 @@ public class User {
         this.email = email;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+//    public void setPassword(String password) {
+//        this.password = password;
+//    }
 
     public void setAddress(String address) {
         this.address = address;
     }
 
-    public void setCreatedate(String createdate) {
-        this.createdate = createdate;
-    }
+//    public void setCreatedate(String createdate) {
+//        this.createdate = createdate;
+//    }
 
     public void setPhonenumber(String phonenumber) {
         this.phonenumber = phonenumber;

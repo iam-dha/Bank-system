@@ -24,7 +24,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
    <children>
       <VBox prefHeight="560.0" prefWidth="247.0" style="-fx-background-color: #576aca;">
          <children>
@@ -193,7 +193,7 @@
                            <font>
                               <Font name="System Bold" size="24.0" />
                            </font></Label>
-                        <Label text="Welcome, User" textFill="#414c69">
+                        <Label fx:id="welcomeLabel" text="Welcome, User" textFill="#414c69">
                            <font>
                               <Font size="18.0" />
                            </font>

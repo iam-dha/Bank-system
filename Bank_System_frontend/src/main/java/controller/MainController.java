@@ -1,10 +1,13 @@
 package controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import javafx.event.ActionEvent;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -17,15 +20,21 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import model.Credential;
+import model.User;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URI;
 import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Objects;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
@@ -35,6 +44,41 @@ public class MainController implements Initializable {
     private VBox history;
     @FXML
     private HBox overview;
+    @FXML
+    private Label balanceLabel;
+    @FXML
+    private Label welcomeLabel;
+    private User user;
+    private Credential credetial;
+    public void getUserInformation(){
+        Credential credential = User.getCredential();
+        String _token = credential.getToken();
+        String _account = credential.getAccount();
+        try {
+            String baseUrl = "http://3.27.209.207:8080/api/v1/user/information";
+            String endpoint = String.format("%s?account=%s", baseUrl, _account);
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(endpoint))
+                    .header("Content-Type", "application/json")
+                    .header("Authorization", String.format("Bearer %s", _token))
+                    .GET()
+                    .build();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 200) {
+                String responseBody = response.body();
+                ObjectMapper objectMapper = new ObjectMapper();
+                user = objectMapper.readValue(responseBody, User.class);
+                System.out.println(user.getEmail());
+            }
+            else if (response.statusCode() == 403) {
+                System.out.println("Back to login");
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     private String OTP;
     public void initialize(URL url, ResourceBundle rb) {
@@ -45,8 +89,9 @@ public class MainController implements Initializable {
         overview.setVisible(true);
         overview.setMouseTransparent(false);
         initialize();
+        switchToOverview();
     }
-    public void switchToTranfer(){
+    public void switchToTranfer(ActionEvent e){
         tranfer.setVisible(true);
         tranfer.setMouseTransparent(false);
         overview.setVisible(false);
@@ -55,6 +100,9 @@ public class MainController implements Initializable {
         history.setMouseTransparent(true);
     }
     public void switchToOverview(){
+        getUserInformation();
+        balanceLabel.setText(user.getFund());
+        welcomeLabel.setText("Welcome, " + user.getFirstname());
         tranfer.setVisible(false);
         tranfer.setMouseTransparent(true);
         overview.setVisible(true);
@@ -63,6 +111,7 @@ public class MainController implements Initializable {
         history.setMouseTransparent(true);
     }
     public void switchToHistory(){
+        getUserInformation();
         tranfer.setVisible(false);
         tranfer.setMouseTransparent(true);
         overview.setVisible(false);
@@ -88,6 +137,7 @@ public class MainController implements Initializable {
     private ChoiceBox myChoiceBox;
 
     public void initialize() {
+
         //areaChart.lookup(".chart-plot-background").setStyle("-fx-background-color: transparent;");
         myChoiceBox.getItems().addAll("HUST BANK", "NEU BANK", "HNUE BANK");
         //myChoiceBox.setValue("Option 1"); // Giá trị mặc định
@@ -200,7 +250,5 @@ public class MainController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 }

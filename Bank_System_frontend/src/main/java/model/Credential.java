@@ -2,11 +2,14 @@ package model;
 
 public class Credential {
     private String token;
-    private String username;
+    private String account;
 
-    public Credential(String token, String username) {
+    public Credential(){
+    }
+
+    public Credential(String token, String account) {
         this.token = token;
-        this.username = username;
+        this.account = account;
     }
 
     public String getToken() {
@@ -17,11 +20,11 @@ public class Credential {
         this.token = token;
     }
 
-    public String getUsername() {
-        return username;
+    public String getAccount() {
+        return account;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setAccount(String account) {
+        this.account = account;
     }
 }
