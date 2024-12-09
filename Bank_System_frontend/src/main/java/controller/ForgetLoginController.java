@@ -80,48 +80,31 @@ public class ForgetLoginController implements Initializable {
             _account = userTextField.getText();
             _email = emailTextField.getText();
             HttpResponse<String> response = null ;
+                //Have account associated with email and username
             try {
                 HttpClient client = HttpClient.newHttpClient();
                 HttpRequest request = HttpRequest.newBuilder()
-                        .uri(new URI("http://3.27.209.207:8080/api/v1/auth/register"))
+                        .uri(new URI("http://3.27.209.207:8080/api/v1/auth/forget-password"))
                         .header("Content-Type", "application/json")
                         .POST(HttpRequest.BodyPublishers.ofString(
-                                String.format("{\"account\" : \"%s\",\"email\": \"%s\"}", _account, _email)
+                                String.format("{\"account\" : \"%s\", \"email\" : \"%s\"}", _account, _email)
                         ))
                         .build();
                 response = client.send(request, HttpResponse.BodyHandlers.ofString());
                 System.out.println(response.statusCode());
             }
             catch (Exception e){
-                System.out.println("Cannot");
+                error.setText("Something went wrong. Try again later!");
+                error.setVisible(true);
             }
-            if(response.statusCode() == 401) {
-                //Have account associated with email and username
-                try {
-                    HttpClient client = HttpClient.newHttpClient();
-                    HttpRequest request = HttpRequest.newBuilder()
-                            .uri(new URI("http://3.27.209.207:8080/api/v1/auth/forget-password"))
-                            .header("Content-Type", "application/json")
-                            .POST(HttpRequest.BodyPublishers.ofString(
-                                    String.format("{\"account\" : \"%s\", \"email\" : \"%s\"}", _account, _email)
-                            ))
-                            .build();
-                    response = client.send(request, HttpResponse.BodyHandlers.ofString());
-                    System.out.println(response.statusCode());
-                }
-                catch (Exception e){
-                    error.setText("Something went wrong. Try again later!");
-                    error.setVisible(true);
-                }
-                if (response.statusCode() == 200) {
-                    error.setVisible(false);
-                    forgotScene.setVisible(false);
-                    forgotScene.setMouseTransparent(true);
-                    VerifyScene.setVisible(false);
-                    VerifyScene.setMouseTransparent(true);
-                    newPasswordSceen.setVisible(true);
-                    newPasswordSceen.setMouseTransparent(false);
-                }
+            if (response.statusCode() == 200) {
+                error.setVisible(false);
+                forgotScene.setVisible(false);
+                forgotScene.setMouseTransparent(true);
+                VerifyScene.setVisible(false);
+                VerifyScene.setMouseTransparent(true);
+                newPasswordSceen.setVisible(true);
+                newPasswordSceen.setMouseTransparent(false);
             }
             else {
                 error.setText("We couldn't find an account associated with this account. Try again");
