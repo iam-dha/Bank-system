@@ -40,59 +40,67 @@
 
 
 }
-/* Định dạng tổng thể của DatePicker */
+/* DatePicker tổng thể */
 .date-picker {
-    -fx-background-color: #ffffff; /* Nền chính */
-    -fx-border-color: transparent;    /* Viền chính */
+    -fx-background-color: transparent; /* Nền trong suốt */
+    -fx-padding: 5 10;                /* Khoảng cách bên trong */
     -fx-font-family: "Arial", sans-serif;
     -fx-font-size: 14px;
-    -fx-text-fill: #5C72DF; /* Màu chữ chính */
+    -fx-text-fill: #5C72DF;           /* Màu chữ chủ đạo */
 }
 
-/* Khi DatePicker được chọn (focus) */
+/* Khi focus (không làm thay đổi gì thêm) */
 .date-picker:focused {
-    -fx-border-color: transparent; /* Viền đậm hơn khi focus */
-    -fx-background-color: #F3F6FF; /* Nền nhạt hơn */
+
+    -fx-background-color: transparent; /* Nền trong suốt */
+    -fx-effect: none;                 /* Không hiệu ứng */
 }
 
-/* Popup nút chọn ngày (Calendar Button) */
-.date-picker {
-    -fx-background-color: #5C72DF; /* Màu nền chính */
-    -fx-text-fill: white; /* Màu chữ trắng tương phản */
-    -fx-font-size: 14px; /* Kích thước chữ */
-}
-
+/* Nút chọn ngày (Calendar Button) */
 .date-picker .arrow-button {
-    -fx-background-color: #7A8CDF; /* Màu nền nút mũi tên, nhạt hơn màu chính */
-    -fx-background-radius: 0; /* Bo tròn góc nút mũi tên */
+    -fx-background-color: #5C72DF;   /* Nền màu chủ đạo */
+    /* Bo tròn nút */
+    -fx-padding: 5;
 }
 
 .date-picker .arrow-button:hover {
-    -fx-background-color: #99A7DF; /* Màu nền nút mũi tên khi hover, nhạt hơn nữa */
+    -fx-background-color: #3A56B1;   /* Nền đậm hơn khi hover */
 }
 
-.date-picker .calendar-grid {
-    -fx-background-color: white; /* Nền lịch trắng */
-    -fx-border-color: transparent; /* Viền lịch màu xanh */
-    -fx-border-width: 1px;
+.date-picker .arrow-button .arrow {
+    -fx-background-color: white;     /* Mũi tên màu trắng */
 }
 
-.date-picker .calendar-grid .day-cell {
-    -fx-background-color: transparent; /* Nền ô ngày trong suốt */
-    -fx-text-fill: #333; /* Màu chữ đen */
+/* Popup Calendar */
+.date-picker-popup {
+    -fx-background-color: white;    /* Nền popup màu trắng */
+
+
 }
 
-.date-picker .calendar-grid .day-cell:hover {
-    -fx-background-color: #E0E8FF; /* Nền ô ngày khi hover, màu xanh nhạt */
+/* Ngày hiện tại và các ngày trong Calendar */
+.date-picker-popup .day-cell {
+    -fx-text-fill: #5C72DF;          /* Màu chữ chủ đạo */
 }
 
-.date-picker .calendar-grid .day-cell:focused {
-    -fx-background-color: #5C72DF; /* Nền ô ngày khi focus, màu xanh chính */
-    -fx-text-fill: white; /* Màu chữ trắng */
+.date-picker-popup .day-cell:hover {
+    -fx-background-color: #E1E8FF;  /* Nền nhạt hơn khi hover */
 }
 
-.date-picker .calendar-grid .day-cell.today {
-    -fx-background-color: #CCE0FF; /* Nền ô ngày hiện tại, màu xanh nhạt hơn */
-    -fx-border-color: #5C72DF; /* Viền ô ngày hiện tại */
-    -fx-border-width: 1px;
+/* Ngày được chọn */
+.date-picker-popup .day-cell:selected {
+    -fx-background-color: #5C72DF;  /* Nền màu chủ đạo */
+    -fx-text-fill: white;           /* Chữ màu trắng */
+}
+
+/* Nút điều hướng tháng (previous/next) */
+.date-picker-popup .spinner .left-arrow,
+.date-picker-popup .spinner .right-arrow {
+    -fx-background-color: transparent; /* Nền trong suốt */
+    -fx-text-fill: #5C72DF;            /* Màu mũi tên */
+}
+
+.date-picker-popup .spinner .left-arrow:hover,
+.date-picker-popup .spinner .right-arrow:hover {
+    -fx-text-fill: #3A56B1;           /* Màu mũi tên đậm hơn khi hover */
 }

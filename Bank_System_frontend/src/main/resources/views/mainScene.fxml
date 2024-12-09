@@ -9,8 +9,6 @@
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.MenuButton?>
-<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -24,7 +22,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
    <children>
       <VBox prefHeight="560.0" prefWidth="247.0" style="-fx-background-color: #576aca;">
          <children>
@@ -351,7 +349,7 @@
                               <Insets />
                            </HBox.margin>
                            <padding>
-                              <Insets left="40.0" />
+                              <Insets left="50.0" />
                            </padding>
                         </TextField>
                         <ImageView fitHeight="31.0" fitWidth="32.0" opacity="0.7" pickOnBounds="true" preserveRatio="true">
@@ -377,14 +375,38 @@
                   </HBox>
                   <HBox prefHeight="100.0" prefWidth="200.0">
                      <children>
-                        <DatePicker styleClass="date-picker" stylesheets="@../webapp/css/history.css">
+                        <VBox prefHeight="100.0" prefWidth="234.0">
+                           <children>
+                              <Label prefHeight="22.0" prefWidth="62.0" text="From" textFill="#414c69">
+                                 <font>
+                                    <Font name="System Bold" size="16.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets left="10.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <DatePicker prefHeight="46.0" prefWidth="210.0" styleClass="date-picker" stylesheets="@../webapp/css/history.css" />
+                           </children>
                            <HBox.margin>
                               <Insets left="30.0" />
-                           </HBox.margin></DatePicker>
-                        <DatePicker stylesheets="@../webapp/css/history.css">
-                           <HBox.margin>
-                              <Insets left="30.0" />
-                           </HBox.margin></DatePicker>
+                           </HBox.margin>
+                           <VBox.margin>
+                              <Insets left="30.0" right="20.0" />
+                           </VBox.margin>
+                        </VBox>
+                        <VBox prefHeight="100.0" prefWidth="234.0">
+                           <children>
+                              <Label prefHeight="22.0" prefWidth="40.0" text="To" textFill="#414c69">
+                                 <font>
+                                    <Font name="System Bold" size="16.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets left="10.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <DatePicker prefHeight="46.0" prefWidth="210.0" stylesheets="@../webapp/css/history.css" />
+                           </children>
+                        </VBox>
                         <ChoiceBox prefWidth="150.0">
                            <HBox.margin>
                               <Insets left="20.0" />
@@ -402,6 +424,9 @@
                         <TableColumn prefWidth="116.79997253417969" text="To Account" />
                         <TableColumn prefWidth="75.0" text="Message" />
                     </columns>
+                     <VBox.margin>
+                        <Insets left="30.0" right="20.0" />
+                     </VBox.margin>
                   </TableView>
                </children>
                <StackPane.margin>

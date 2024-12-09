@@ -103,9 +103,44 @@ public class MainController implements Initializable {
             e.printStackTrace();
         }
     }
+    public void getHistoryTransaction() {
+        String baseUrl = "http://3.27.209.207:8080/api/v1/bank-api/check-banking-transition";
+        String account = "giapbacvan"; // Account bắt buộc
+        String dateTime = "01/12/2024"; // Không bắt buộc
+        String message = "test";       // Không bắt buộc
+
+        try {
+            // Tạo URL với tham số
+            String url = String.format("%s?account=%s&dateTime=%s&message=%s",
+                    baseUrl,
+                    account,
+                    dateTime,
+                    message);
+
+            // Xây dựng HttpRequest
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .GET()
+                    .build();
+
+            // Tạo HttpClient
+            HttpClient client = HttpClient.newHttpClient();
+
+            // Gửi yêu cầu và nhận phản hồi
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            // In ra kết quả phản hồi
+            System.out.println("HTTP Status Code: " + response.statusCode());
+            System.out.println("Response Body: " + response.body());
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
     private String OTP;
     public void initialize(URL url, ResourceBundle rb) {
+        getHistoryTransaction();
         tranfer.setVisible(false);
         tranfer.setMouseTransparent(true);
         history.setVisible(false);
