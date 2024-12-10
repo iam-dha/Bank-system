@@ -2,9 +2,7 @@ package controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import java.net.URL;
@@ -26,7 +24,6 @@ public class ControllerOTP implements Initializable {
     private TextField otpField5;
     @FXML
     private TextField otpField6;
-    private String OTP;
     @FXML
     private Button submit;
     public void initialize(URL url, ResourceBundle rb) {
@@ -48,7 +45,6 @@ public class ControllerOTP implements Initializable {
                 // Chỉ cho phép nhập 1 ký tự
                 currentField.setText(newValue.substring(0, 1));
             }
-
             if (!newValue.isEmpty() && nextField != null) {
                 nextField.requestFocus(); // Chuyển sang ô tiếp theo
             }
@@ -78,22 +74,6 @@ public class ControllerOTP implements Initializable {
             }
             stage.close();
 
-//            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-//            alert.setTitle("Transaction Successful");
-//            alert.setHeaderText("Transfer Completed!");
-//            alert.setContentText("Your transfer was processed successfully.\nThank you for using our service!");
-//
-//            // Thêm nút tùy chỉnh (nếu cần)
-//            alert.getButtonTypes().setAll(ButtonType.OK);
-//
-//            // Thêm CSS để tùy chỉnh giao diện
-//            alert.getDialogPane().getStylesheets().add(
-//                    getClass().getResource("/webapp/css/refer.css").toExternalForm()
-//            );
-//            alert.getDialogPane().getStyleClass().add("success-alert");
-//
-//            // Hiển thị alert
-//            alert.showAndWait();
 
         } catch (Exception e) {
             System.out.println(e.getMessage());

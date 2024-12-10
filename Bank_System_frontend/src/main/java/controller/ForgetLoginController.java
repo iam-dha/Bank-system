@@ -172,6 +172,7 @@ public class ForgetLoginController implements Initializable {
         else {
             System.out.println(response.statusCode());
         }
+        error.setVisible(false);
 
 
     }

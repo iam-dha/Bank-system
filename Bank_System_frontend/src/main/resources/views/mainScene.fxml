@@ -90,7 +90,7 @@
                   <Insets />
                </opaqueInsets>
             </Button>
-            <Button mnemonicParsing="false" style="-fx-background-color: #576aca;" text=" Setting" textFill="WHITE">
+            <Button mnemonicParsing="false" onAction="#switchToSetting" style="-fx-background-color: #576aca;" text=" Setting" textFill="WHITE">
                <graphic>
                   <ImageView fitHeight="35.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -129,7 +129,7 @@
       </VBox>
       <StackPane prefHeight="720.0" prefWidth="777.0">
          <children>
-            <VBox fx:id="tranfer" opacity="0.0" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #F2F5FA;">
+            <VBox fx:id="tranfer" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #F2F5FA;">
                <children>
                   <HBox prefHeight="100.0" prefWidth="200.0">
                      <children>
@@ -505,7 +505,7 @@
                   <Insets />
                </StackPane.margin>
             </VBox>
-            <VBox prefHeight="200.0" prefWidth="100.0">
+            <VBox fx:id="setting" prefHeight="200.0" prefWidth="100.0">
                <children>
                   <Label prefHeight="100.0" prefWidth="481.0" text="Setting" textFill="#414c69">
                      <font>
@@ -585,12 +585,12 @@
                               </Label>
                               <VBox prefHeight="130.0" prefWidth="497.0">
                                  <children>
-                                    <PasswordField fx:id="newPassword" promptText="Current Password" styleClass="../webapp/css/forget.css" stylesheets="@../webapp/css/forget.css">
+                                    <PasswordField fx:id="currentPassword" promptText="Current Password" styleClass="../webapp/css/forget.css" stylesheets="@../webapp/css/forget.css">
                                        <VBox.margin>
                                           <Insets left="30.0" top="10.0" />
                                        </VBox.margin>
                                     </PasswordField>
-                                    <PasswordField fx:id="confirmPassword" promptText="New Password" styleClass="../webapp/css/forget.css" stylesheets="@../webapp/css/forget.css">
+                                    <PasswordField fx:id="newPassword" promptText="New Password" styleClass="../webapp/css/forget.css" stylesheets="@../webapp/css/forget.css">
                                        <VBox.margin>
                                           <Insets left="30.0" top="20.0" />
                                        </VBox.margin>
@@ -600,7 +600,12 @@
                                     <Insets right="220.0" />
                                  </VBox.margin>
                               </VBox>
-                              <Button fx:id="signInButton" mnemonicParsing="false" onAction="#registerSubmit" prefHeight="43.0" prefWidth="110.0" stylesheets="@../webapp/css/create.css" text="Submit">
+                              <Label fx:id="changePassLabel" prefHeight="17.0" prefWidth="497.0">
+                                 <VBox.margin>
+                                    <Insets left="30.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <Button fx:id="signInButton" mnemonicParsing="false" onAction="#chagePassword" prefHeight="43.0" prefWidth="110.0" stylesheets="@../webapp/css/create.css" text="Submit">
                                  <VBox.margin>
                                     <Insets left="30.0" right="30.0" top="10.0" />
                                  </VBox.margin>

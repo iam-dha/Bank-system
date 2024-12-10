@@ -5,13 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.AreaChart;
@@ -23,32 +21,27 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Credential;
 import model.Notification;
 import model.Transaction;
 import model.User;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
 import java.net.URI;
 import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.*;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 
 public class MainController implements Initializable {
     @FXML
     private VBox tranfer;
+    @FXML
+    private VBox setting;
     @FXML
     private VBox history;
     @FXML
@@ -101,13 +94,31 @@ public class MainController implements Initializable {
     private Label notification1;
     @FXML
     private Label notification2;
-
-
+    @FXML
+    private TextField emailTextField;
+    @FXML
+    private TextField fnameTextField;
+    @FXML
+    private TextField lnameTextField;
+    @FXML
+    private TextField userTextField;
+    @FXML
+    private TextField phoneTextField;
+    @FXML
+    private TextField addrTextField;
+    @FXML
+    private Label changePassLabel;
+    @FXML
+    private PasswordField currentPassword;
+    @FXML
+    private PasswordField newPassword;
     private Transaction tran;
     private User user;
     private Credential credetial;
     private String _fromdate = "01/01/2024";
     private String _todate = "10/12/2024";
+
+
     public void getUserInformation(){
         Credential credential = User.getCredential();
         String _token = credential.getToken();
@@ -216,6 +227,21 @@ public class MainController implements Initializable {
         }
     }
 
+    public void settingUser(){
+        fnameTextField.setText(user.getFirstname());
+        fnameTextField.setMouseTransparent(true);
+        lnameTextField.setText(user.getLastname());
+        lnameTextField.setMouseTransparent(true);
+        emailTextField.setText(user.getEmail());
+        emailTextField.setMouseTransparent(true);
+        userTextField.setText(user.getAccount());
+        userTextField.setMouseTransparent(true);
+        phoneTextField.setText(user.getPhonenumber());
+        phoneTextField.setMouseTransparent(true);
+        addrTextField.setText(user.getAddress());
+        addrTextField.setMouseTransparent(true);
+    }
+
     public void setNotification(){
         HttpResponse<String> response = null;
         ArrayList<Notification> notificationArrayList = null;
@@ -241,7 +267,6 @@ public class MainController implements Initializable {
         notification2.setText(String.format("%s\n%s\n%s", _notification2.getDateTime(), _notification2.getTitle(), _notification2.getMessage()));
     }
 
-    private String OTP;
     public void initialize(URL url, ResourceBundle rb) {
         tranfer.setVisible(false);
         tranfer.setMouseTransparent(true);
@@ -249,6 +274,8 @@ public class MainController implements Initializable {
         history.setMouseTransparent(true);
         overview.setVisible(true);
         overview.setMouseTransparent(false);
+        setting.setMouseTransparent(true);
+        setting.setVisible(false);
         initialize();
         switchToOverview();
         fromDate.setOnAction(e -> {
@@ -284,6 +311,23 @@ public class MainController implements Initializable {
         overview.setMouseTransparent(true);
         history.setVisible(false);
         history.setMouseTransparent(true);
+        setting.setMouseTransparent(true);
+        setting.setVisible(false);
+    }
+    public void switchToSetting(){
+        getUserInformation();
+        settingUser();
+        currentPassword.clear();
+        newPassword.clear();
+        setting.setVisible(true);
+        setting.setMouseTransparent(false);
+        tranfer.setVisible(false);
+        tranfer.setMouseTransparent(true);
+        overview.setVisible(false);
+        overview.setMouseTransparent(true);
+        history.setVisible(false);
+        history.setMouseTransparent(true);
+        changePassLabel.setVisible(false);
     }
     public void switchToOverview(){
         setNotification();
@@ -296,6 +340,8 @@ public class MainController implements Initializable {
         overview.setMouseTransparent(false);
         history.setVisible(false);
         history.setMouseTransparent(true);
+        setting.setMouseTransparent(true);
+        setting.setVisible(false);
     }
     public void switchToHistory(){
         historyError.setVisible(false);
@@ -308,6 +354,8 @@ public class MainController implements Initializable {
         history.setMouseTransparent(false);
         fromDate.setValue(LocalDate.of(2024, 1, 1));
         toDate.setValue(LocalDate.now());
+        setting.setMouseTransparent(true);
+        setting.setVisible(false);
     }
 
     public void cleartransfer(){
@@ -315,6 +363,41 @@ public class MainController implements Initializable {
         amountTextField.clear();
         receiverAccTextfield.clear();
         myChoiceBox.setValue(null);
+    }
+
+    public void chagePassword(){
+        String _token = User.getCredential().getToken();
+        String _account = User.getCredential().getAccount();
+        String _current = currentPassword.getText();
+        String _new = newPassword.getText();
+        HttpResponse<String> response = null;
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI("http://3.27.209.207:8080/api/v1/user/change-password"))
+                    .header("Content-Type", "application/json")
+                    .header("Authorization", String.format("Bearer %s", _token))
+                    .POST(HttpRequest.BodyPublishers.ofString(
+                            String.format("{\"account\":\"%s\"," +
+                                    "\"currentPassword\":\"%s\"," +
+                                    "\"newPassword\":\"%s\" }", _account, _current, _new)
+                    ))
+                    .build();
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        if (response.statusCode() == 200){
+            changePassLabel.setVisible(true);
+            changePassLabel.setText("Change password successfully");
+            changePassLabel.textFillProperty().set(Color.GREEN);
+        }
+        else {
+            changePassLabel.setVisible(true);
+            changePassLabel.setText("Something went wrong.");
+            changePassLabel.textFillProperty().set(Color.RED);
+        }
     }
 
     public void initialize() {
@@ -343,7 +426,7 @@ public class MainController implements Initializable {
         xAxis.setTickMarkVisible(false);
         // Dữ liệu mẫu
         double[] income = {1200, 1500, 1700, 1600, 1800, 2000, 2100, 1900, 2200, 2400, 2300, 2500};
-        double[] expense = {800, 1000, 900, 1100, 1300, 1900, 1500, 1200, 2600, 1000, 900, 950};
+        double[] expense = {800, 1000, 1900, 1100, 1300, 2300, 1500, 1200, 2600, 1000, 900, 950};
 
         // Tạo Series cho Tiền vào (Income)
         XYChart.Series<String, Number> incomeSeries = new XYChart.Series<>();
@@ -373,9 +456,6 @@ public class MainController implements Initializable {
             Tooltip.install(data.getNode(), expenseTooltip);
         }
 
-            //incomeSeries.getData().add(incomeData);
-            //expenseSeries.getData().add(expenseData);
-
         // Thêm Series vào AreaChart
         areaChart.getData().addAll(incomeSeries, expenseSeries);
     }
@@ -398,10 +478,8 @@ public class MainController implements Initializable {
             alert.showAndWait().ifPresent(response -> {
                 if (response == okButton) {
                     // Perform logout here
-                    System.out.println("Logging out...");
-                    // Example:
-                    // Platform.exit(); // Exit the application
-                    // or redirect to the login scene
+                    SceneController controller = new SceneController();
+                    controller.switchToLogin(event);
                 }
             });
         } catch(Exception e){
@@ -415,11 +493,32 @@ public class MainController implements Initializable {
         String _fromaccount = senderLabel.getText();
         String _message = decripstionTextFiel.getText();
         String _amount = amountTextField.getText();
-        String _receiverBank = myChoiceBox.getValue().toString();
+        String _receiverBank = null;
+        try {
+            _receiverBank = myChoiceBox.getValue().toString();
+        }
+        catch (NullPointerException e){
+            transactionErrLabel.setText("ERROR: Fill all the blank.");
+            transactionErrLabel.setVisible(true);
+            cleartransfer();
+        }
         String _toaccount = receiverAccTextfield.getText();
         HttpResponse<String> response = null;
-        if (_receiverBank != "HUST BANK") {
+        if (_receiverBank == null){
+            transactionErrLabel.setText("ERROR: Fill all the blank.");
+            transactionErrLabel.setVisible(true);
+            cleartransfer();
+        }
+        else if (_receiverBank != "HUST BANK") {
             transactionErrLabel.setText("ERROR: The bank is currently under\nmaintenance.");
+            transactionErrLabel.setVisible(true);
+            cleartransfer();
+        }
+        else if(_message == null || _message.trim().isEmpty() ||
+                _amount == null || _amount.trim().isEmpty() ||
+                _receiverBank == null || _receiverBank.trim().isEmpty() ||
+                _toaccount == null || _toaccount.trim().isEmpty()){
+            transactionErrLabel.setText("ERROR: Fill all the blank.");
             transactionErrLabel.setVisible(true);
             cleartransfer();
         }
@@ -500,11 +599,11 @@ public class MainController implements Initializable {
 
                             // Hiển thị alert
                             alert.showAndWait();
-                        } else if (transaction_response == 403) {
+                        } else {
                             System.out.println(transaction_response);
                             alert.setTitle("The transaction was not approved.");
                             alert.setHeaderText("Transfer Failed!");
-                            alert.setContentText("Your transaction was unsuccessful due to an incorrect OTP code.\nTry another transaction.");
+                            alert.setContentText("Your transaction was unsuccessful due to an INVALID OTP code.\nTry another transaction.");
                             // Thêm nút tùy chỉnh (nếu cần)
                             alert.getButtonTypes().setAll(ButtonType.OK);
 

@@ -187,7 +187,7 @@ public class CreateAccountController implements Initializable {
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
         }
         catch (Exception e) {
-            System.out.println("Nahh");
+            e.printStackTrace();
         }
         System.out.println(response.statusCode());
         if (response.statusCode() == 200) {
@@ -240,6 +240,7 @@ public class CreateAccountController implements Initializable {
             System.out.println("Resent ERROR " + response.statusCode());
         }
     }
+
 
     public void switchLoginScene(ActionEvent event) {
         SceneController sceneCotroller = new SceneController();
