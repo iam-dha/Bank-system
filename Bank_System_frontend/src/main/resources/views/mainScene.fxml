@@ -89,6 +89,18 @@
                   <Insets />
                </opaqueInsets>
             </Button>
+            <Button mnemonicParsing="false" style="-fx-background-color: #576aca;" text="Log out" textFill="WHITE">
+               <graphic>
+                  <ImageView fitHeight="35.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../webapp/image/s-removebg-preview.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Button>
             <Line endX="201.99998474121094" endY="87.29289245605469" startX="-2.799999237060547" startY="87.29289245605469" stroke="WHITE">
                <VBox.margin>
                   <Insets left="20.0" top="300.0" />
