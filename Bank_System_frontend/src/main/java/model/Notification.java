@@ -9,6 +9,26 @@ public class Notification {
     private String message;
     @JsonProperty("dateTime")
     private String dateTime;
+    @JsonProperty("id")
+    private int id;
+    @JsonProperty("imageUrl")
+    private String imageUrl;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 
     public String getTitle() {
         return title;

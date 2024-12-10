@@ -26,6 +26,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Credential;
+import model.Notification;
 import model.Transaction;
 import model.User;
 
@@ -96,6 +97,10 @@ public class MainController implements Initializable {
     private DatePicker toDate;
     @FXML
     private Label historyError;
+    @FXML
+    private Label notification1;
+    @FXML
+    private Label notification2;
 
 
     private Transaction tran;
@@ -211,6 +216,31 @@ public class MainController implements Initializable {
         }
     }
 
+    public void setNotification(){
+        HttpResponse<String> response = null;
+        ArrayList<Notification> notificationArrayList = null;
+        try{
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI("http://3.27.209.207:8080/api/v1/auth/get-notification"))
+                    .GET()
+                    .build();
+
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println(response.body());
+            ObjectMapper objectMapper = new ObjectMapper();
+            notificationArrayList = objectMapper.readValue(response.body(), new TypeReference<ArrayList<Notification>>() {
+            });
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        Notification _notification1 = notificationArrayList.get(0);
+        Notification _notification2 = notificationArrayList.get(1);
+        notification1.setText(String.format("%s\n%s\n%s", _notification1.getDateTime(), _notification1.getTitle(), _notification1.getMessage()));
+        notification2.setText(String.format("%s\n%s\n%s", _notification2.getDateTime(), _notification2.getTitle(), _notification2.getMessage()));
+    }
+
     private String OTP;
     public void initialize(URL url, ResourceBundle rb) {
         tranfer.setVisible(false);
@@ -256,6 +286,7 @@ public class MainController implements Initializable {
         history.setMouseTransparent(true);
     }
     public void switchToOverview(){
+        setNotification();
         getUserInformation();
         balanceLabel.setText(user.getFund());
         welcomeLabel.setText("Welcome, " + user.getFirstname());
