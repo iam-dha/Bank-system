@@ -9,6 +9,7 @@
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -89,21 +90,24 @@
                   <Insets />
                </opaqueInsets>
             </Button>
-            <Button mnemonicParsing="false" style="-fx-background-color: #576aca;" text="Log out" textFill="WHITE">
+            <Button mnemonicParsing="false" style="-fx-background-color: #576aca;" text=" Setting" textFill="WHITE">
                <graphic>
                   <ImageView fitHeight="35.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../webapp/image/s-removebg-preview.png" />
+                        <Image url="@../webapp/image/setting.png" />
                      </image>
                   </ImageView>
                </graphic>
                <font>
                   <Font size="17.0" />
                </font>
+               <VBox.margin>
+                  <Insets bottom="10.0" left="10.0" top="260.0" />
+               </VBox.margin>
             </Button>
             <Line endX="201.99998474121094" endY="87.29289245605469" startX="-2.799999237060547" startY="87.29289245605469" stroke="WHITE">
                <VBox.margin>
-                  <Insets left="20.0" top="300.0" />
+                  <Insets left="20.0" />
                </VBox.margin>
             </Line>
             <Button mnemonicParsing="false" onAction="#logOut" style="-fx-background-color: #576aca;" text="Log out" textFill="WHITE">
@@ -125,7 +129,7 @@
       </VBox>
       <StackPane prefHeight="720.0" prefWidth="777.0">
          <children>
-            <VBox fx:id="tranfer" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #F2F5FA;">
+            <VBox fx:id="tranfer" opacity="0.0" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #F2F5FA;">
                <children>
                   <HBox prefHeight="100.0" prefWidth="200.0">
                      <children>
@@ -492,6 +496,120 @@
                <StackPane.margin>
                   <Insets />
                </StackPane.margin>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <Label prefHeight="100.0" prefWidth="481.0" text="Setting" textFill="#414c69">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                     <padding>
+                        <Insets left="30.0" />
+                     </padding>
+                  </Label>
+                  <Label text="Your information account">
+                     <VBox.margin>
+                        <Insets left="30.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <VBox prefHeight="550.0" prefWidth="1970.0">
+                     <VBox.margin>
+                        <Insets right="30.0" top="20.0" />
+                     </VBox.margin>
+                     <children>
+                        <VBox fx:id="registerScene" prefHeight="512.0" prefWidth="398.0">
+                           <children>
+                              <HBox prefHeight="43.0" prefWidth="388.0" stylesheets="@../webapp/css/style.css">
+                                 <children>
+                                    <TextField fx:id="fnameTextField" prefHeight="31.0" prefWidth="230.0" promptText="Firstname" stylesheets="@../webapp/css/create.css">
+                                       <opaqueInsets>
+                                          <Insets />
+                                       </opaqueInsets>
+                                       <HBox.margin>
+                                          <Insets bottom="10.0" left="30.0" right="10.0" />
+                                       </HBox.margin>
+                                       <padding>
+                                          <Insets top="10.0" />
+                                       </padding>
+                                    </TextField>
+                                    <TextField fx:id="lnameTextField" prefHeight="31.0" prefWidth="230.0" promptText="Lastname" stylesheets="@../webapp/css/create.css">
+                                       <HBox.margin>
+                                          <Insets right="30.0" />
+                                       </HBox.margin>
+                                    </TextField>
+                                 </children>
+                              </HBox>
+                              <TextField fx:id="emailTextField" layoutX="10.0" layoutY="172.0" prefHeight="31.0" prefWidth="593.0" promptText="Email Address" stylesheets="@../webapp/css/create.css">
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" left="30.0" right="215.0" />
+                                 </VBox.margin>
+                              </TextField>
+                              <TextField fx:id="userTextField" layoutX="40.0" layoutY="228.0" promptText="Username" stylesheets="@../webapp/css/create.css">
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" left="30.0" right="215.0" />
+                                 </VBox.margin>
+                              </TextField>
+                              <TextField fx:id="phoneTextField" promptText="Phone" stylesheets="@../webapp/css/create.css">
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" left="30.0" right="215.0" />
+                                 </VBox.margin>
+                              </TextField>
+                              <TextField fx:id="addrTextField" promptText="Address" stylesheets="@../webapp/css/create.css">
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" left="30.0" right="215.0" />
+                                 </VBox.margin>
+                              </TextField>
+                              <Line endX="368.0928955078125" endY="9.681821102276444E-4" opacity="0.5" startX="-100.0">
+                                 <VBox.margin>
+                                    <Insets left="30.0" top="20.0" />
+                                 </VBox.margin>
+                              </Line>
+                              <Label text="Change your password">
+                                 <VBox.margin>
+                                    <Insets bottom="30.0" left="30.0" top="20.0" />
+                                 </VBox.margin>
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Label>
+                              <VBox prefHeight="130.0" prefWidth="497.0">
+                                 <children>
+                                    <PasswordField fx:id="newPassword" promptText="Current Password" styleClass="../webapp/css/forget.css" stylesheets="@../webapp/css/forget.css">
+                                       <VBox.margin>
+                                          <Insets left="30.0" top="10.0" />
+                                       </VBox.margin>
+                                    </PasswordField>
+                                    <PasswordField fx:id="confirmPassword" promptText="New Password" styleClass="../webapp/css/forget.css" stylesheets="@../webapp/css/forget.css">
+                                       <VBox.margin>
+                                          <Insets left="30.0" top="20.0" />
+                                       </VBox.margin>
+                                    </PasswordField>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets right="220.0" />
+                                 </VBox.margin>
+                              </VBox>
+                              <Button fx:id="signInButton" mnemonicParsing="false" onAction="#registerSubmit" prefHeight="43.0" prefWidth="110.0" stylesheets="@../webapp/css/create.css" text="Submit">
+                                 <VBox.margin>
+                                    <Insets left="30.0" right="30.0" top="10.0" />
+                                 </VBox.margin>
+                              </Button>
+                              <Label fx:id="notificationLabel" textFill="#ff001a">
+                                 <VBox.margin>
+                                    <Insets left="30.0" top="10.0" />
+                                 </VBox.margin>
+                              </Label>
+                           </children>
+                           <VBox.margin>
+                              <Insets right="30.0" />
+                           </VBox.margin>
+                        </VBox>
+                     </children>
+                  </VBox>
+               </children>
             </VBox>
          </children>
       </StackPane>
