@@ -22,7 +22,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
    <children>
       <VBox prefHeight="560.0" prefWidth="247.0" style="-fx-background-color: #576aca;">
          <children>
@@ -262,7 +262,7 @@
                      </children>
                   </HBox>
                </children></VBox>
-            <HBox fx:id="overview" opacity="0.0" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #F2F5FA;">
+            <HBox fx:id="overview" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #F2F5FA;">
                <children>
                   <VBox prefHeight="720.0" prefWidth="277.0">
                      <children>
@@ -315,22 +315,30 @@
                               <Insets left="30.0" />
                            </VBox.margin>
                         </VBox>
-                        <VBox prefHeight="334.0" prefWidth="277.0">
+                        <VBox prefHeight="295.0" prefWidth="275.0">
                            <children>
-                              <Label text="Thong Bao" />
-                              <Pane prefHeight="94.0" prefWidth="277.0">
+                              <Label text="Notification">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets left="30.0" />
+                                 </VBox.margin></Label>
+                              <Pane prefHeight="140.0" prefWidth="275.0">
                                  <children>
-                                    <Label layoutX="29.0" layoutY="29.0" text="Label" />
+                                    <Label fx:id="notification1" alignment="TOP_LEFT" layoutX="14.0" layoutY="29.0" prefHeight="109.0" prefWidth="245.0" textFill="#006aff" wrapText="true">
+                                       <padding>
+                                          <Insets left="10.0" top="10.0" />
+                                       </padding></Label>
                                  </children>
                               </Pane>
-                              <Pane layoutX="10.0" layoutY="28.0" prefHeight="94.0" prefWidth="277.0">
+                              <Pane layoutX="10.0" layoutY="30.0" prefHeight="140.0" prefWidth="275.0">
                                  <children>
-                                    <Label layoutX="32.0" layoutY="29.0" text="Label" />
-                                 </children>
-                              </Pane>
-                              <Pane layoutX="10.0" layoutY="123.0" prefHeight="94.0" prefWidth="277.0">
-                                 <children>
-                                    <Label layoutX="32.0" layoutY="32.0" text="Label" />
+                                    <Label fx:id="notification2" alignment="TOP_LEFT" layoutX="14.0" layoutY="29.0" prefHeight="109.0" prefWidth="245.0" textFill="#006aff" wrapText="true">
+                                       <padding>
+                                          <Insets left="10.0" top="10.0" />
+                                       </padding>
+                                    </Label>
                                  </children>
                               </Pane>
                            </children>
@@ -351,7 +359,7 @@
                            <children>
                               <HBox prefHeight="100.0" prefWidth="200.0">
                                  <children>
-                                    <Label text="Income" />
+                                    <Label />
                                  </children>
                               </HBox>
                               <AreaChart fx:id="areaChart" style="-fx-background-color: #ffffff;" stylesheets="@../webapp/css/create.css">
@@ -384,7 +392,7 @@
                   </VBox>
                </children>
             </HBox>
-            <VBox fx:id="history" opacity="0.0" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #F2F5FA;">
+            <VBox fx:id="history" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #F2F5FA;">
                <children>
                   <Label prefHeight="38.0" prefWidth="136.0" text="HISTORY" textFill="#414c69">
                      <font>
