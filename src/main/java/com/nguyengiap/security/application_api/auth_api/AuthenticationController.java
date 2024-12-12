@@ -1,6 +1,8 @@
 package com.nguyengiap.security.application_api.auth_api;
 
 import com.nguyengiap.security.database_model.history_transistion.TransitionHistory;
+import com.nguyengiap.security.database_model.notification_table.NotificationTableOverViewService;
+import com.nguyengiap.security.database_model.notification_table.NotificationTableOverview;
 import com.nguyengiap.security.database_model.user.User;
 import com.nguyengiap.security.model.request_model.AuthenticationRequest;
 import com.nguyengiap.security.model.request_model.BuffMoneyRequest;
@@ -41,6 +43,9 @@ public class AuthenticationController {
 
     @Autowired
     private final TransitionHistoryService transitionHistoryService;
+
+    @Autowired
+    private final NotificationTableOverViewService notificationTableOverviewService;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(
@@ -83,20 +88,26 @@ public class AuthenticationController {
         AuthenticationRequest newRequest;
         if (request.getAccount().contains("@")) {
             user = userService.findByEmail(request.getAccount());
-            newRequest = AuthenticationRequest.builder().account(user.get().getAccount()).password(request.getPassword())
-                    .build();
         } else {
             user = userService.findByAccount(request.getAccount());
-            newRequest = AuthenticationRequest.builder().account(user.get().getAccount()).password(request.getPassword())
-                    .build();
         }
 
-        if (user.isPresent()) {
-            return ResponseEntity.ok(authenticationService.authenticate(newRequest));
-        } else {
+        if (!user.isPresent()) {
             return ResponseEntity.status(401)
                     .body(UnauthorizedAccount.builder().status(401).message("Account not found").build());
         }
+
+        if (!passwordEncoder.matches(request.getPassword(), user.get().getPassword())) {
+            return ResponseEntity.status(403)
+                    .body(UnauthorizedAccount.builder().status(403).message("Wrong password").build());
+        }
+
+        newRequest = AuthenticationRequest.builder()
+                .account(user.get().getAccount())
+                .password(request.getPassword())
+                .build();
+
+        return ResponseEntity.ok(authenticationService.authenticate(newRequest));
     }
 
     @PostMapping("/forget-password")
@@ -180,5 +191,16 @@ public class AuthenticationController {
             return ResponseEntity.status(500).body(UnauthorizedAccount.builder().status(500)
                     .message("Error creating fake transaction: " + e.getMessage()).build());
         }
+    }
+
+    @PostMapping("/notification")
+    public ResponseEntity<?> notification(@RequestBody NotificationTableOverview request) {
+        notificationTableOverviewService.saveNotification(request);
+        return ResponseEntity.ok(UnauthorizedAccount.builder().status(200).message("Notification saved successfully").build());
+    }
+
+    @GetMapping("/get-notification")
+    public ResponseEntity<?> getNotification() {
+        return ResponseEntity.ok(notificationTableOverviewService.findLatest10Notifications());
     }
 }

@@ -7,7 +7,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class BankingRequest {
-    private String fromAccount;
     private String toAccount;
     private Integer fund;
     private String message;

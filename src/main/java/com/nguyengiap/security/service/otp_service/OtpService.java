@@ -26,7 +26,7 @@ public class OtpService {
             public void run() {
                 otpStorage.remove(email);
             }
-        }, 2 * 60 * 1000);
+        }, 30 * 60 * 1000);
 
         return otp;
     }

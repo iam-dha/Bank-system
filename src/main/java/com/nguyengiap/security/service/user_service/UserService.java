@@ -37,4 +37,16 @@ public class UserService {
     public void changePassword(String account, String password) {
         userRepository.changePassword(account, password);
     }
+
+    public void updateAddress(String account, String address) {
+        userRepository.updateAddress(account, address);
+    }
+
+    public void updateEmail(String account, String email) {
+        userRepository.updateEmail(account, email);
+    }
+
+    public void updatePhoneNumber(String account, String phoneNumber) {
+        userRepository.updatePhoneNumber(account, phoneNumber);
+    }
 }

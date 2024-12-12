@@ -34,4 +34,8 @@ public class TransitionHistoryService {
     public List<TransitionHistory> findTransitionByAccountAndDateTimeAndMessage(String account, String dateTime, String message) {
         return transitionHistoryRepository.findTransitionByAccountAndDateTimeAndMessage(account, dateTime, message);
     }
+
+    public List<TransitionHistory> findTransitionByAccountAndDateRange(String account, String startDate, String endDate) {
+        return transitionHistoryRepository.findTransitionByAccountAndDateRange(account, startDate, endDate);
+    }
 }

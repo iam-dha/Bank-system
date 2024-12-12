@@ -1,5 +1,6 @@
 package com.nguyengiap.security.application_api.banking_api;
 
+import com.nguyengiap.security.config.jwt_config.JwtService;
 import com.nguyengiap.security.database_model.history_transistion.TransitionHistory;
 import com.nguyengiap.security.service.email_service.EmailService;
 import com.nguyengiap.security.service.notification_service.NotificationService;
@@ -27,6 +28,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/bank-api")
 public class BankingApi {
+
+    @Autowired
+    private JwtService jwtService;
+
     @Autowired
     private TransitionHistoryService transitionHistoryService;
 
@@ -44,26 +49,31 @@ public class BankingApi {
 
     @Transactional
     @PostMapping("/banking")
-    public ResponseEntity<?> banking(@RequestBody BankingRequest request) {
+    public ResponseEntity<?> banking(@RequestBody BankingRequest request, @RequestHeader("Authorization") String token) {
+
+        final String account = jwtService.extractUserName(token.substring(7));
         // Kiểm tra xem tài khoản c tồn tại không
-        Optional<User> checkFromAccount = userService.findByAccount(request.getFromAccount());
+        Optional<User> checkFromAccount = userService.findByAccount(account);
 
         Optional<User> checkToAccount = userService.findByAccount(request.getToAccount());
 
         if (!checkFromAccount.isPresent() || !checkToAccount.isPresent()) {
-            return ResponseEntity.status(404).body(UnauthorizedAccount.builder().status(404).message("Account not found").build());
+            return ResponseEntity.status(404)
+                    .body(UnauthorizedAccount.builder().status(404).message("Account not found").build());
         } else {
-            if(checkFromAccount.get().getFund() < request.getFund()) {
-                return ResponseEntity.status(401).body(UnauthorizedAccount.builder().status(401).message("Not enough money").build());
+            if (checkFromAccount.get().getFund() < request.getFund()) {
+                return ResponseEntity.status(401)
+                        .body(UnauthorizedAccount.builder().status(401).message("Not enough money").build());
             } else {
                 otpService.generateOtp(checkFromAccount.get().getEmail(), "Mã xác thực chuyển khoản.");
-                return ResponseEntity.status(200).body(UnauthorizedAccount.builder().status(200).message("Success sent otp").build());
+                return ResponseEntity.status(200)
+                        .body(UnauthorizedAccount.builder().status(200).message("Success sent otp").build());
             }
         }
     }
 
     @PostMapping("/banking-otp")
-    public ResponseEntity<?> bankingOTP(@RequestBody BankingRequestOTP request) {
+    public ResponseEntity<?> bankingOTP(@RequestBody BankingRequestOTP request, @RequestHeader("Authorization") String token) {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         String formattedDate = now.format(formatter);
@@ -71,26 +81,28 @@ public class BankingApi {
         DateTimeFormatter formatterTime = DateTimeFormatter.ofPattern("HH:mm:ss");
         String formattedHour = now.format(formatterTime);
 
+        final String account = jwtService.extractUserName(token.substring(7));
         // Kiểm tra xem tài khoản c tồn tại không
-        Optional<User> checkFromAccount = userService.findByAccount(request.getFromAccount());
+        Optional<User> checkFromAccount = userService.findByAccount(account);
 
         Optional<User> checkToAccount = userService.findByAccount(request.getToAccount());
 
         // Nếu không tồn tại
         if (checkFromAccount.isEmpty() || checkToAccount.isEmpty()) {
-            return ResponseEntity.status(404).body(UnauthorizedAccount.builder().status(404).message("Account not found").build());
+            return ResponseEntity.status(404)
+                    .body(UnauthorizedAccount.builder().status(404).message("Account not found").build());
         } else { // Nếu tồn tại
             if (otpService.validOtp(checkFromAccount.get().getEmail(), request.getOtp())) {
                 // Tra cứu số dư tài khoản gửi
                 Optional<BalanceWithAccount> checkFromAccountBalance = userService
-                        .findBalanceByAccount(request.getFromAccount());
+                        .findBalanceByAccount(account);
                 if (checkFromAccountBalance.isPresent()) {
                     // Nếu số tiền còn lại >= số tiền cần gửi
                     if (checkFromAccountBalance.get().getFund() >= request.getFund()) {
                         // Tạo truy vấn chuyển tiền(cộng tiền)
                         userService.bankingToAccount(request.getToAccount(), request.getFund());
                         // Trừ tiền
-                        userService.bankingToAccount2(request.getFromAccount(), request.getFund());
+                        userService.bankingToAccount2(account, request.getFund());
 
                         // Tên người chuyển
                         String fromUserName = checkFromAccount.get().getFirstName() + " "
@@ -99,11 +111,11 @@ public class BankingApi {
                                 + checkToAccount.get().getLastName();
 
                         Optional<BalanceWithAccount> checkFromAccountRemainBalance = userService
-                                .findBalanceByAccount(request.getFromAccount());
+                                .findBalanceByAccount(account);
                         Optional<BalanceWithAccount> checkToAccountRemainBalance = userService
                                 .findBalanceByAccount(request.getToAccount());
                         // Check số tiền còn lại của người chuyển
-                        String fromUserNotification = notificationFormart(request.getFund(), request.getFromAccount(),
+                        String fromUserNotification = notificationFormart(request.getFund(), account,
                                 request.getMessage(), checkFromAccountRemainBalance.get().getFund(), formattedDate,
                                 formattedHour, true);
                         String toUserNotification = notificationFormart(request.getFund(), request.getToAccount(),
@@ -113,7 +125,7 @@ public class BankingApi {
                         // Thông báo biến động số dư qua WebSocket
                         notificationService.sendNotificationToUser(request.getToAccount(), "Thông báo biến động số dư",
                                 toUserNotification);
-                        notificationService.sendNotificationToUser(request.getFromAccount(),
+                        notificationService.sendNotificationToUser(account,
                                 "Thông báo biến động số dư", fromUserNotification);
 
                         // Gửi email thông báo biến động số dư
@@ -123,7 +135,7 @@ public class BankingApi {
                                 toUserNotification);
 
                         var transitionHistory = TransitionHistory.builder()
-                                .fromAccount(request.getFromAccount())
+                                .fromAccount(account)
                                 .toAccount(request.getToAccount())
                                 .message(request.getMessage())
                                 .balance(request.getFund())
@@ -134,13 +146,15 @@ public class BankingApi {
                                 .build();
                         // Lưu giao dịch
                         transitionHistoryService.saveTransitionHistory(transitionHistory);
-                        return ResponseEntity.ok(UnauthorizedAccount.builder().status(200).message("Banking successful").build());
+                        return ResponseEntity
+                                .ok(UnauthorizedAccount.builder().status(200).message("Banking successful").build());
                     } else {
                         return ResponseEntity.status(401)
                                 .body(UnauthorizedAccount.builder().status(401).message("Not enough money").build());
                     }
                 } else {
-                    return ResponseEntity.status(401).body(UnauthorizedAccount.builder().status(401).message("Something error").build());
+                    return ResponseEntity.status(401)
+                            .body(UnauthorizedAccount.builder().status(401).message("Something error").build());
                 }
             } else {
                 return ResponseEntity.status(401)
@@ -151,9 +165,11 @@ public class BankingApi {
 
     @GetMapping("/check-banking-transition")
     public ResponseEntity<?> getBankingTransition(
-            @RequestParam String account,
+            @RequestHeader("Authorization") String token,
             @RequestParam(required = false) String dateTime,
             @RequestParam(required = false) String message) {
+
+        final String account = jwtService.extractUserName(token.substring(7));
         if (dateTime != null && !dateTime.isEmpty()) {
             if (message != null && !message.isEmpty()) {
                 // Gọi phương thức tìm theo account và dateTime và message
@@ -178,9 +194,26 @@ public class BankingApi {
         }
     }
 
+    @GetMapping("/check-banking-transition-date-range")
+    public ResponseEntity<?> getBankingTransitionDateRange(
+            @RequestHeader("Authorization") String token,
+            @RequestParam String startDate,
+            @RequestParam String endDate) {
+        final String account = jwtService.extractUserName(token.substring(7));
+        Optional<User> checkAccount = userService.findByAccount(account);
+        if (checkAccount.isEmpty()) {
+            return ResponseEntity.status(404)
+                    .body(UnauthorizedAccount.builder().status(404).message("Account not found").build());
+        } else {
+            List<TransitionHistory> transitionHistories = transitionHistoryService
+                    .findTransitionByAccountAndDateRange(account, startDate, endDate);
+            return ResponseEntity.ok(transitionHistories);
+        }
+    }
+
     String notificationFormart(int fund, String account, String message, int remainFund, String day, String hour,
             boolean isBanking) {
-        return "TK " + account + "|" + (isBanking ? "GD: -" : "GD: +") + fund + "VND " + day + hour + " |SD:"
-                + remainFund + "VND|ND: " + message;
+        return "TK " + account + " | " + (isBanking ? "GD: -" : "GD: +") + fund + "VND " + day + hour + " | SD:"
+                + remainFund + "VND | ND: " + message;
     }
 }
