@@ -166,40 +166,51 @@ public class BankingApi {
     @GetMapping("/check-banking-transition")
     public ResponseEntity<?> getBankingTransition(
             @RequestHeader("Authorization") String token,
+            @RequestParam(required = true) String account,
             @RequestParam(required = false) String dateTime,
             @RequestParam(required = false) String message) {
+        final String accountToken = jwtService.extractUserName(token.substring(7));
+        
+        if (!accountToken.equals(account)) {
+            return ResponseEntity.status(403)
+                    .body(UnauthorizedAccount.builder().status(403).message("You can only check your own transactions").build());
+        }
 
-        final String account = jwtService.extractUserName(token.substring(7));
-        if (dateTime != null && !dateTime.isEmpty()) {
-            if (message != null && !message.isEmpty()) {
-                // Gọi phương thức tìm theo account và dateTime và message
-                List<TransitionHistory> transitionHistories = transitionHistoryService
-                        .findTransitionByAccountAndDateTimeAndMessage(account, dateTime, message);
-                return ResponseEntity.ok(transitionHistories);
-            } else {
-                // Gọi phương thức tìm theo account và dateTime
-                List<TransitionHistory> transitionHistories = transitionHistoryService
-                        .findTransitionByAccountAndDateTime(account, dateTime);
-                return ResponseEntity.ok(transitionHistories);
-            }
+        Optional<User> checkAccount = userService.findByAccount(account);
+        if (!checkAccount.isPresent()) {
+            return ResponseEntity.status(404)
+                    .body(UnauthorizedAccount.builder().status(404).message("Account not found").build());
         } else {
-            // Gọi phương thức tìm chỉ theo account
-            List<TransitionHistory> transitionHistories;
-            if (message != null && !message.isEmpty()) {
-                transitionHistories = transitionHistoryService.findTransitionByAccountAndMessage(account, message);
+            if (dateTime != null && !dateTime.isEmpty()) {
+                if (message != null && !message.isEmpty()) {
+                    // Gọi phương thức tìm theo account và dateTime và message
+                    List<TransitionHistory> transitionHistories = transitionHistoryService
+                            .findTransitionByAccountAndDateTimeAndMessage(account, dateTime, message);
+                    return ResponseEntity.ok(transitionHistories);
+                } else {
+                    // Gọi phương thức tìm theo account và dateTime
+                    List<TransitionHistory> transitionHistories = transitionHistoryService
+                            .findTransitionByAccountAndDateTime(account, dateTime);
+                    return ResponseEntity.ok(transitionHistories);
+                }
             } else {
-                transitionHistories = transitionHistoryService.findTransitionByAccount(account);
+                // Gọi phương thức tìm chỉ theo account
+                List<TransitionHistory> transitionHistories;
+                if (message != null && !message.isEmpty()) {
+                    transitionHistories = transitionHistoryService.findTransitionByAccountAndMessage(account, message);
+                } else {
+                    transitionHistories = transitionHistoryService.findTransitionByAccount(account);
+                }
+                return ResponseEntity.ok(transitionHistories);
             }
-            return ResponseEntity.ok(transitionHistories);
         }
     }
 
     @GetMapping("/check-banking-transition-date-range")
     public ResponseEntity<?> getBankingTransitionDateRange(
-            @RequestHeader("Authorization") String token,
+            @RequestParam String account,
             @RequestParam String startDate,
             @RequestParam String endDate) {
-        final String account = jwtService.extractUserName(token.substring(7));
         Optional<User> checkAccount = userService.findByAccount(account);
         if (checkAccount.isEmpty()) {
             return ResponseEntity.status(404)
