@@ -35,95 +35,115 @@ class AdminAPI {
     private PasswordEncoder passwordEncoder;
 
     @PostMapping("/change-user-password")
-    public ResponseEntity<?> changeUserPassword(@RequestBody ChangeUserPasswordRequest request, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> changeUserPassword(@RequestBody ChangeUserPasswordRequest request,
+            @RequestHeader("Authorization") String token) {
         final String role = jwtService.extractRole(token.substring(7));
 
         System.out.println(role);
 
-        if(role.equals("ADMIN")) {
+        if (role.equals("ADMIN")) {
             Optional<User> user = userService.findByAccount(request.getAccount());
 
-            if(user.isPresent()) {
+            if (user.isPresent()) {
                 Optional<User> userAccount = userService.findByAccount(request.getAccount());
 
-                if(userAccount.isPresent()) {
+                if (userAccount.isPresent()) {
                     String newEncodedPassword = passwordEncoder.encode(request.getPassword());
                     userService.changePassword(request.getAccount(), newEncodedPassword);
-                    return ResponseEntity.status(200).body(UnauthorizedAccount.builder().status(200).message("Change password successfully").build());
+                    return ResponseEntity.status(200).body(
+                            UnauthorizedAccount.builder().status(200).message("Change password successfully").build());
                 } else {
-                    return ResponseEntity.status(404).body(UnauthorizedAccount.builder().status(404).message("Account not found").build());
+                    return ResponseEntity.status(404)
+                            .body(UnauthorizedAccount.builder().status(404).message("Account not found").build());
                 }
             } else {
-                return ResponseEntity.status(404).body(UnauthorizedAccount.builder().status(404).message("Account not found").build());
+                return ResponseEntity.status(404)
+                        .body(UnauthorizedAccount.builder().status(404).message("Account not found").build());
             }
         } else {
-            return ResponseEntity.status(403).body(UnauthorizedAccount.builder().status(403).message("You are not admin").build());
+            return ResponseEntity.status(403)
+                    .body(UnauthorizedAccount.builder().status(403).message("You are not admin").build());
         }
     }
 
     @PostMapping("/transfer-between-user")
-    public ResponseEntity<?> transferBetweenUser(@RequestBody TranferBetweenUser request, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> transferBetweenUser(@RequestBody TranferBetweenUser request,
+            @RequestHeader("Authorization") String token) {
         final String role = jwtService.extractRole(token.substring(7));
 
-        if(role.equals("ADMIN")) {
+        if (role.equals("ADMIN")) {
             Optional<User> fromAccount = userService.findByAccount(request.getFromAccount());
             Optional<User> toAccount = userService.findByAccount(request.getToAccount());
 
-            if(fromAccount.isPresent() && toAccount.isPresent()) {
-                Optional<BalanceWithAccount> fromAccountBalance = userService.findBalanceByAccount(request.getFromAccount());
+            if (fromAccount.isPresent() && toAccount.isPresent()) {
+                Optional<BalanceWithAccount> fromAccountBalance = userService
+                        .findBalanceByAccount(request.getFromAccount());
 
-                if(fromAccountBalance.isPresent()) {
-                    if(fromAccountBalance.get().getFund() >= request.getFund()) {
+                if (fromAccountBalance.isPresent()) {
+                    if (fromAccountBalance.get().getFund() >= request.getFund()) {
                         userService.bankingToAccount(request.getFromAccount(), request.getFund());
                         userService.bankingToAccount2(request.getToAccount(), request.getFund());
-                        return ResponseEntity.status(200).body(UnauthorizedAccount.builder().status(200).message("Transfer successfully").build());
+                        return ResponseEntity.status(200).body(
+                                UnauthorizedAccount.builder().status(200).message("Transfer successfully").build());
                     } else {
-                        return ResponseEntity.status(40).body(UnauthorizedAccount.builder().status(401).message("Fund not enough").build());
+                        return ResponseEntity.status(40)
+                                .body(UnauthorizedAccount.builder().status(401).message("Fund not enough").build());
                     }
                 } else {
-                    return ResponseEntity.status(404).body(UnauthorizedAccount.builder().status(404).message("Account not found").build());
+                    return ResponseEntity.status(404)
+                            .body(UnauthorizedAccount.builder().status(404).message("Account not found").build());
                 }
             } else {
-                return ResponseEntity.status(404).body(UnauthorizedAccount.builder().status(404).message("Account not found").build());
+                return ResponseEntity.status(404)
+                        .body(UnauthorizedAccount.builder().status(404).message("Account not found").build());
             }
         } else {
-            return ResponseEntity.status(403).body(UnauthorizedAccount.builder().status(403).message("You are not admin").build());
+            return ResponseEntity.status(403)
+                    .body(UnauthorizedAccount.builder().status(403).message("You are not admin").build());
         }
     }
 
     @PostMapping("/add-fund-to-account")
-    public ResponseEntity<?> addFundToAccount(@RequestBody AddFundToAccount request, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> addFundToAccount(@RequestBody AddFundToAccount request,
+            @RequestHeader("Authorization") String token) {
         final String role = jwtService.extractRole(token.substring(7));
 
-        if(role.equals("ADMIN")) {
+        if (role.equals("ADMIN")) {
             Optional<User> user = userService.findByAccount(request.getAccount());
 
-            if(user.isPresent()) {
+            if (user.isPresent()) {
                 userService.bankingToAccount(request.getAccount(), request.getFund());
-                return ResponseEntity.status(200).body(UnauthorizedAccount.builder().status(200).message("Add fund successfully").build());
+                return ResponseEntity.status(200)
+                        .body(UnauthorizedAccount.builder().status(200).message("Add fund successfully").build());
             } else {
-                return ResponseEntity.status(404).body(UnauthorizedAccount.builder().status(404).message("Account not found").build());
+                return ResponseEntity.status(404)
+                        .body(UnauthorizedAccount.builder().status(404).message("Account not found").build());
             }
         } else {
-            return ResponseEntity.status(403).body(UnauthorizedAccount.builder().status(403).message("You are not admin").build());
+            return ResponseEntity.status(403)
+                    .body(UnauthorizedAccount.builder().status(403).message("You are not admin").build());
         }
     }
 
     @PostMapping("/change-user-email")
-    public ResponseEntity<?> changeUserEmail(@RequestBody ChangeUserEmail request, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> changeUserEmail(@RequestBody ChangeUserEmail request,
+            @RequestHeader("Authorization") String token) {
         final String role = jwtService.extractRole(token.substring(7));
 
-        if(role.equals("ADMIN")) {
+        if (role.equals("ADMIN")) {
             Optional<User> user = userService.findByAccount(request.getAccount());
 
-            if(user.isPresent()) {
+            if (user.isPresent()) {
                 userService.updateEmail(request.getAccount(), request.getEmail());
-                return ResponseEntity.status(200).body(UnauthorizedAccount.builder().status(200).message("Change email successfully").build());
+                return ResponseEntity.status(200)
+                        .body(UnauthorizedAccount.builder().status(200).message("Change email successfully").build());
             } else {
-                return ResponseEntity.status(404).body(UnauthorizedAccount.builder().status(404).message("Account not found").build());
+                return ResponseEntity.status(404)
+                        .body(UnauthorizedAccount.builder().status(404).message("Account not found").build());
             }
         } else {
-            return ResponseEntity.status(403).body(UnauthorizedAccount.builder().status(403).message("You are not admin").build());
+            return ResponseEntity.status(403)
+                    .body(UnauthorizedAccount.builder().status(403).message("You are not admin").build());
         }
     }
 }

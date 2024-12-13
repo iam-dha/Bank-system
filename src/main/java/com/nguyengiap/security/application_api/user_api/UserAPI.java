@@ -57,7 +57,8 @@ public class UserAPI {
     }
 
     @PostMapping("/change-password")
-    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request,
+            @RequestHeader("Authorization") String token) {
         final String account = jwtService.extractUserName(token.substring(7));
         Optional<User> user = userService.findByAccount(account);
         if (user.isPresent()) {
@@ -99,7 +100,8 @@ public class UserAPI {
     }
 
     @PostMapping("/update-phonenumber")
-    public ResponseEntity<?> updatePhoneNumber(@RequestBody UpdatePhoneNumberRequest request, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> updatePhoneNumber(@RequestBody UpdatePhoneNumberRequest request,
+            @RequestHeader("Authorization") String token) {
         String account = jwtService.extractUserName(token.substring(7));
         Optional<User> user = userService.findByAccount(account);
         if (!user.isPresent()) {
@@ -111,16 +113,16 @@ public class UserAPI {
                     .ok(UnauthorizedAccount.builder().status(200).message("Update Phone Number Successful").build());
         }
     }
-    
+
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestHeader("Authorization") String token) {
         try {
             // Extract account from token
             String account = jwtService.extractUserName(token.substring(7));
-            
+
             // Generate expired token to invalidate current token
             String invalidToken = jwtService.generateExpiredToken(account);
-            
+
             // Return success response
             return ResponseEntity.ok(UnauthorizedAccount.builder()
                     .status(200)
