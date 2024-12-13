@@ -40,8 +40,36 @@ public class SecurityApplication {
 			.fund(1000000)
 			.build();
 
+		User user1 = User.builder()
+				.account("giapbacvan")
+				.firstName("Nguyen")
+				.lastName("Giap")
+				.email("giapbacvan@gmail.com")
+				.password(encodedPassword)
+				.address("Admin Address")
+				.createDate(LocalDateTime.now().toString())
+				.phoneNumber("0982097315")
+				.role(Role.USER)
+				.fund(1000000)
+				.build();
+
+		User user2 = User.builder()
+				.account("giapbacvan2")
+				.firstName("Nguyen")
+				.lastName("Giap")
+				.email("giapt2k29@cht.edu.vn")
+				.password(encodedPassword)
+				.address("Admin Address")
+				.createDate(LocalDateTime.now().toString())
+				.phoneNumber("0975265931")
+				.role(Role.USER)
+				.fund(1000000)
+				.build();
+
 		try {
 			userRepository.save(admin);
+			userRepository.save(user1);
+			userRepository.save(user2);
 			System.out.println("Admin account created successfully");
 		} catch (Exception e) {
 			System.out.println("Admin account already exists");

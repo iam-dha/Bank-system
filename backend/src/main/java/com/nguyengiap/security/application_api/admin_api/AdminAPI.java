@@ -1,16 +1,14 @@
 package com.nguyengiap.security.application_api.admin_api;
 
+import java.util.List;
 import java.util.Optional;
 
+import com.nguyengiap.security.database_model.history_transistion.TransitionHistory;
+import com.nguyengiap.security.service.transition_history_service.TransitionHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.nguyengiap.security.config.jwt_config.JwtService;
 import com.nguyengiap.security.database_model.user.User;
@@ -33,6 +31,9 @@ class AdminAPI {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private TransitionHistoryService transitionHistoryService;
 
     @PostMapping("/change-user-password")
     public ResponseEntity<?> changeUserPassword(@RequestBody ChangeUserPasswordRequest request,
@@ -144,6 +145,44 @@ class AdminAPI {
         } else {
             return ResponseEntity.status(403)
                     .body(UnauthorizedAccount.builder().status(403).message("You are not admin").build());
+        }
+    }
+
+    @GetMapping("/check-user-transition")
+    public ResponseEntity<?> checkUserTransition(
+        @RequestHeader("Authorization") String token,
+        @RequestParam(required = true) String account,
+        @RequestParam(required = false) String dateTime,
+        @RequestBody(required = false) String message
+    ) {
+        final String role = jwtService.extractRole(token.substring(7));
+
+        if(role.equals("ADMIN")) {
+            Optional<User> user = userService.findByAccount(account);
+            if(user.isPresent()) {
+                if(dateTime != null) {
+                    if(message != null) {
+                        List<TransitionHistory> listTransitory = transitionHistoryService.findTransitionByAccountAndDateTimeAndMessage(account, dateTime, message);
+                        return ResponseEntity.status(200).body(listTransitory);
+                    }
+                    else {
+                        List<TransitionHistory> listTransitory = transitionHistoryService.findTransitionByAccountAndDateTime(account, dateTime);
+                        return ResponseEntity.status(200).body(listTransitory);
+                    }
+                } else {
+                    if(message != null) {
+                        List<TransitionHistory> listTransitory = transitionHistoryService.findTransitionByAccountAndMessage(account, message);
+                        return ResponseEntity.status(200).body(listTransitory);
+                    } else {
+                        List<TransitionHistory> listTransitory = transitionHistoryService.findTransitionByAccount(account);
+                        return ResponseEntity.status(200).body(listTransitory);
+                    }
+                }
+            } else{
+                return ResponseEntity.status(404).body(UnauthorizedAccount.builder().status(404).message("Account not found").build());
+            }
+        } else {
+            return ResponseEntity.status(403).body(UnauthorizedAccount.builder().status(403).message("You are not admin"));
         }
     }
 }
