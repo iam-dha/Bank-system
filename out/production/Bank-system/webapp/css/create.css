@@ -1,0 +1,96 @@
+.left {
+    -fx-background-color: #576aca;
+}
+.text-field {
+  -fx-background-color: #ffffff; /* Loại bỏ nền mặc định */
+  -fx-border-color: #ccc; /* Màu viền xám nhạt */
+  -fx-border-width: 1px; /* Độ dày viền */
+  -fx-border-radius: 3px; /* Bo tròn góc */
+  -fx-padding: 5px; /* Khoảng cách giữa viền và nội dung */
+  -fx-font-size: 13px; /* Cỡ chữ */
+  -fx-text-fill: #333; /* Màu chữ */
+  -fx-prompt-text-fill: #999; /* Màu chữ gợi ý */
+  -fx-focus-color: #007bff; /* Màu viền khi focus */
+}
+
+.text-field:focused {
+  -fx-border-color: #007bff; /* Màu viền xanh khi focus */
+  -fx-border-width: 1px; /* Độ dày viền khi focus */
+  -fx-border-radius: 3px; /* Bo tròn góc khi focus */
+  -fx-prompt-text-fill: transparent; /* Ẩn chữ gợi ý khi focus */
+}
+
+.text-field:hover {
+  -fx-border-color: #0056b3; /* Màu viền đậm hơn khi hover */
+}
+
+.text-field:error {
+  -fx-border-color: #dc3545; /* Màu viền đỏ khi lỗi */
+}
+
+
+.text-field-code {
+    -fx-pref-width: 150px;       /* Chiều rộng cố định */
+    -fx-pref-height: 50px;      /* Chiều cao cố định */
+    -fx-font-size: 20px;        /* Cỡ chữ lớn */
+    -fx-text-alignment: center; /* Canh giữa chữ */
+    -fx-alignment: center;      /* Canh giữa văn bản trong ô */
+    -fx-background-color: #ffffff; /* Màu nền */
+    -fx-border-color: #ccc;  /* Màu viền */
+    -fx-border-width: 1px;      /* Độ dày viền */
+    -fx-border-radius: 5px;     /* Góc bo tròn viền */
+    -fx-focus-color: #0056b3;   /* Màu viền khi được chọn */
+    -fx-faint-focus-color: transparent; /* Không có viền mờ */
+}
+
+/* Khi người dùng rê chuột qua ô */
+.text-field-code:hover {
+    -fx-border-color: #0056b3; /* Đổi màu viền khi hover */
+}
+
+/* Khi ô nhập bị lỗi */
+.text-field-code-error {
+    -fx-border-color: #e53935; /* Đỏ viền khi có lỗi */
+    -fx-border-width: 2px;
+}
+
+#signInButton {
+  -fx-background-color: #5C72DF; /* Màu xanh dương */
+  -fx-text-fill: white; /* Màu chữ trắng */
+  -fx-font-size: 16px; /* Kích thước chữ */
+  -fx-padding: 5px 10px; /* Khoảng cách lề trong */
+  -fx-border-radius: 5px; /* Bo góc */
+  -fx-cursor: hand; /* Biểu tượng chuột khi di chuột qua */
+  -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 1); /* Hiệu ứng đổ bóng */
+}
+
+#signInButton:hover {
+  -fx-background-color: #576aca; /* Màu xanh đậm hơn khi di chuột qua */
+}
+
+#signInButton:pressed {
+  -fx-background-color: #0062cc; /* Màu xanh đậm nhất khi nhấn */
+  -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 2, 0, 0, 1); /* Hiệu ứng đổ bóng khi nhấn */
+
+
+}
+.submit-button {
+  -fx-background-color: #576aca;
+  -fx-text-fill: white;
+  -fx-font-size: 16px;
+  -fx-padding: 10px 20px;
+  -fx-border: none;
+  -fx-background-radius: 8px;
+  -fx-border-radius: 8px;
+  -fx-cursor: hand; /* Thay đổi con trỏ chuột khi hover */
+  -fx-transition: all 0.3s ease; /* Hiệu ứng chuyển đổi mượt mà */
+}
+
+.submit-button:hover {
+  -fx-background-color: #4d5fac; /* Màu nền đậm hơn khi hover */
+  -fx-text-fill: white;
+}
+
+.submit-button:pressed {
+  -fx-background-color: #404a93; /* Màu nền đậm hơn nữa khi click */
+}
