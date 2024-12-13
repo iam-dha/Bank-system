@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BuffMoneyRequest {
     private String account;
-    private Integer fund;
+    private double fund;
 } 

@@ -28,7 +28,7 @@ public class User implements UserDetails {
     private String phoneNumber;
     @Setter
     @Getter
-    private Integer fund;
+    private double fund;
     @Enumerated(EnumType.STRING)
     private Role role;
 

@@ -27,9 +27,13 @@ public class JwtService {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
-
+    
     public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+        Map<String, Object> claims = new HashMap<>();
+        if (userDetails instanceof com.nguyengiap.security.database_model.user.User) {
+            claims.put("role", ((com.nguyengiap.security.database_model.user.User)userDetails).getRole().name());
+        }
+        return generateToken(claims, userDetails);
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
@@ -44,7 +48,6 @@ public class JwtService {
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
-
 
     public String generateToken(
             Map<String, Object> extraClaims,
@@ -75,12 +78,19 @@ public class JwtService {
     }
 
     public String generateExpiredToken(String account) {
+        Map<String, Object> claims = new HashMap<>();
         return Jwts
                 .builder()
+                .setClaims(claims)
                 .setSubject(account)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() - 1)) 
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    public String extractRole(String token) {
+        Claims claims = extractAllClaims(token);
+        return claims.get("role", String.class);
     }
 }

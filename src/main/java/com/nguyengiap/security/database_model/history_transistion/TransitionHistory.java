@@ -18,7 +18,7 @@ public class TransitionHistory {
     private Integer id;
     private String fromAccount;
     private String toAccount;
-    private int balance;
+    private double balance;
     private String dateTime;
     private String time;
     private String fromUserName;
