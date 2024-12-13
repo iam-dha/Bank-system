@@ -52,9 +52,15 @@ public class BankingApi {
     public ResponseEntity<?> banking(@RequestBody BankingRequest request, @RequestHeader("Authorization") String token) {
 
         final String account = jwtService.extractUserName(token.substring(7));
-        // Kiểm tra xem tài khoản c tồn tại không
-        Optional<User> checkFromAccount = userService.findByAccount(account);
+        
+        // Kiểm tra xem tài khoản token và request có khớp không
+        if (!account.equals(request.getFromAccount())) {
+            return ResponseEntity.status(403)
+                    .body(UnauthorizedAccount.builder().status(403).message("Unauthorized access").build());
+        }
 
+        // Kiểm tra xem tài khoản có tồn tại không
+        Optional<User> checkFromAccount = userService.findByAccount(account);
         Optional<User> checkToAccount = userService.findByAccount(request.getToAccount());
 
         if (!checkFromAccount.isPresent() || !checkToAccount.isPresent()) {
@@ -82,9 +88,15 @@ public class BankingApi {
         String formattedHour = now.format(formatterTime);
 
         final String account = jwtService.extractUserName(token.substring(7));
-        // Kiểm tra xem tài khoản c tồn tại không
-        Optional<User> checkFromAccount = userService.findByAccount(account);
+        
+        // Kiểm tra xem tài khoản token và request có khớp không
+        if (!account.equals(request.getFromAccount())) {
+            return ResponseEntity.status(403)
+                    .body(UnauthorizedAccount.builder().status(403).message("Unauthorized access").build());
+        }
 
+        // Kiểm tra xem tài khoản có tồn tại không
+        Optional<User> checkFromAccount = userService.findByAccount(account);
         Optional<User> checkToAccount = userService.findByAccount(request.getToAccount());
 
         // Nếu không tồn tại
@@ -208,9 +220,17 @@ public class BankingApi {
 
     @GetMapping("/check-banking-transition-date-range")
     public ResponseEntity<?> getBankingTransitionDateRange(
+            @RequestHeader("Authorization") String token,
             @RequestParam String account,
             @RequestParam String startDate,
             @RequestParam String endDate) {
+        final String accountToken = jwtService.extractUserName(token.substring(7));
+        
+        if (!accountToken.equals(account)) {
+            return ResponseEntity.status(403)
+                    .body(UnauthorizedAccount.builder().status(403).message("You can only check your own transactions").build());
+        }
+
         Optional<User> checkAccount = userService.findByAccount(account);
         if (checkAccount.isEmpty()) {
             return ResponseEntity.status(404)

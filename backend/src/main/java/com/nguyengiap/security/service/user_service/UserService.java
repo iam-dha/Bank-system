@@ -49,4 +49,9 @@ public class UserService {
     public void updatePhoneNumber(String account, String phoneNumber) {
         userRepository.updatePhoneNumber(account, phoneNumber);
     }
+
+    public void changeUserInformation(String account, String password, String firstName, String lastName, String email,
+            String address, String phoneNumber) {
+        userRepository.changeUserInformation(account, password, firstName, lastName, email, address, phoneNumber);
+    }
 }

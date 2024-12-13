@@ -8,6 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 public class ChangePasswordRequest {
+    private String account;
     private String currentPassword;
     private String newPassword;
 }

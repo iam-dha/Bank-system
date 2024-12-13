@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class UpdateEmailRequest {
+    private String account;
     private boolean isRequest;
     private String newEmail;
     private String otp;
