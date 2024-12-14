@@ -5,7 +5,12 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class ChangeUserPasswordRequest {
+public class ChangeUserInformationRequest {
     private String account;
     private String password;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String address;
+    private String phoneNumber;
 }

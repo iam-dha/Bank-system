@@ -1,6 +1,7 @@
 package com.nguyengiap.security.config.security_config;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -17,7 +18,9 @@ import com.nguyengiap.security.config.jwt_config.JwtAuthenticationFilter;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfiguration {
+    @Autowired
     private final JwtAuthenticationFilter authFilter;
+    @Autowired
     private final AuthenticationProvider authenticationProvider;
 
     @Bean

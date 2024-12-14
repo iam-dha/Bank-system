@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.nguyengiap.security.config.jwt_config.JwtService;
 import com.nguyengiap.security.database_model.user.User;
-import com.nguyengiap.security.model.request_model.request_model_for_admin.ChangeUserPasswordRequest;
+import com.nguyengiap.security.model.request_model.request_model_for_admin.ChangeUserInformationRequest;
 import com.nguyengiap.security.model.response_model.BalanceWithAccount;
 import com.nguyengiap.security.model.response_model.UnauthorizedAccount;
 import com.nguyengiap.security.service.user_service.UserService;
@@ -35,12 +35,10 @@ class AdminAPI {
     @Autowired
     private TransitionHistoryService transitionHistoryService;
 
-    @PostMapping("/change-user-password")
-    public ResponseEntity<?> changeUserPassword(@RequestBody ChangeUserPasswordRequest request,
+    @PostMapping("/change-user-information")
+    public ResponseEntity<?> changeUserInformation(@RequestBody ChangeUserInformationRequest request,
             @RequestHeader("Authorization") String token) {
         final String role = jwtService.extractRole(token.substring(7));
-
-        System.out.println(role);
 
         if (role.equals("ADMIN")) {
             Optional<User> user = userService.findByAccount(request.getAccount());
@@ -49,10 +47,16 @@ class AdminAPI {
                 Optional<User> userAccount = userService.findByAccount(request.getAccount());
 
                 if (userAccount.isPresent()) {
+                    Optional<User> existingEmailUser = userService.findByEmail(request.getEmail());
+                    if (existingEmailUser.isPresent() && !existingEmailUser.get().getAccount().equals(request.getAccount())) {
+                        return ResponseEntity.status(403)
+                                .body(UnauthorizedAccount.builder().status(403).message("Email already exists").build());
+                    }
                     String newEncodedPassword = passwordEncoder.encode(request.getPassword());
-                    userService.changePassword(request.getAccount(), newEncodedPassword);
+                    userService.changeUserInformation(request.getAccount(), newEncodedPassword, request.getFirstName(),
+                            request.getLastName(), request.getEmail(), request.getAddress(), request.getPhoneNumber());
                     return ResponseEntity.status(200).body(
-                            UnauthorizedAccount.builder().status(200).message("Change password successfully").build());
+                            UnauthorizedAccount.builder().status(200).message("Change information successfully").build());
                 } else {
                     return ResponseEntity.status(404)
                             .body(UnauthorizedAccount.builder().status(404).message("Account not found").build());
@@ -126,63 +130,45 @@ class AdminAPI {
         }
     }
 
-    @PostMapping("/change-user-email")
-    public ResponseEntity<?> changeUserEmail(@RequestBody ChangeUserEmail request,
-            @RequestHeader("Authorization") String token) {
+    @GetMapping("/check-user-transition")
+    public ResponseEntity<?> checkUserTransition(
+            @RequestHeader("Authorization") String token,
+            @RequestParam(required = true) String account,
+            @RequestParam(required = false) String dateTime,
+            @RequestBody(required = false) String message) {
         final String role = jwtService.extractRole(token.substring(7));
 
         if (role.equals("ADMIN")) {
-            Optional<User> user = userService.findByAccount(request.getAccount());
-
+            Optional<User> user = userService.findByAccount(account);
             if (user.isPresent()) {
-                userService.updateEmail(request.getAccount(), request.getEmail());
-                return ResponseEntity.status(200)
-                        .body(UnauthorizedAccount.builder().status(200).message("Change email successfully").build());
+                if (dateTime != null) {
+                    if (message != null) {
+                        List<TransitionHistory> listTransitory = transitionHistoryService
+                                .findTransitionByAccountAndDateTimeAndMessage(account, dateTime, message);
+                        return ResponseEntity.status(200).body(listTransitory);
+                    } else {
+                        List<TransitionHistory> listTransitory = transitionHistoryService
+                                .findTransitionByAccountAndDateTime(account, dateTime);
+                        return ResponseEntity.status(200).body(listTransitory);
+                    }
+                } else {
+                    if (message != null) {
+                        List<TransitionHistory> listTransitory = transitionHistoryService
+                                .findTransitionByAccountAndMessage(account, message);
+                        return ResponseEntity.status(200).body(listTransitory);
+                    } else {
+                        List<TransitionHistory> listTransitory = transitionHistoryService
+                                .findTransitionByAccount(account);
+                        return ResponseEntity.status(200).body(listTransitory);
+                    }
+                }
             } else {
                 return ResponseEntity.status(404)
                         .body(UnauthorizedAccount.builder().status(404).message("Account not found").build());
             }
         } else {
             return ResponseEntity.status(403)
-                    .body(UnauthorizedAccount.builder().status(403).message("You are not admin").build());
-        }
-    }
-
-    @GetMapping("/check-user-transition")
-    public ResponseEntity<?> checkUserTransition(
-        @RequestHeader("Authorization") String token,
-        @RequestParam(required = true) String account,
-        @RequestParam(required = false) String dateTime,
-        @RequestBody(required = false) String message
-    ) {
-        final String role = jwtService.extractRole(token.substring(7));
-
-        if(role.equals("ADMIN")) {
-            Optional<User> user = userService.findByAccount(account);
-            if(user.isPresent()) {
-                if(dateTime != null) {
-                    if(message != null) {
-                        List<TransitionHistory> listTransitory = transitionHistoryService.findTransitionByAccountAndDateTimeAndMessage(account, dateTime, message);
-                        return ResponseEntity.status(200).body(listTransitory);
-                    }
-                    else {
-                        List<TransitionHistory> listTransitory = transitionHistoryService.findTransitionByAccountAndDateTime(account, dateTime);
-                        return ResponseEntity.status(200).body(listTransitory);
-                    }
-                } else {
-                    if(message != null) {
-                        List<TransitionHistory> listTransitory = transitionHistoryService.findTransitionByAccountAndMessage(account, message);
-                        return ResponseEntity.status(200).body(listTransitory);
-                    } else {
-                        List<TransitionHistory> listTransitory = transitionHistoryService.findTransitionByAccount(account);
-                        return ResponseEntity.status(200).body(listTransitory);
-                    }
-                }
-            } else{
-                return ResponseEntity.status(404).body(UnauthorizedAccount.builder().status(404).message("Account not found").build());
-            }
-        } else {
-            return ResponseEntity.status(403).body(UnauthorizedAccount.builder().status(403).message("You are not admin"));
+                    .body(UnauthorizedAccount.builder().status(403).message("You are not admin"));
         }
     }
 }
