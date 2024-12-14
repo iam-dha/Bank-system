@@ -85,6 +85,8 @@ public class MainController implements Initializable {
     @FXML
     private TableColumn<Transaction, String> messageColumn;
     @FXML
+    private TextField keywordToSearch;
+    @FXML
     private DatePicker fromDate;
     @FXML
     private DatePicker toDate;
@@ -124,7 +126,7 @@ public class MainController implements Initializable {
         String _token = credential.getToken();
         String _account = credential.getAccount();
         try {
-            String baseUrl = "http://3.27.209.207:8080/api/v1/user/information";
+            String baseUrl = "http://13.239.134.221:8080/api/v1/user/information";
             String endpoint = String.format("%s?account=%s", baseUrl, _account);
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
@@ -154,6 +156,7 @@ public class MainController implements Initializable {
         String _account = user.getAccount();
         String _startDate = _fromdate;
         String _endDate = _todate;
+        String _searchKeyword = keywordToSearch.getText();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate startDate = LocalDate.parse(_startDate, formatter);
         LocalDate endDate = LocalDate.parse(_endDate, formatter);
@@ -167,7 +170,7 @@ public class MainController implements Initializable {
                 historyError.setText("Search Date need to be in 2024");
             }
             else{
-                String reqEndpoint = "http://3.27.209.207:8080/api/v1/bank-api/check-banking-transition-date-range";
+                String reqEndpoint = "http://13.239.134.221:8080/api/v1/bank-api/check-banking-transition-date-range";
                 String endpoint = String.format("%s?account=%s&startDate=%s&endDate=%s", reqEndpoint, _account, _startDate, _endDate);
                 System.out.println(endpoint);
                 HttpResponse<String> response = null ;
@@ -190,8 +193,19 @@ public class MainController implements Initializable {
                 if (response_code == 200) {
                     try {
                         ObjectMapper objectMapper = new ObjectMapper();
-                        ArrayList<Transaction> transactionArrayList = objectMapper.readValue(response.body(), new TypeReference<ArrayList<Transaction>>() {
+                        ArrayList<Transaction> responseList = objectMapper.readValue(response.body(), new TypeReference<ArrayList<Transaction>>() {
                         });
+                        ArrayList<Transaction> transactionArrayList = new ArrayList<>();
+                        if (_searchKeyword == null || _searchKeyword.trim().isEmpty()){
+                            transactionArrayList = responseList;
+                        }
+                        else {
+                            for(Transaction temp : responseList) {
+                                if((temp.getMessage() + temp.getToAccount() + temp.getFromAccount()).contains(_searchKeyword)){
+                                    transactionArrayList.add(temp);
+                                }
+                            }
+                        }
                         Collections.sort(transactionArrayList, new Comparator<Transaction>() {
                             @Override
                             public int compare(Transaction t1, Transaction t2) {
@@ -248,7 +262,7 @@ public class MainController implements Initializable {
         try{
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI("http://3.27.209.207:8080/api/v1/auth/get-notification"))
+                    .uri(new URI("http://13.239.134.221:8080/api/v1/auth/get-notification"))
                     .GET()
                     .build();
 
@@ -281,7 +295,6 @@ public class MainController implements Initializable {
         fromDate.setOnAction(e -> {
             LocalDate selectedDate = fromDate.getValue(); // Get selected date
             if (selectedDate != null) {
-                // Format the date to "dd-MM-yyyy"
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
                 _fromdate = selectedDate.format(formatter);
             } else {
@@ -291,7 +304,6 @@ public class MainController implements Initializable {
         toDate.setOnAction(e -> {
             LocalDate selectedDate = toDate.getValue(); // Get selected date
             if (selectedDate != null) {
-                // Format the date to "dd-MM-yyyy"
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
                 _todate = selectedDate.format(formatter);
             } else {
@@ -313,6 +325,7 @@ public class MainController implements Initializable {
         history.setMouseTransparent(true);
         setting.setMouseTransparent(true);
         setting.setVisible(false);
+        transactionTable.getItems().clear();
     }
     public void switchToSetting(){
         getUserInformation();
@@ -374,7 +387,7 @@ public class MainController implements Initializable {
         try {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI("http://3.27.209.207:8080/api/v1/user/change-password"))
+                    .uri(new URI("http://13.239.134.221:8080/api/v1/user/change-password"))
                     .header("Content-Type", "application/json")
                     .header("Authorization", String.format("Bearer %s", _token))
                     .POST(HttpRequest.BodyPublishers.ofString(
@@ -526,7 +539,7 @@ public class MainController implements Initializable {
             try {
                 HttpClient client = HttpClient.newHttpClient();
                 HttpRequest request = HttpRequest.newBuilder()
-                        .uri(new URI("http://3.27.209.207:8080/api/v1/bank-api/banking"))
+                        .uri(new URI("http://13.239.134.221:8080/api/v1/bank-api/banking"))
                         .header("Content-Type", "application/json")
                         .header("Authorization", String.format("Bearer %s", _token))
                         .POST(HttpRequest.BodyPublishers.ofString(
@@ -569,7 +582,7 @@ public class MainController implements Initializable {
                         try {
                             HttpClient client = HttpClient.newHttpClient();
                             HttpRequest request = HttpRequest.newBuilder()
-                                    .uri(new URI("http://3.27.209.207:8080/api/v1/bank-api/banking-otp"))
+                                    .uri(new URI("http://13.239.134.221:8080/api/v1/bank-api/banking-otp"))
                                     .header("Content-Type", "application/json")
                                     .header("Authorization", String.format("Bearer %s", _token))
                                     .POST(HttpRequest.BodyPublishers.ofString(

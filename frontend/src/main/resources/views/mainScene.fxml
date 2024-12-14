@@ -129,6 +129,136 @@
       </VBox>
       <StackPane prefHeight="720.0" prefWidth="777.0">
          <children>
+            <HBox fx:id="overview" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #F2F5FA;">
+               <children>
+                  <VBox prefHeight="720.0" prefWidth="277.0">
+                     <children>
+                        <Label text="Overview" textFill="#414c69">
+                           <VBox.margin>
+                              <Insets left="30.0" top="30.0" />
+                           </VBox.margin>
+                           <font>
+                              <Font name="System Bold" size="24.0" />
+                           </font></Label>
+                        <Label fx:id="welcomeLabel" text="Welcome, User" textFill="#414c69">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets left="30.0" top="10.0" />
+                           </VBox.margin>
+                        </Label>
+                        <VBox prefHeight="87.0" prefWidth="216.0" styleClass="totalVbox" stylesheets="@../webapp/css/create.css">
+                           <children>
+                              <Label alignment="CENTER" prefHeight="18.0" prefWidth="283.0" text="Total balance" textFill="#8993ad">
+                                 <padding>
+                                    <Insets top="20.0" />
+                                 </padding></Label>
+                              <Label fx:id="balanceLabel" alignment="CENTER" prefHeight="18.0" prefWidth="222.0" text="NULL" textFill="#414c69">
+                                 <font>
+                                    <Font size="24.0" />
+                                 </font></Label>
+                           </children>
+                           <VBox.margin>
+                              <Insets left="30.0" right="30.0" top="20.0" />
+                           </VBox.margin>
+                        </VBox>
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <Label text="Card" textFill="#414c69">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets top="20.0" />
+                                 </VBox.margin></Label>
+                              <ImageView fitHeight="143.0" fitWidth="221.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../webapp/image/card.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                           <VBox.margin>
+                              <Insets left="30.0" />
+                           </VBox.margin>
+                        </VBox>
+                        <VBox prefHeight="295.0" prefWidth="275.0">
+                           <children>
+                              <Label text="Notification">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets left="30.0" />
+                                 </VBox.margin></Label>
+                              <Pane prefHeight="140.0" prefWidth="275.0">
+                                 <children>
+                                    <Label fx:id="notification1" alignment="TOP_LEFT" layoutX="14.0" layoutY="29.0" prefHeight="109.0" prefWidth="245.0" textFill="#006aff" wrapText="true">
+                                       <padding>
+                                          <Insets left="10.0" top="10.0" />
+                                       </padding></Label>
+                                 </children>
+                              </Pane>
+                              <Pane layoutX="10.0" layoutY="30.0" prefHeight="140.0" prefWidth="275.0">
+                                 <children>
+                                    <Label fx:id="notification2" alignment="TOP_LEFT" layoutX="14.0" layoutY="29.0" prefHeight="109.0" prefWidth="245.0" textFill="#006aff" wrapText="true">
+                                       <padding>
+                                          <Insets left="10.0" top="10.0" />
+                                       </padding>
+                                    </Label>
+                                 </children>
+                              </Pane>
+                           </children>
+                        </VBox>
+                     </children>
+                  </VBox>
+                  <Line endX="175.8858642578125" endY="611.2929077148438" opacity="0.2" startX="176.09295654296875" stroke="#576aca" strokeWidth="0.7">
+                     <HBox.margin>
+                        <Insets top="85.0" />
+                     </HBox.margin>
+                  </Line>
+                  <VBox prefHeight="720.0" prefWidth="502.0">
+                     <children>
+                        <VBox prefHeight="411.0" prefWidth="461.0" styleClass="totalVbox1" stylesheets="@../webapp/css/create.css">
+                           <VBox.margin>
+                              <Insets left="20.0" right="20.0" top="85.0" />
+                           </VBox.margin>
+                           <children>
+                              <HBox prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <Label />
+                                 </children>
+                              </HBox>
+                              <AreaChart fx:id="areaChart" style="-fx-background-color: #ffffff;" stylesheets="@../webapp/css/create.css">
+                                <xAxis>
+                                  <CategoryAxis side="BOTTOM" stylesheets="@../webapp/css/create.css" tickLabelFill="#d42626" fx:id="xAxis">
+                                       <styleClass>
+                                          <String fx:value="x-axis" />
+                                          <String fx:value="axis-line" />
+                                       </styleClass></CategoryAxis>
+                                </xAxis>
+                                <yAxis>
+                                  <NumberAxis fx:id="yAxis" side="LEFT" stylesheets="@../webapp/css/create.css">
+                                       <styleClass>
+                                          <String fx:value="axis-line" />
+                                          <String fx:value="y-axis" />
+                                       </styleClass></NumberAxis>
+                                </yAxis>
+                                 <VBox.margin>
+                                    <Insets top="80.0" />
+                                 </VBox.margin>
+                                 <styleClass>
+                                    <String fx:value="chart-series-area-fill" />
+                                    <String fx:value="chart-series-area-line" />
+                                    <String fx:value="chart-legend" />
+                                 </styleClass>
+                              </AreaChart>
+                           </children>
+                        </VBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
             <VBox fx:id="tranfer" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #F2F5FA;">
                <children>
                   <HBox prefHeight="100.0" prefWidth="200.0">
@@ -278,136 +408,6 @@
                      </children>
                   </HBox>
                </children></VBox>
-            <HBox fx:id="overview" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #F2F5FA;">
-               <children>
-                  <VBox prefHeight="720.0" prefWidth="277.0">
-                     <children>
-                        <Label text="Overview" textFill="#414c69">
-                           <VBox.margin>
-                              <Insets left="30.0" top="30.0" />
-                           </VBox.margin>
-                           <font>
-                              <Font name="System Bold" size="24.0" />
-                           </font></Label>
-                        <Label fx:id="welcomeLabel" text="Welcome, User" textFill="#414c69">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                           <VBox.margin>
-                              <Insets left="30.0" top="10.0" />
-                           </VBox.margin>
-                        </Label>
-                        <VBox prefHeight="87.0" prefWidth="216.0" styleClass="totalVbox" stylesheets="@../webapp/css/create.css">
-                           <children>
-                              <Label alignment="CENTER" prefHeight="18.0" prefWidth="283.0" text="Total balance" textFill="#8993ad">
-                                 <padding>
-                                    <Insets top="20.0" />
-                                 </padding></Label>
-                              <Label fx:id="balanceLabel" alignment="CENTER" prefHeight="18.0" prefWidth="222.0" text="NULL" textFill="#414c69">
-                                 <font>
-                                    <Font size="24.0" />
-                                 </font></Label>
-                           </children>
-                           <VBox.margin>
-                              <Insets left="30.0" right="30.0" top="20.0" />
-                           </VBox.margin>
-                        </VBox>
-                        <VBox prefHeight="200.0" prefWidth="100.0">
-                           <children>
-                              <Label text="Card" textFill="#414c69">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                                 <VBox.margin>
-                                    <Insets top="20.0" />
-                                 </VBox.margin></Label>
-                              <ImageView fitHeight="143.0" fitWidth="221.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../webapp/image/card.png" />
-                                 </image>
-                              </ImageView>
-                           </children>
-                           <VBox.margin>
-                              <Insets left="30.0" />
-                           </VBox.margin>
-                        </VBox>
-                        <VBox prefHeight="295.0" prefWidth="275.0">
-                           <children>
-                              <Label text="Notification">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                                 <VBox.margin>
-                                    <Insets left="30.0" />
-                                 </VBox.margin></Label>
-                              <Pane prefHeight="140.0" prefWidth="275.0">
-                                 <children>
-                                    <Label fx:id="notification1" alignment="TOP_LEFT" layoutX="14.0" layoutY="29.0" prefHeight="109.0" prefWidth="245.0" textFill="#006aff" wrapText="true">
-                                       <padding>
-                                          <Insets left="10.0" top="10.0" />
-                                       </padding></Label>
-                                 </children>
-                              </Pane>
-                              <Pane layoutX="10.0" layoutY="30.0" prefHeight="140.0" prefWidth="275.0">
-                                 <children>
-                                    <Label fx:id="notification2" alignment="TOP_LEFT" layoutX="14.0" layoutY="29.0" prefHeight="109.0" prefWidth="245.0" textFill="#006aff" wrapText="true">
-                                       <padding>
-                                          <Insets left="10.0" top="10.0" />
-                                       </padding>
-                                    </Label>
-                                 </children>
-                              </Pane>
-                           </children>
-                        </VBox>
-                     </children>
-                  </VBox>
-                  <Line endX="175.8858642578125" endY="611.2929077148438" opacity="0.2" startX="176.09295654296875" stroke="#576aca" strokeWidth="0.7">
-                     <HBox.margin>
-                        <Insets top="85.0" />
-                     </HBox.margin>
-                  </Line>
-                  <VBox prefHeight="720.0" prefWidth="502.0">
-                     <children>
-                        <VBox prefHeight="411.0" prefWidth="461.0" styleClass="totalVbox1" stylesheets="@../webapp/css/create.css">
-                           <VBox.margin>
-                              <Insets left="20.0" right="20.0" top="85.0" />
-                           </VBox.margin>
-                           <children>
-                              <HBox prefHeight="100.0" prefWidth="200.0">
-                                 <children>
-                                    <Label />
-                                 </children>
-                              </HBox>
-                              <AreaChart fx:id="areaChart" style="-fx-background-color: #ffffff;" stylesheets="@../webapp/css/create.css">
-                                <xAxis>
-                                  <CategoryAxis side="BOTTOM" stylesheets="@../webapp/css/create.css" tickLabelFill="#d42626" fx:id="xAxis">
-                                       <styleClass>
-                                          <String fx:value="x-axis" />
-                                          <String fx:value="axis-line" />
-                                       </styleClass></CategoryAxis>
-                                </xAxis>
-                                <yAxis>
-                                  <NumberAxis fx:id="yAxis" side="LEFT" stylesheets="@../webapp/css/create.css">
-                                       <styleClass>
-                                          <String fx:value="axis-line" />
-                                          <String fx:value="y-axis" />
-                                       </styleClass></NumberAxis>
-                                </yAxis>
-                                 <VBox.margin>
-                                    <Insets top="80.0" />
-                                 </VBox.margin>
-                                 <styleClass>
-                                    <String fx:value="chart-series-area-fill" />
-                                    <String fx:value="chart-series-area-line" />
-                                    <String fx:value="chart-legend" />
-                                 </styleClass>
-                              </AreaChart>
-                           </children>
-                        </VBox>
-                     </children>
-                  </VBox>
-               </children>
-            </HBox>
             <VBox fx:id="history" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #F2F5FA;">
                <children>
                   <Label prefHeight="38.0" prefWidth="136.0" text="HISTORY" textFill="#414c69">
@@ -420,7 +420,7 @@
                   </Label>
                   <HBox prefHeight="45.0" prefWidth="778.0">
                      <children>
-                        <TextField prefHeight="46.0" prefWidth="632.0" promptText="Search for name, description.." styleClass="text-field" stylesheets="@../webapp/css/history.css">
+                        <TextField fx:id="keywordToSearch" prefHeight="46.0" prefWidth="632.0" promptText="Search for name, description.." styleClass="text-field" stylesheets="@../webapp/css/history.css">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
@@ -491,10 +491,10 @@
                   </HBox>
                   <TableView fx:id="transactionTable" prefHeight="418.0" prefWidth="727.0">
                      <columns>
-                        <TableColumn fx:id="timeColumn" prefWidth="75.0" text="Time" />
-                        <TableColumn fx:id="fromAccountColumn" prefWidth="120.0" text="From Account" />
-                        <TableColumn fx:id="toAccountColumn" prefWidth="120.0" text="To Account" />
-                        <TableColumn fx:id="messageColumn" prefWidth="85.0" text="Message" />
+                        <TableColumn fx:id="timeColumn" prefWidth="116.0" text="Time" />
+                        <TableColumn fx:id="fromAccountColumn" prefWidth="135.0" text="From Account" />
+                        <TableColumn fx:id="toAccountColumn" prefWidth="143.0" text="To Account" />
+                        <TableColumn fx:id="messageColumn" prefWidth="332.0" text="Message" />
                      </columns>
                      <VBox.margin>
                         <Insets left="30.0" right="20.0" />
