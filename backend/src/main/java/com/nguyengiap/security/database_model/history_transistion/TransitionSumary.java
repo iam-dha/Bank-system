@@ -10,11 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "_transitionSummary")
 public class TransitionSumary {
-    @Id
-    private String account;
     @Id
     private double month;
     @Column(columnDefinition = "integer default 0")

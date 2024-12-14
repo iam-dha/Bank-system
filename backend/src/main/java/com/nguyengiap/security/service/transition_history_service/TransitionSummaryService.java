@@ -21,10 +21,9 @@ public class TransitionSummaryService {
         List<Object[]> results = transitionHistoryRepository.findMonthlyTransitionByAccount(account, year);
         List<TransitionSumary> summaries = results.stream()
                 .map(row -> new TransitionSumary(
-                        (String) row[0],                  // account
-                        ((Number) row[1]).intValue(),     // month
-                        ((Number) row[2]).doubleValue(),  // expense
-                        ((Number) row[3]).doubleValue()   // income
+                        ((Number) row[0]).intValue(),     // month
+                        ((Number) row[1]).doubleValue(),  // expense
+                        ((Number) row[2]).doubleValue()   // income
                 ))
                 .collect(Collectors.toList());
         return summaries;
