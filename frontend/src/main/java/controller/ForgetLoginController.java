@@ -88,7 +88,7 @@ public class ForgetLoginController implements Initializable {
             try {
                 HttpClient client = HttpClient.newHttpClient();
                 HttpRequest request = HttpRequest.newBuilder()
-                        .uri(new URI("http://3.27.209.207:8080/api/v1/auth/forget-password"))
+                        .uri(new URI("http://13.239.134.221:8080/api/v1/auth/forget-password"))
                         .header("Content-Type", "application/json")
                         .POST(HttpRequest.BodyPublishers.ofString(
                                 String.format("{\"account\" : \"%s\", \"email\" : \"%s\"}", _account, _email)
@@ -151,7 +151,7 @@ public class ForgetLoginController implements Initializable {
         try {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI("http://3.27.209.207:8080/api/v1/auth/forget-password"))
+                    .uri(new URI("http://13.239.134.221:8080/api/v1/auth/forget-password"))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(
                             String.format("{\"account\" : \"%s\", \"email\" : \"%s\"}", _account, _email)
@@ -224,7 +224,7 @@ public class ForgetLoginController implements Initializable {
         try{
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI("http://3.27.209.207:8080/api/v1/auth/forget-password-otp"))
+                    .uri(new URI("http://13.239.134.221:8080/api/v1/auth/forget-password-otp"))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(
                             String.format("{\"account\" : \"%s\",\"newPassword\": \"%s\",\"otp\": \"%s\" }", _account, _newpassword, _otp)

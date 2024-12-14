@@ -127,7 +127,7 @@ public class CreateAccountController implements Initializable {
             try {
                 HttpClient client = HttpClient.newHttpClient();
                 HttpRequest request = HttpRequest.newBuilder()
-                        .uri(new URI("http://3.27.209.207:8080/api/v1/auth/register"))
+                        .uri(new URI("http://13.239.134.221:8080/api/v1/auth/register"))
                         .header("Content-Type", "application/json")
                         .POST(HttpRequest.BodyPublishers.ofString(
                                 String.format("{\"account\" : \"%s\",\"email\": \"%s\"}", _account, _email)
@@ -169,7 +169,7 @@ public class CreateAccountController implements Initializable {
         try {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI("http://3.27.209.207:8080/api/v1/auth/register-otp"))
+                    .uri(new URI("http://13.239.134.221:8080/api/v1/auth/register-otp"))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(
                             String.format("{\"account\":\"%s\"," +
@@ -219,7 +219,7 @@ public class CreateAccountController implements Initializable {
         try {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI("http://3.27.209.207:8080/api/v1/auth/register"))
+                    .uri(new URI("http://13.239.134.221:8080/api/v1/auth/register"))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(
                             String.format("{\"account\" : \"%s\",\"email\": \"%s\"}", _account, _email)

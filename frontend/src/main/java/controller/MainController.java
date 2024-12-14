@@ -124,7 +124,7 @@ public class MainController implements Initializable {
         String _token = credential.getToken();
         String _account = credential.getAccount();
         try {
-            String baseUrl = "http://3.27.209.207:8080/api/v1/user/information";
+            String baseUrl = "http://13.239.134.221:8080/api/v1/user/information";
             String endpoint = String.format("%s?account=%s", baseUrl, _account);
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
@@ -167,7 +167,7 @@ public class MainController implements Initializable {
                 historyError.setText("Search Date need to be in 2024");
             }
             else{
-                String reqEndpoint = "http://3.27.209.207:8080/api/v1/bank-api/check-banking-transition-date-range";
+                String reqEndpoint = "http://13.239.134.221:8080/api/v1/bank-api/check-banking-transition-date-range";
                 String endpoint = String.format("%s?account=%s&startDate=%s&endDate=%s", reqEndpoint, _account, _startDate, _endDate);
                 System.out.println(endpoint);
                 HttpResponse<String> response = null ;
@@ -248,7 +248,7 @@ public class MainController implements Initializable {
         try{
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI("http://3.27.209.207:8080/api/v1/auth/get-notification"))
+                    .uri(new URI("http://13.239.134.221:8080/api/v1/auth/get-notification"))
                     .GET()
                     .build();
 
@@ -374,7 +374,7 @@ public class MainController implements Initializable {
         try {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI("http://3.27.209.207:8080/api/v1/user/change-password"))
+                    .uri(new URI("http://13.239.134.221:8080/api/v1/user/change-password"))
                     .header("Content-Type", "application/json")
                     .header("Authorization", String.format("Bearer %s", _token))
                     .POST(HttpRequest.BodyPublishers.ofString(
@@ -401,25 +401,17 @@ public class MainController implements Initializable {
     }
 
     public void initialize() {
-
-        //areaChart.lookup(".chart-plot-background").setStyle("-fx-background-color: transparent;");
         myChoiceBox.getItems().addAll("HUST BANK", "NEU BANK", "HNUE BANK");
-        //myChoiceBox.setValue("Option 1"); // Giá trị mặc định
-        // Tên các tháng
+        //myChoiceBox.setValue("Option 1");
         areaChart.setVerticalGridLinesVisible(false);
-        System.out.println(areaChart.getXAxis().getStyleClass());
-        System.out.println(areaChart.getStyle());
         // Cấu hình trục X (Months)
         xAxis.setCategories(FXCollections.observableArrayList(
                 "Jan", "Feb", "Mar", "Apr", "May", "Jun",
                 "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
         ));
-
         // Cấu hình trục Y (Amount)
         yAxis.setTickUnit(10000); // Khoảng cách giữa các giá trị
         yAxis.setAutoRanging(true); // Tắt chế độ tự động tính phạm vi
-        //yAxis.setLowerBound(0); // Giá trị thấp nhất
-        //yAxis.setUpperBound(3000); // Giá trị cao nhất
         yAxis.setTickMarkVisible(false);  // Ẩn các dấu chia dọc trên trục Y
         yAxis.setMinorTickVisible(false);
         xAxis.setTickMarkVisible(false);  // Ẩn các dấu chia dọc trên trục Y
@@ -526,7 +518,7 @@ public class MainController implements Initializable {
             try {
                 HttpClient client = HttpClient.newHttpClient();
                 HttpRequest request = HttpRequest.newBuilder()
-                        .uri(new URI("http://3.27.209.207:8080/api/v1/bank-api/banking"))
+                        .uri(new URI("http://13.239.134.221:8080/api/v1/bank-api/banking"))
                         .header("Content-Type", "application/json")
                         .header("Authorization", String.format("Bearer %s", _token))
                         .POST(HttpRequest.BodyPublishers.ofString(
@@ -569,7 +561,7 @@ public class MainController implements Initializable {
                         try {
                             HttpClient client = HttpClient.newHttpClient();
                             HttpRequest request = HttpRequest.newBuilder()
-                                    .uri(new URI("http://3.27.209.207:8080/api/v1/bank-api/banking-otp"))
+                                    .uri(new URI("http://13.239.134.221:8080/api/v1/bank-api/banking-otp"))
                                     .header("Content-Type", "application/json")
                                     .header("Authorization", String.format("Bearer %s", _token))
                                     .POST(HttpRequest.BodyPublishers.ofString(

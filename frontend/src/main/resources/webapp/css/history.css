@@ -104,3 +104,8 @@
 .date-picker-popup .spinner .right-arrow:hover {
     -fx-text-fill: #3A56B1;           /* Màu mũi tên đậm hơn khi hover */
 }
+.vbox {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 16 px;
+    -fx-border-radius: 16 px;
+}
