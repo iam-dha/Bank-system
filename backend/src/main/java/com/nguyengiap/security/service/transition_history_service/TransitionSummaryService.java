@@ -22,8 +22,8 @@ public class TransitionSummaryService {
         List<TransitionSumary> summaries = results.stream()
                 .map(row -> new TransitionSumary(
                         ((Number) row[0]).intValue(),     // month
-                        ((Number) row[1]).doubleValue(),  // expense
-                        ((Number) row[2]).doubleValue()   // income
+                        ((Number) row[1]).longValue(),  // expense
+                        ((Number) row[2]).longValue()   // income
                 ))
                 .collect(Collectors.toList());
         return summaries;

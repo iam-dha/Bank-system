@@ -12,10 +12,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TransitionSumary {
     @Id
-    private double month;
+    private int month;
     @Column(columnDefinition = "integer default 0")
-    private double expense;
+    private long expense;
     @Column(columnDefinition = "integer default 0")
-    private double income;
+    private long income;
 }
 
