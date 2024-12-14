@@ -51,11 +51,12 @@ public class AuthenticationController {
     public ResponseEntity<?> register(
             @RequestBody RegisterRequest request) {
         Optional<User> user = userService.findByAccount(request.getAccount());
-        Optional<User> userByEmail = userService.findByEmail(request.getEmail());
         if (user.isPresent()) {
             return ResponseEntity.status(401)
                     .body(UnauthorizedAccount.builder().status(401).message("Account is exist").build());
         }
+
+        Optional<User> userByEmail = userService.findByEmail(request.getEmail());
         if (userByEmail.isPresent()) {
             return ResponseEntity.status(401)
                     .body(UnauthorizedAccount.builder().status(401).message("Email is exist").build());
