@@ -26,11 +26,11 @@ public class UserService {
         return userRepository.findBalanceByAccount(account);
     }
 
-    public void bankingToAccount(String account, double fund) {
+    public void bankingToAccount(String account, long fund) {
         userRepository.bankingToAccount(account, fund);
     }
 
-    public void bankingToAccount2(String account, double fund) {
+    public void bankingToAccount2(String account, long fund) {
         userRepository.bankingToAccount2(account, fund);
     }
 
@@ -48,5 +48,10 @@ public class UserService {
 
     public void updatePhoneNumber(String account, String phoneNumber) {
         userRepository.updatePhoneNumber(account, phoneNumber);
+    }
+
+    public void changeUserInformation(String account, String password, String firstName, String lastName, String email,
+            String address, String phoneNumber) {
+        userRepository.changeUserInformation(account, password, firstName, lastName, email, address, phoneNumber);
     }
 }

@@ -2,10 +2,12 @@ package com.nguyengiap.security.application_api.banking_api;
 
 import com.nguyengiap.security.config.jwt_config.JwtService;
 import com.nguyengiap.security.database_model.history_transistion.TransitionHistory;
+import com.nguyengiap.security.database_model.history_transistion.TransitionSumary;
 import com.nguyengiap.security.service.email_service.EmailService;
 import com.nguyengiap.security.service.notification_service.NotificationService;
 import com.nguyengiap.security.service.otp_service.OtpService;
 import com.nguyengiap.security.service.transition_history_service.TransitionHistoryService;
+import com.nguyengiap.security.service.transition_history_service.TransitionSummaryService;
 import com.nguyengiap.security.service.user_service.UserService;
 import com.nguyengiap.security.database_model.user.User;
 import com.nguyengiap.security.model.request_model.BankingRequest;
@@ -47,14 +49,23 @@ public class BankingApi {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private TransitionSummaryService transitionSummaryService;
+
     @Transactional
     @PostMapping("/banking")
     public ResponseEntity<?> banking(@RequestBody BankingRequest request, @RequestHeader("Authorization") String token) {
 
         final String account = jwtService.extractUserName(token.substring(7));
-        // Kiểm tra xem tài khoản c tồn tại không
-        Optional<User> checkFromAccount = userService.findByAccount(account);
+        
+        // Kiểm tra xem tài khoản token và request có khớp không
+        if (!account.equals(request.getFromAccount())) {
+            return ResponseEntity.status(403)
+                    .body(UnauthorizedAccount.builder().status(403).message("Unauthorized access").build());
+        }
 
+        // Kiểm tra xem tài khoản có tồn tại không
+        Optional<User> checkFromAccount = userService.findByAccount(account);
         Optional<User> checkToAccount = userService.findByAccount(request.getToAccount());
 
         if (!checkFromAccount.isPresent() || !checkToAccount.isPresent()) {
@@ -82,9 +93,15 @@ public class BankingApi {
         String formattedHour = now.format(formatterTime);
 
         final String account = jwtService.extractUserName(token.substring(7));
-        // Kiểm tra xem tài khoản c tồn tại không
-        Optional<User> checkFromAccount = userService.findByAccount(account);
+        
+        // Kiểm tra xem tài khoản token và request có khớp không
+        if (!account.equals(request.getFromAccount())) {
+            return ResponseEntity.status(403)
+                    .body(UnauthorizedAccount.builder().status(403).message("Unauthorized access").build());
+        }
 
+        // Kiểm tra xem tài khoản có tồn tại không
+        Optional<User> checkFromAccount = userService.findByAccount(account);
         Optional<User> checkToAccount = userService.findByAccount(request.getToAccount());
 
         // Nếu không tồn tại
@@ -208,9 +225,17 @@ public class BankingApi {
 
     @GetMapping("/check-banking-transition-date-range")
     public ResponseEntity<?> getBankingTransitionDateRange(
+            @RequestHeader("Authorization") String token,
             @RequestParam String account,
             @RequestParam String startDate,
             @RequestParam String endDate) {
+        final String accountToken = jwtService.extractUserName(token.substring(7));
+        
+        if (!accountToken.equals(account)) {
+            return ResponseEntity.status(403)
+                    .body(UnauthorizedAccount.builder().status(403).message("You can only check your own transactions").build());
+        }
+
         Optional<User> checkAccount = userService.findByAccount(account);
         if (checkAccount.isEmpty()) {
             return ResponseEntity.status(404)
@@ -222,7 +247,29 @@ public class BankingApi {
         }
     }
 
-    String notificationFormart(double fund, String account, String message, double remainFund, String day, String hour,
+    @GetMapping("/monthly-transition-summary")
+    public ResponseEntity<?> getMonthlyTransitionSummary(
+            @RequestHeader("Authorization") String token,
+            @RequestParam String account,
+            @RequestParam int year) {
+        final String accountToken = jwtService.extractUserName(token.substring(7));
+
+        if (!accountToken.equals(account)) {
+            return ResponseEntity.status(403)
+                    .body(UnauthorizedAccount.builder().status(403).message("You can only check your own transactions").build());
+        }
+        Optional<User> checkAccount = userService.findByAccount(account);
+        if (checkAccount.isEmpty()) {
+            return ResponseEntity.status(404)
+                    .body(UnauthorizedAccount.builder().status(404).message("Account not found").build());
+        } else {
+            List<TransitionSumary> transitionSumaries = transitionSummaryService
+                    .findMonthlyTransitionByAccount(account, year);
+            return ResponseEntity.ok(transitionSumaries);
+        }
+    }
+
+    String notificationFormart(long fund, String account, String message, long remainFund, String day, String hour,
             boolean isBanking) {
         return "TK " + account + " | " + (isBanking ? "GD: -" : "GD: +") + fund + "VND " + day + hour + " | SD:"
                 + remainFund + "VND | ND: " + message;

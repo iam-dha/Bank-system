@@ -85,6 +85,8 @@ public class MainController implements Initializable {
     @FXML
     private TableColumn<Transaction, String> messageColumn;
     @FXML
+    private TextField keywordToSearch;
+    @FXML
     private DatePicker fromDate;
     @FXML
     private DatePicker toDate;
@@ -154,6 +156,7 @@ public class MainController implements Initializable {
         String _account = user.getAccount();
         String _startDate = _fromdate;
         String _endDate = _todate;
+        String _searchKeyword = keywordToSearch.getText();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate startDate = LocalDate.parse(_startDate, formatter);
         LocalDate endDate = LocalDate.parse(_endDate, formatter);
@@ -190,8 +193,19 @@ public class MainController implements Initializable {
                 if (response_code == 200) {
                     try {
                         ObjectMapper objectMapper = new ObjectMapper();
-                        ArrayList<Transaction> transactionArrayList = objectMapper.readValue(response.body(), new TypeReference<ArrayList<Transaction>>() {
+                        ArrayList<Transaction> responseList = objectMapper.readValue(response.body(), new TypeReference<ArrayList<Transaction>>() {
                         });
+                        ArrayList<Transaction> transactionArrayList = new ArrayList<>();
+                        if (_searchKeyword == null || _searchKeyword.trim().isEmpty()){
+                            transactionArrayList = responseList;
+                        }
+                        else {
+                            for(Transaction temp : responseList) {
+                                if((temp.getMessage() + temp.getToAccount() + temp.getFromAccount()).contains(_searchKeyword)){
+                                    transactionArrayList.add(temp);
+                                }
+                            }
+                        }
                         Collections.sort(transactionArrayList, new Comparator<Transaction>() {
                             @Override
                             public int compare(Transaction t1, Transaction t2) {
@@ -281,7 +295,6 @@ public class MainController implements Initializable {
         fromDate.setOnAction(e -> {
             LocalDate selectedDate = fromDate.getValue(); // Get selected date
             if (selectedDate != null) {
-                // Format the date to "dd-MM-yyyy"
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
                 _fromdate = selectedDate.format(formatter);
             } else {
@@ -291,7 +304,6 @@ public class MainController implements Initializable {
         toDate.setOnAction(e -> {
             LocalDate selectedDate = toDate.getValue(); // Get selected date
             if (selectedDate != null) {
-                // Format the date to "dd-MM-yyyy"
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
                 _todate = selectedDate.format(formatter);
             } else {
@@ -313,6 +325,7 @@ public class MainController implements Initializable {
         history.setMouseTransparent(true);
         setting.setMouseTransparent(true);
         setting.setVisible(false);
+        transactionTable.getItems().clear();
     }
     public void switchToSetting(){
         getUserInformation();

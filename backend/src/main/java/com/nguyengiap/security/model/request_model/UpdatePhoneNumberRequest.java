@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdatePhoneNumberRequest {
+    private String account;
     private String phoneNumber;
 }
