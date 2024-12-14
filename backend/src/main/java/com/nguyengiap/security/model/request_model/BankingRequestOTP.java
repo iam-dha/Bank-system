@@ -8,7 +8,7 @@ import lombok.Getter;
 public class BankingRequestOTP {
     private String fromAccount;
     private String toAccount;
-    private double fund;
+    private long fund;
     private String message;
     private String otp;
 }

@@ -8,5 +8,5 @@ import lombok.Getter;
 class TranferBetweenUser {
     private String fromAccount;
     private String toAccount;
-    private double fund;
+    private long fund;
 }
