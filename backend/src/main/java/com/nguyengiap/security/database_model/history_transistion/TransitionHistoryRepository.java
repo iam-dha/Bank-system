@@ -28,19 +28,30 @@ public interface TransitionHistoryRepository extends JpaRepository<TransitionHis
             @Param("startDate") String startDate,
             @Param("endDate") String endDate);
 
-    @Query("SELECT expense, income, tab1.month " +
+
+    @Query(value = "SELECT tab1.account AS account, " +
+            "tab1.month AS month, " +
+            "COALESCE(tab1.expense, 0) AS expense, " +
+            "COALESCE(tab2.income, 0) AS income " +
             "FROM " +
-            "(SELECT SUM(u.balance) AS expense, EXTRACT(month FROM TO_DATE(u.dateTime, 'DD/MM/YYYY')) AS month " +
-            "FROM TransitionHistory u " +
-            "WHERE u.fromAccount = :account AND :year = EXTRACT(month FROM TO_DATE(u.dateTime, 'DD/MM/YYYY')) " +
-            "GROUP BY EXTRACT(month FROM TO_DATE(u.dateTime, 'DD/MM/YYYY'))) AS tab1 " +
+            "(SELECT u.from_account AS account, " +
+            "        SUM(u.balance) AS expense, " +
+            "        EXTRACT(MONTH FROM TO_DATE(u.date_time, 'DD/MM/YYYY')) AS month " +
+            " FROM _transition_history u " +
+            " WHERE u.from_account = :account " +
+            "   AND EXTRACT(YEAR FROM TO_DATE(u.date_time, 'DD/MM/YYYY')) = :year " +
+            " GROUP BY u.from_account, EXTRACT(MONTH FROM TO_DATE(u.date_time, 'DD/MM/YYYY'))) tab1 " +
             "FULL OUTER JOIN " +
-            "(SELECT SUM(i.balance) AS income, EXTRACT(month FROM TO_DATE(i.dateTime, 'DD/MM/YYYY')) AS month2 " +
-            "FROM TransitionHistory i " +
-            "WHERE i.toAccount = :account AND :year = EXTRACT(month FROM TO_DATE(i.dateTime, 'DD/MM/YYYY')) " +
-            "GROUP BY EXTRACT(month FROM TO_DATE(i.dateTime, 'DD/MM/YYYY'))) AS tab2 " +
-            "ON tab1.month = tab2.month2")
-    List<TransitionSumary> findMonthlyTransitionByAccount(
+            "(SELECT EXTRACT(MONTH FROM TO_DATE(i.date_time, 'DD/MM/YYYY')) AS month, " +
+            "        SUM(i.balance) AS income " +
+            " FROM _transition_history i " +
+            " WHERE i.to_account = :account " +
+            "   AND EXTRACT(YEAR FROM TO_DATE(i.date_time, 'DD/MM/YYYY')) = :year " +
+            " GROUP BY EXTRACT(MONTH FROM TO_DATE(i.date_time, 'DD/MM/YYYY'))) tab2 " +
+            "ON tab1.month = tab2.month",
+            nativeQuery = true)
+    List<Object[]> findMonthlyTransitionByAccount(
             @Param("account") String account,
-            @Param("year") String year);
+            @Param("year") int year);
+
 }

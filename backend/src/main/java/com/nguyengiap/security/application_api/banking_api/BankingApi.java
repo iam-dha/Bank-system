@@ -250,8 +250,14 @@ public class BankingApi {
     @GetMapping("/monthly-transition-summary")
     public ResponseEntity<?> getMonthlyTransitionSummary(
             @RequestHeader("Authorization") String token,
-            @RequestParam String year) {
-        final String account = jwtService.extractUserName(token.substring(7));
+            @RequestParam String account,
+            @RequestParam int year) {
+        final String accountToken = jwtService.extractUserName(token.substring(7));
+
+        if (!accountToken.equals(account)) {
+            return ResponseEntity.status(403)
+                    .body(UnauthorizedAccount.builder().status(403).message("You can only check your own transactions").build());
+        }
         Optional<User> checkAccount = userService.findByAccount(account);
         if (checkAccount.isEmpty()) {
             return ResponseEntity.status(404)
