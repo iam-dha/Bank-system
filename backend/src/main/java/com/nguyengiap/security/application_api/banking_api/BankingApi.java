@@ -2,10 +2,12 @@ package com.nguyengiap.security.application_api.banking_api;
 
 import com.nguyengiap.security.config.jwt_config.JwtService;
 import com.nguyengiap.security.database_model.history_transistion.TransitionHistory;
+import com.nguyengiap.security.database_model.history_transistion.TransitionSumary;
 import com.nguyengiap.security.service.email_service.EmailService;
 import com.nguyengiap.security.service.notification_service.NotificationService;
 import com.nguyengiap.security.service.otp_service.OtpService;
 import com.nguyengiap.security.service.transition_history_service.TransitionHistoryService;
+import com.nguyengiap.security.service.transition_history_service.TransitionSummaryService;
 import com.nguyengiap.security.service.user_service.UserService;
 import com.nguyengiap.security.database_model.user.User;
 import com.nguyengiap.security.model.request_model.BankingRequest;
@@ -46,6 +48,9 @@ public class BankingApi {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private TransitionSummaryService transitionSummaryService;
 
     @Transactional
     @PostMapping("/banking")
@@ -208,6 +213,22 @@ public class BankingApi {
             List<TransitionHistory> transitionHistories = transitionHistoryService
                     .findTransitionByAccountAndDateRange(account, startDate, endDate);
             return ResponseEntity.ok(transitionHistories);
+        }
+    }
+
+    @GetMapping("/monthly-transition-summary")
+    public ResponseEntity<?> getMonthlyTransitionSummary(
+            @RequestHeader("Authorization") String token,
+            @RequestParam String year) {
+        final String account = jwtService.extractUserName(token.substring(7));
+        Optional<User> checkAccount = userService.findByAccount(account);
+        if (checkAccount.isEmpty()) {
+            return ResponseEntity.status(404)
+                    .body(UnauthorizedAccount.builder().status(404).message("Account not found").build());
+        } else {
+            List<TransitionSumary> transitionSumaries = transitionSummaryService
+                    .findMonthlyTransitionByAccount(account, year);
+            return ResponseEntity.ok(transitionSumaries);
         }
     }
 
