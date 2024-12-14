@@ -41,12 +41,12 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Modifying
     @Transactional
     @Query("UPDATE User u SET u.fund = u.fund + :fund WHERE u.account = :account")
-    void bankingToAccount(@Param("account") String account, @Param("fund") double fund);
+    void bankingToAccount(@Param("account") String account, @Param("fund") long fund);
 
     @Modifying
     @Transactional
     @Query("UPDATE User u Set u.fund = u.fund - :fund WHERE u.account = :account")
-    void bankingToAccount2(@Param("account") String account, @Param("fund") double fund);
+    void bankingToAccount2(@Param("account") String account, @Param("fund") long fund);
 
     @Modifying
     @Transactional

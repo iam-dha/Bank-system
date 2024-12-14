@@ -89,7 +89,7 @@ public class ControllerLogin implements Initializable {
             try {
                 HttpClient client = HttpClient.newHttpClient();
                 HttpRequest request = HttpRequest.newBuilder()
-                        .uri(new URI("http://3.27.209.207:8080/api/v1/auth/authenticate"))
+                        .uri(new URI("http://13.239.134.221:8080/api/v1/auth/authenticate"))
                         .header("Content-Type", "application/json")
                         .POST(HttpRequest.BodyPublishers.ofString(
                                 String.format("{\"account\":\"%s\", \"password\":\"%s\"}", user_name, password)

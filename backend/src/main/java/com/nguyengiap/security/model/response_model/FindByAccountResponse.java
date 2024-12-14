@@ -14,5 +14,5 @@ public class FindByAccountResponse {
     private String email;
     private String address;
     private String phoneNumber;
-    private double fund;
+    private long fund;
 }

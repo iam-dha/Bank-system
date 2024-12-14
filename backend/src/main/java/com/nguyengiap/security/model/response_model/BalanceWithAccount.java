@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 public class BalanceWithAccount {
     private String account;
     @Getter
-    private double fund;
+    private long fund;
 }

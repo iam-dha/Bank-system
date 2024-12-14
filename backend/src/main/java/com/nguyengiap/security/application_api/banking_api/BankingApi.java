@@ -269,7 +269,7 @@ public class BankingApi {
         }
     }
 
-    String notificationFormart(double fund, String account, String message, double remainFund, String day, String hour,
+    String notificationFormart(long fund, String account, String message, long remainFund, String day, String hour,
             boolean isBanking) {
         return "TK " + account + " | " + (isBanking ? "GD: -" : "GD: +") + fund + "VND " + day + hour + " | SD:"
                 + remainFund + "VND | ND: " + message;

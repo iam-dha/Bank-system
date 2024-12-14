@@ -33,21 +33,21 @@ public class UserAPI {
     @Autowired
     private OtpService otpService;
 
-    @GetMapping("/information")
+    @GetMapping("/information") 
     public ResponseEntity<?> getInformation(
             @RequestParam String account,
             @RequestHeader("Authorization") String token) {
         final String accountToken = jwtService.extractUserName(token.substring(7));
         
         if (!account.equals(accountToken)) {
-            return ResponseEntity.status(401)
-                    .body(UnauthorizedAccount.builder().status(401).message("Unauthorized access").build());
+            return ResponseEntity.status(403) 
+                    .body(UnauthorizedAccount.builder().status(403).message("Unauthorized access").build());
         }
 
         Optional<User> users = userService.findByAccount(account);
         if (!users.isPresent()) {
-            return ResponseEntity.status(401)
-                    .body(UnauthorizedAccount.builder().status(401).message("Account not found").build());
+            return ResponseEntity.status(404) 
+                    .body(UnauthorizedAccount.builder().status(404).message("Account not found").build());
         }
 
         FindByAccountResponse response = FindByAccountResponse.builder()
