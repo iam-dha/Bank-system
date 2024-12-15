@@ -6,6 +6,7 @@ import com.nguyengiap.security.database_model.notification_table.NotificationTab
 import com.nguyengiap.security.database_model.user.User;
 import com.nguyengiap.security.model.request_model.AuthenticationRequest;
 import com.nguyengiap.security.model.request_model.BuffMoneyRequest;
+import com.nguyengiap.security.model.request_model.FakeBillRequest;
 import com.nguyengiap.security.model.request_model.ForgetPasswordOtpRequest;
 import com.nguyengiap.security.model.request_model.OnlyAccountRequest;
 import com.nguyengiap.security.model.request_model.RegisterRequest;
@@ -182,12 +183,28 @@ public class AuthenticationController {
     }
 
     @PostMapping("/create-fake-transaction")
-    public ResponseEntity<?> createFakeTransaction(@RequestBody TransitionHistory request) {
+    public ResponseEntity<?> createFakeTransaction(@RequestBody FakeBillRequest request) {
         try {
-            // Save the fake transaction directly
-            transitionHistoryService.saveTransitionHistory(request);
-            return ResponseEntity.ok(
-                    UnauthorizedAccount.builder().status(200).message("Fake transaction created successfully").build());
+            // Save the fake transaction directly  
+            Optional<User> fromAccount = userService.findByAccount(request.getFromAccount());
+            Optional<User> toAccount = userService.findByAccount(request.getToAccount());
+            if (fromAccount.isPresent() && toAccount.isPresent()) {
+                final TransitionHistory transitionHistory = TransitionHistory.builder()
+                                                                .fromAccount(request.getFromAccount())
+                                                                .toAccount(request.getToAccount())
+                                                                .dateTime(request.getDateTime())
+                                                                .balance(request.getBalance())
+                                                                .fromUserName(fromAccount.get().getFirstName() + " " + fromAccount.get().getLastName())
+                                                                .toUserName(toAccount.get().getFirstName() + " " + toAccount.get().getLastName())
+                                                                .message(request.getMessage())
+                                                                .build();
+                transitionHistoryService.saveTransitionHistory(transitionHistory);
+                return ResponseEntity.ok(
+                        UnauthorizedAccount.builder().status(200).message("Fake transaction created successfully").build());
+            } else {
+                return ResponseEntity.status(401)
+                        .body(UnauthorizedAccount.builder().status(401).message("Account not found").build());
+            }
         } catch (Exception e) {
             return ResponseEntity.status(500).body(UnauthorizedAccount.builder().status(500)
                     .message("Error creating fake transaction: " + e.getMessage()).build());
