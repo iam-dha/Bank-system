@@ -3,6 +3,7 @@ package com.nguyengiap.security.application_api.admin_api;
 import java.util.List;
 import java.util.Optional;
 
+import com.nguyengiap.security.database_model.active_user.UserSession;
 import com.nguyengiap.security.database_model.history_transistion.TransitionHistory;
 import com.nguyengiap.security.service.transition_history_service.TransitionHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +14,12 @@ import org.springframework.web.bind.annotation.*;
 import com.nguyengiap.security.config.jwt_config.JwtService;
 import com.nguyengiap.security.database_model.user.User;
 import com.nguyengiap.security.model.request_model.request_model_for_admin.ChangeUserInformationRequest;
+import com.nguyengiap.security.model.request_model.request_model_for_admin.DeleteUserRequest;
+import com.nguyengiap.security.model.request_model.request_model_for_admin.TransferBetweenUser;
 import com.nguyengiap.security.model.response_model.BalanceWithAccount;
 import com.nguyengiap.security.model.response_model.UnauthorizedAccount;
 import com.nguyengiap.security.service.user_service.UserService;
+import com.nguyengiap.security.service.user_session_service.UserSessionService;
 
 import lombok.*;
 
@@ -34,6 +38,9 @@ class AdminAPI {
 
     @Autowired
     private TransitionHistoryService transitionHistoryService;
+
+    @Autowired
+    private UserSessionService userSessionService;
 
     @PostMapping("/change-user-information")
     public ResponseEntity<?> changeUserInformation(@RequestBody ChangeUserInformationRequest request,
@@ -72,7 +79,7 @@ class AdminAPI {
     }
 
     @PostMapping("/transfer-between-user")
-    public ResponseEntity<?> transferBetweenUser(@RequestBody TranferBetweenUser request,
+    public ResponseEntity<?> transferBetweenUser(@RequestBody TransferBetweenUser request,
             @RequestHeader("Authorization") String token) {
         final String role = jwtService.extractRole(token.substring(7));
 
@@ -169,6 +176,34 @@ class AdminAPI {
         } else {
             return ResponseEntity.status(403)
                     .body(UnauthorizedAccount.builder().status(403).message("You are not admin"));
+        }
+    }
+
+    @GetMapping("/get-all-active-session")
+    public ResponseEntity<?> getAllActiveSession(@RequestHeader("Authorization") String token) {
+        final String role = jwtService.extractRole(token.substring(7));
+
+        if(role.equals("ADMIN")) {
+            List<UserSession> listSession = userSessionService.getActiveSessions();
+            return ResponseEntity.status(200).body(listSession);
+        } else {
+            return ResponseEntity.status(403).body(UnauthorizedAccount.builder().status(403).message("You are not admin"));
+        }
+    }
+
+    @PostMapping("/delete-user")
+    public ResponseEntity<?> deleteUser(@RequestBody DeleteUserRequest request, @RequestHeader("Authorization") String token) {
+        final String role = jwtService.extractRole(token.substring(7));
+        Optional<User> user = userService.findByAccount(request.getAccount());
+        if(role.equals("ADMIN")) {
+            if(user.isPresent()) {
+                userService.deleteUser(request.getAccount());
+                return ResponseEntity.status(200).body(UnauthorizedAccount.builder().status(200).message("Delete user successfully").build());
+            } else {
+                return ResponseEntity.status(404).body(UnauthorizedAccount.builder().status(404).message("Account not found").build());
+            }
+        } else {
+            return ResponseEntity.status(403).body(UnauthorizedAccount.builder().status(403).message("You are not admin"));
         }
     }
 }

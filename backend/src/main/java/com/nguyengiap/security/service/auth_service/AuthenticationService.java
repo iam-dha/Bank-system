@@ -39,10 +39,11 @@ public class AuthenticationService {
                                 .fund(0)
                                 .build();
                 userRepository.save(user);
-                var jwtToken = jwtService.generateToken(user);
+                var jwtToken = jwtService.generateTokenWithUserDetails(user);
                 return AuthenticationResponse.builder()
                                 .token(jwtToken)
                                 .account(request.getAccount())
+                                .role(Role.USER.name())
                                 .build();
         }
 
@@ -53,7 +54,7 @@ public class AuthenticationService {
                                                 request.getPassword()));
                 var user = userRepository.findByAccount(request.getAccount())
                                 .orElseThrow();
-                var jwtToken = jwtService.generateToken(user);
+                var jwtToken = jwtService.generateTokenWithUserDetails(user);
                 return AuthenticationResponse.builder()
                                 .token(jwtToken)
                                 .account(user.getAccount())
