@@ -59,4 +59,9 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     void changeUserInformation(@Param("account") String account, @Param("password") String password,
             @Param("firstName") String firstName, @Param("lastName") String lastName, @Param("email") String email,
             @Param("address") String address, @Param("phoneNumber") String phoneNumber);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM User u WHERE u.account = :account")
+    void deleteUser(@Param("account") String account);
 }

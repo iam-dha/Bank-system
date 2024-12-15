@@ -36,7 +36,6 @@ public class ControllerLogin implements Initializable {
     @FXML
 
     public void initialize(URL url, ResourceBundle rb) {
-
         notification.setVisible(false);
         togglePasswordVisibility();
     }
@@ -69,6 +68,7 @@ public class ControllerLogin implements Initializable {
         SceneController sceneCotroller = new SceneController();
         sceneCotroller.switchToMainScene(event);
     }
+
 
     public void signIn(ActionEvent event) {
         String user_name = username.getText();
@@ -103,13 +103,16 @@ public class ControllerLogin implements Initializable {
                     Credential credential = objectMapper.readValue(responseBody, Credential.class);
                     System.out.println(responseBody);
                     User.setCredential(credential);
-
                     /*
                     Check role admin
-
                     */
                     SceneController sceneCotroller = new SceneController();
-                    sceneCotroller.switchToMainScene(event);
+                    if (User.getCredential().getRole().equals("USER") ) {
+                        sceneCotroller.switchToMainScene(event);
+                    }
+                    else {
+                        sceneCotroller.switchToAdminScene(event);
+                    }
                 }
                 else if (statusCode == 401) {
                     notification.setText("Invalid Account!");

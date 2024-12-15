@@ -7,9 +7,14 @@ import com.nguyengiap.security.database_model.user.UserRepository;
 import com.nguyengiap.security.model.request_model.AuthenticationRequest;
 import com.nguyengiap.security.model.request_model.RegisterRequestOtp;
 import com.nguyengiap.security.model.response_model.AuthenticationResponse;
+import com.nguyengiap.security.service.user_session_service.UserSessionService;
 
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,6 +28,8 @@ public class AuthenticationService {
         private final PasswordEncoder passwordEncoder;
         private final JwtService jwtService;
         private final AuthenticationManager authenticationManager;
+
+        private final UserSessionService userSessionService;
 
         public AuthenticationResponse register(RegisterRequestOtp request) {
                 var user = User.builder()
@@ -39,10 +46,11 @@ public class AuthenticationService {
                                 .fund(0)
                                 .build();
                 userRepository.save(user);
-                var jwtToken = jwtService.generateToken(user);
+                var jwtToken = jwtService.generateTokenWithUserDetails(user);
                 return AuthenticationResponse.builder()
                                 .token(jwtToken)
                                 .account(request.getAccount())
+                                .role(Role.USER.name())
                                 .build();
         }
 
@@ -53,7 +61,17 @@ public class AuthenticationService {
                                                 request.getPassword()));
                 var user = userRepository.findByAccount(request.getAccount())
                                 .orElseThrow();
-                var jwtToken = jwtService.generateToken(user);
+                var jwtToken = jwtService.generateTokenWithUserDetails(user);
+
+                final String role = jwtService.extractRole(jwtToken);
+
+                final Date expirationDate = jwtService.extractClaim(jwtToken, Claims::getExpiration);
+                LocalDateTime endTime = expirationDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+
+                if(role.equals("USER")) {
+                        userSessionService.saveUserSession(user.getAccount(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhoneNumber(), user.getFund(), endTime);
+                }
+
                 return AuthenticationResponse.builder()
                                 .token(jwtToken)
                                 .account(user.getAccount())

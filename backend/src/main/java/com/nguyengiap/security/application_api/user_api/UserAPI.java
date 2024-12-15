@@ -38,8 +38,8 @@ public class UserAPI {
             @RequestParam String account,
             @RequestHeader("Authorization") String token) {
         final String accountToken = jwtService.extractUserName(token.substring(7));
-        
-        if (!account.equals(accountToken)) {
+        final String role = jwtService.extractRole(token.substring(7));
+        if (!account.equals(accountToken) && !role.equals("ADMIN")) {
             return ResponseEntity.status(403) 
                     .body(UnauthorizedAccount.builder().status(403).message("Unauthorized access").build());
         }
@@ -104,7 +104,8 @@ public class UserAPI {
         @RequestHeader("Authorization") String token
         ) {
         final String accountToken = jwtService.extractUserName(token.substring(7));
-        if (!account.equals(accountToken)) {
+        final String role = jwtService.extractRole(token.substring(7));
+        if (!account.equals(accountToken) && !role.equals("ADMIN")) {
             return ResponseEntity.status(401)
                     .body(UnauthorizedAccount.builder().status(401).message("Unauthorized access").build());
         }
