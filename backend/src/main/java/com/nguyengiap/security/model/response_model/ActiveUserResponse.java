@@ -17,5 +17,5 @@ public class ActiveUserResponse {
     private String lastName;
     private String email;
     private String phoneNumber;
-    private long balance;
+    private long fund;
 }

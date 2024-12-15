@@ -21,7 +21,7 @@ public class UserSessionService {
         session.setLastName(lastName);
         session.setEmail(email);
         session.setPhoneNumber(phoneNumber);
-        session.setBalance(balance);
+        session.setFund(balance);
         session.setEndTime(endTime);
         sessionRepository.save(session);
     }

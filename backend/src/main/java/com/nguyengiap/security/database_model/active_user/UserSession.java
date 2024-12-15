@@ -30,7 +30,7 @@ public class UserSession {
 
     private String phoneNumber;
 
-    private long balance;
+    private long fund;
 
     private LocalDateTime endTime;
 }

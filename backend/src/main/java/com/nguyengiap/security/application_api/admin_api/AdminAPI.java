@@ -197,7 +197,7 @@ class AdminAPI {
                                     .lastName(session.getLastName())
                                     .email(session.getEmail())
                                     .phoneNumber(session.getPhoneNumber())
-                                    .balance(session.getBalance())
+                                    .fund(session.getFund())
                                     .build();
                     listUser.add(user);
                 }
