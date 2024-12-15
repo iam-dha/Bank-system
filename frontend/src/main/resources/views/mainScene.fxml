@@ -1,0 +1,630 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.AreaChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
+   <children>
+      <VBox prefHeight="560.0" prefWidth="247.0" style="-fx-background-color: #576aca;">
+         <children>
+            <AnchorPane prefHeight="134.0" prefWidth="247.0">
+               <children>
+                  <Label alignment="CENTER" layoutX="64.0" layoutY="102.0" text="HUST BANK" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </Label>
+                  <ImageView fitHeight="82.0" fitWidth="90.0" layoutX="78.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../webapp/image/logo.png" />
+                     </image>
+                  </ImageView>
+                  <Line endX="201.99998474121094" endY="87.29289245605469" layoutX="22.0" layoutY="58.0" startX="-2.799999237060547" startY="87.29289245605469" stroke="WHITE" />
+               </children>
+            </AnchorPane>
+            <Button mnemonicParsing="false" onAction="#switchToOverview" prefHeight="26.0" prefWidth="248.0" styleClass="menu-button" stylesheets="@../webapp/css/main.css" text="     Overview">
+               <VBox.margin>
+                  <Insets left="15.0" right="15.0" top="50.0" />
+               </VBox.margin>
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font>
+               <graphic>
+                  <ImageView fitHeight="33.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../webapp/image/overview.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#switchToTranfer" prefHeight="26.0" prefWidth="275.0" styleClass="menu-button" stylesheets="@../webapp/css/main.css" text="     Transfers">
+               <VBox.margin>
+                  <Insets left="15.0" right="15.0" top="5.0" />
+               </VBox.margin>
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font>
+               <graphic>
+                  <ImageView fitHeight="25.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../webapp/image/trans.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#switchToHistory" prefHeight="26.0" prefWidth="298.0" styleClass="menu-button" stylesheets="@../webapp/css/main.css" text="      History">
+               <VBox.margin>
+                  <Insets right="15.0" top="5.0" />
+               </VBox.margin>
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font>
+               <graphic>
+                  <ImageView fitHeight="25.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../webapp/image/his.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#switchToSetting" style="-fx-background-color: #576aca;" text=" Setting" textFill="WHITE">
+               <graphic>
+                  <ImageView fitHeight="35.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../webapp/image/setting.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <font>
+                  <Font size="17.0" />
+               </font>
+               <VBox.margin>
+                  <Insets bottom="10.0" left="10.0" top="260.0" />
+               </VBox.margin>
+            </Button>
+            <Line endX="201.99998474121094" endY="87.29289245605469" startX="-2.799999237060547" startY="87.29289245605469" stroke="WHITE">
+               <VBox.margin>
+                  <Insets left="20.0" />
+               </VBox.margin>
+            </Line>
+            <Button mnemonicParsing="false" onAction="#logOut" style="-fx-background-color: #576aca;" text="Log out" textFill="WHITE">
+               <graphic>
+                  <ImageView fitHeight="35.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../webapp/image/s-removebg-preview.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <VBox.margin>
+                  <Insets left="13.0" />
+               </VBox.margin>
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Button>
+         </children>
+      </VBox>
+      <StackPane prefHeight="720.0" prefWidth="777.0">
+         <children>
+            <HBox fx:id="overview" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #F2F5FA;">
+               <children>
+                  <VBox prefHeight="720.0" prefWidth="277.0">
+                     <children>
+                        <Label text="Overview" textFill="#414c69">
+                           <VBox.margin>
+                              <Insets left="30.0" top="30.0" />
+                           </VBox.margin>
+                           <font>
+                              <Font name="System Bold" size="24.0" />
+                           </font></Label>
+                        <Label fx:id="welcomeLabel" text="Welcome, User" textFill="#414c69">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets left="30.0" top="10.0" />
+                           </VBox.margin>
+                        </Label>
+                        <VBox prefHeight="87.0" prefWidth="216.0" styleClass="totalVbox" stylesheets="@../webapp/css/create.css">
+                           <children>
+                              <Label alignment="CENTER" prefHeight="18.0" prefWidth="283.0" text="Total balance" textFill="#8993ad">
+                                 <padding>
+                                    <Insets top="20.0" />
+                                 </padding></Label>
+                              <Label fx:id="balanceLabel" alignment="CENTER" prefHeight="18.0" prefWidth="222.0" text="NULL" textFill="#414c69">
+                                 <font>
+                                    <Font size="24.0" />
+                                 </font></Label>
+                           </children>
+                           <VBox.margin>
+                              <Insets left="30.0" right="30.0" top="20.0" />
+                           </VBox.margin>
+                        </VBox>
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <Label text="Card" textFill="#414c69">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets top="20.0" />
+                                 </VBox.margin></Label>
+                              <ImageView fitHeight="152.0" fitWidth="234.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../webapp/image/Screenshot_from_2024-12-14_19-57-39-removebg-preview.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                           <VBox.margin>
+                              <Insets left="30.0" />
+                           </VBox.margin>
+                        </VBox>
+                        <VBox prefHeight="295.0" prefWidth="275.0">
+                           <children>
+                              <Label text="Notification">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets left="30.0" />
+                                 </VBox.margin></Label>
+                              <Pane prefHeight="140.0" prefWidth="275.0">
+                                 <children>
+                                    <Label fx:id="notification1" alignment="TOP_LEFT" layoutX="14.0" layoutY="29.0" prefHeight="109.0" prefWidth="245.0" textFill="#006aff" wrapText="true">
+                                       <padding>
+                                          <Insets left="10.0" top="10.0" />
+                                       </padding></Label>
+                                 </children>
+                              </Pane>
+                              <Pane layoutX="10.0" layoutY="30.0" prefHeight="140.0" prefWidth="275.0">
+                                 <children>
+                                    <Label fx:id="notification2" alignment="TOP_LEFT" layoutX="14.0" layoutY="29.0" prefHeight="109.0" prefWidth="245.0" textFill="#006aff" wrapText="true">
+                                       <padding>
+                                          <Insets left="10.0" top="10.0" />
+                                       </padding>
+                                    </Label>
+                                 </children>
+                              </Pane>
+                           </children>
+                        </VBox>
+                     </children>
+                  </VBox>
+                  <Line endX="175.8858642578125" endY="611.2929077148438" opacity="0.2" startX="176.09295654296875" stroke="#576aca" strokeWidth="0.7">
+                     <HBox.margin>
+                        <Insets top="85.0" />
+                     </HBox.margin>
+                  </Line>
+                  <VBox prefHeight="720.0" prefWidth="502.0">
+                     <children>
+                        <VBox prefHeight="411.0" prefWidth="461.0" styleClass="totalVbox1" stylesheets="@../webapp/css/create.css">
+                           <VBox.margin>
+                              <Insets left="20.0" right="20.0" top="85.0" />
+                           </VBox.margin>
+                           <children>
+                              <HBox prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <Label />
+                                 </children>
+                              </HBox>
+                              <AreaChart fx:id="areaChart" style="-fx-background-color: #ffffff;" stylesheets="@../webapp/css/create.css">
+                                <xAxis>
+                                  <CategoryAxis side="BOTTOM" stylesheets="@../webapp/css/create.css" tickLabelFill="#d42626" fx:id="xAxis">
+                                       <styleClass>
+                                          <String fx:value="x-axis" />
+                                          <String fx:value="axis-line" />
+                                       </styleClass></CategoryAxis>
+                                </xAxis>
+                                <yAxis>
+                                  <NumberAxis fx:id="yAxis" side="LEFT" stylesheets="@../webapp/css/create.css">
+                                       <styleClass>
+                                          <String fx:value="axis-line" />
+                                          <String fx:value="y-axis" />
+                                       </styleClass></NumberAxis>
+                                </yAxis>
+                                 <VBox.margin>
+                                    <Insets top="80.0" />
+                                 </VBox.margin>
+                                 <styleClass>
+                                    <String fx:value="chart-series-area-fill" />
+                                    <String fx:value="chart-series-area-line" />
+                                    <String fx:value="chart-legend" />
+                                 </styleClass>
+                              </AreaChart>
+                           </children>
+                        </VBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <VBox fx:id="tranfer" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #F2F5FA;">
+               <children>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Label prefHeight="100.0" prefWidth="481.0" text="Transfer" textFill="#414c69">
+                           <font>
+                              <Font name="System Bold" size="24.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                           <padding>
+                              <Insets left="30.0" />
+                           </padding>
+                        </Label>
+                        <VBox prefHeight="101.0" prefWidth="275.0" style="-fx-alignment: center;">
+                           <children>
+                              <Label alignment="TOP_RIGHT" contentDisplay="CENTER" prefHeight="18.0" prefWidth="184.0" text="Balance" textFill="#414c69">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets top="20.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <Label fx:id="currentBalance" alignment="TOP_RIGHT" prefHeight="50.0" prefWidth="156.0" text="100000000">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets left="30.0" />
+                                 </VBox.margin>
+                              </Label>
+                           </children>
+                        </VBox>
+                        <ImageView fitHeight="53.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../webapp/image/user2.png" />
+                           </image>
+                           <HBox.margin>
+                              <Insets right="50.0" top="15.0" />
+                           </HBox.margin>
+                        </ImageView>
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="614.0" prefWidth="778.0">
+                     <children>
+                        <VBox prefHeight="614.0" prefWidth="782.0">
+                           <children>
+                              <HBox prefHeight="360.0" prefWidth="697.0" styleClass="tranferHbox" stylesheets="@../webapp/css/refer.css">
+                                 <children>
+                                    <VBox prefHeight="322.0" prefWidth="292.0">
+                                       <children>
+                                          <Label text="From" textFill="#696969">
+                                             <VBox.margin>
+                                                <Insets left="30.0" top="20.0" />
+                                             </VBox.margin>
+                                             <font>
+                                                <Font name="System Bold" size="16.0" />
+                                             </font></Label>
+                                          <Label fx:id="senderLabel" prefHeight="37.0" prefWidth="311.0" styleClass="label1" text="0000 0000 0000">
+                                             <VBox.margin>
+                                                <Insets left="30.0" top="45.0" />
+                                             </VBox.margin>
+                                             <padding>
+                                                <Insets left="20.0" />
+                                             </padding></Label>
+                                          <Label text="Message" textFill="DIMGRAY">
+                                             <VBox.margin>
+                                                <Insets left="30.0" top="10.0" />
+                                             </VBox.margin></Label>
+                                          <TextField fx:id="decripstionTextFiel" prefHeight="37.0" prefWidth="311.0" styleClass="text1" stylesheets="@../webapp/css/refer.css">
+                                             <VBox.margin>
+                                                <Insets left="30.0" />
+                                             </VBox.margin>
+                                             <padding>
+                                                <Insets left="20.0" />
+                                             </padding></TextField>
+                                          <Label text="Amount" textFill="DIMGRAY">
+                                             <VBox.margin>
+                                                <Insets left="30.0" top="10.0" />
+                                             </VBox.margin></Label>
+                                          <TextField fx:id="amountTextField" prefHeight="37.0" prefWidth="311.0" promptText="\$" styleClass="text1">
+                                             <VBox.margin>
+                                                <Insets left="30.0" />
+                                             </VBox.margin>
+                                             <padding>
+                                                <Insets left="20.0" />
+                                             </padding></TextField>
+                                          <Label fx:id="transactionErrLabel" prefHeight="38.0" prefWidth="292.0" textFill="RED" wrapText="true">
+                                             <VBox.margin>
+                                                <Insets top="10.0" />
+                                             </VBox.margin>
+                                             <padding>
+                                                <Insets left="30.0" />
+                                             </padding>
+                                          </Label>
+                                          <Button fx:id="send" mnemonicParsing="false" onAction="#popOtp" prefHeight="38.0" prefWidth="108.0" styleClass="signInButton" text="Send">
+                                             <VBox.margin>
+                                                <Insets left="30.0" top="10.0" />
+                                             </VBox.margin>
+                                             <font>
+                                                <Font name="System Bold" size="13.0" />
+                                             </font>
+                                          </Button>
+                                       </children>
+                                    </VBox>
+                                    <Pane prefHeight="298.0" prefWidth="70.0">
+                                       <children>
+                                          <ImageView fitHeight="34.0" fitWidth="46.0" layoutX="30.0" layoutY="87.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../webapp/image/arrow.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </Pane>
+                                    <VBox prefHeight="322.0" prefWidth="289.0">
+                                       <children>
+                                          <Label text="To" textFill="DIMGRAY">
+                                             <font>
+                                                <Font name="System Bold" size="16.0" />
+                                             </font>
+                                             <VBox.margin>
+                                                <Insets left="20.0" top="20.0" />
+                                             </VBox.margin></Label>
+                                          <ChoiceBox fx:id="myChoiceBox" prefHeight="26.0" prefWidth="281.0" styleClass="list-cell">
+                                             <VBox.margin>
+                                                <Insets left="20.0" />
+                                             </VBox.margin>
+                                          </ChoiceBox>
+                                          <TextField fx:id="receiverAccTextfield" prefHeight="37.0" prefWidth="258.0" promptText="Account" styleClass="text1">
+                                             <VBox.margin>
+                                                <Insets left="20.0" top="10.0" />
+                                             </VBox.margin>
+                                             <padding>
+                                                <Insets left="20.0" />
+                                             </padding></TextField>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets left="30.0" right="50.0" />
+                                 </VBox.margin>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children></VBox>
+            <VBox fx:id="history" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #F2F5FA;" stylesheets="@../webapp/css/admin.css">
+               <children>
+                  <Label prefHeight="38.0" prefWidth="136.0" text="HISTORY" textFill="#414c69">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets left="30.0" top="30.0" />
+                     </VBox.margin>
+                  </Label>
+                  <HBox prefHeight="45.0" prefWidth="778.0">
+                     <children>
+                        <TextField fx:id="keywordToSearch" prefHeight="46.0" prefWidth="632.0" promptText="Search for name, description.." styleClass="text-field" stylesheets="@../webapp/css/history.css">
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                           <padding>
+                              <Insets left="50.0" />
+                           </padding>
+                        </TextField>
+                        <ImageView fitHeight="31.0" fitWidth="32.0" opacity="0.7" pickOnBounds="true" preserveRatio="true">
+                           <HBox.margin>
+                              <Insets left="-625.0" top="7.0" />
+                           </HBox.margin>
+                           <image>
+                              <Image url="@../webapp/image/search.png" />
+                           </image>
+                        </ImageView>
+                        <Button mnemonicParsing="false" onAction="#getHistoryTransaction" prefHeight="53.0" prefWidth="82.0" styleClass="signInButton" stylesheets="@../webapp/css/history.css" text="Search">
+                           <HBox.margin>
+                              <Insets left="600.0" />
+                           </HBox.margin>
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                        </Button>
+                     </children>
+                     <VBox.margin>
+                        <Insets left="30.0" top="20.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <VBox prefHeight="100.0" prefWidth="300.0">
+                           <children>
+                              <Label prefHeight="22.0" prefWidth="62.0" text="From" textFill="#414c69">
+                                 <font>
+                                    <Font name="System Bold" size="16.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets left="10.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <DatePicker fx:id="fromDate" prefHeight="46.0" prefWidth="210.0" styleClass="date-picker" stylesheets="@../webapp/css/history.css" />
+                              <Label fx:id="historyError" prefHeight="34.0" prefWidth="305.0" textFill="RED" wrapText="true" />
+                           </children>
+                           <HBox.margin>
+                              <Insets left="30.0" />
+                           </HBox.margin>
+                           <VBox.margin>
+                              <Insets left="30.0" right="20.0" />
+                           </VBox.margin>
+                        </VBox>
+                        <VBox prefHeight="100.0" prefWidth="234.0">
+                           <children>
+                              <Label prefHeight="22.0" prefWidth="40.0" text="To" textFill="#414c69">
+                                 <font>
+                                    <Font name="System Bold" size="16.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets left="10.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <DatePicker fx:id="toDate" prefHeight="46.0" prefWidth="210.0" stylesheets="@../webapp/css/history.css" />
+                           </children>
+                        </VBox>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="20.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <TableView fx:id="transactionTable" prefHeight="418.0" prefWidth="727.0">
+                     <columns>
+                        <TableColumn fx:id="timeColumn" prefWidth="116.0" text="Time" />
+                        <TableColumn fx:id="fromAccountColumn" prefWidth="135.0" text="From Account" />
+                        <TableColumn fx:id="toAccountColumn" prefWidth="143.0" text="To Account" />
+                        <TableColumn fx:id="messageColumn" prefWidth="332.0" text="Message" />
+                     </columns>
+                     <VBox.margin>
+                        <Insets left="30.0" right="20.0" />
+                     </VBox.margin>
+                  </TableView>
+               </children>
+               <StackPane.margin>
+                  <Insets />
+               </StackPane.margin>
+            </VBox>
+            <VBox fx:id="setting" prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <Label prefHeight="100.0" prefWidth="481.0" text="Setting" textFill="#414c69">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                     <padding>
+                        <Insets left="30.0" />
+                     </padding>
+                  </Label>
+                  <Label text="Your information account">
+                     <VBox.margin>
+                        <Insets left="30.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <VBox prefHeight="550.0" prefWidth="1970.0">
+                     <VBox.margin>
+                        <Insets right="30.0" top="20.0" />
+                     </VBox.margin>
+                     <children>
+                        <VBox fx:id="registerScene" prefHeight="512.0" prefWidth="398.0">
+                           <children>
+                              <HBox prefHeight="43.0" prefWidth="388.0" stylesheets="@../webapp/css/style.css">
+                                 <children>
+                                    <TextField fx:id="fnameTextField" prefHeight="31.0" prefWidth="230.0" promptText="Firstname" stylesheets="@../webapp/css/create.css">
+                                       <opaqueInsets>
+                                          <Insets />
+                                       </opaqueInsets>
+                                       <HBox.margin>
+                                          <Insets bottom="10.0" left="30.0" right="10.0" />
+                                       </HBox.margin>
+                                       <padding>
+                                          <Insets top="10.0" />
+                                       </padding>
+                                    </TextField>
+                                    <TextField fx:id="lnameTextField" prefHeight="31.0" prefWidth="230.0" promptText="Lastname" stylesheets="@../webapp/css/create.css">
+                                       <HBox.margin>
+                                          <Insets right="30.0" />
+                                       </HBox.margin>
+                                    </TextField>
+                                 </children>
+                              </HBox>
+                              <TextField fx:id="emailTextField" layoutX="10.0" layoutY="172.0" prefHeight="31.0" prefWidth="593.0" promptText="Email Address" stylesheets="@../webapp/css/create.css">
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" left="30.0" right="215.0" />
+                                 </VBox.margin>
+                              </TextField>
+                              <TextField fx:id="userTextField" layoutX="40.0" layoutY="228.0" promptText="Username" stylesheets="@../webapp/css/create.css">
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" left="30.0" right="215.0" />
+                                 </VBox.margin>
+                              </TextField>
+                              <TextField fx:id="phoneTextField" promptText="Phone" stylesheets="@../webapp/css/create.css">
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" left="30.0" right="215.0" />
+                                 </VBox.margin>
+                              </TextField>
+                              <TextField fx:id="addrTextField" promptText="Address" stylesheets="@../webapp/css/create.css">
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" left="30.0" right="215.0" />
+                                 </VBox.margin>
+                              </TextField>
+                              <Line endX="368.0928955078125" endY="9.681821102276444E-4" opacity="0.5" startX="-100.0">
+                                 <VBox.margin>
+                                    <Insets left="30.0" top="20.0" />
+                                 </VBox.margin>
+                              </Line>
+                              <Label text="Change your password">
+                                 <VBox.margin>
+                                    <Insets bottom="30.0" left="30.0" top="20.0" />
+                                 </VBox.margin>
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Label>
+                              <VBox prefHeight="130.0" prefWidth="497.0">
+                                 <children>
+                                    <PasswordField fx:id="currentPassword" promptText="Current Password" styleClass="../webapp/css/forget.css" stylesheets="@../webapp/css/forget.css">
+                                       <VBox.margin>
+                                          <Insets left="30.0" top="10.0" />
+                                       </VBox.margin>
+                                    </PasswordField>
+                                    <PasswordField fx:id="newPassword" promptText="New Password" styleClass="../webapp/css/forget.css" stylesheets="@../webapp/css/forget.css">
+                                       <VBox.margin>
+                                          <Insets left="30.0" top="20.0" />
+                                       </VBox.margin>
+                                    </PasswordField>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets right="220.0" />
+                                 </VBox.margin>
+                              </VBox>
+                              <Label fx:id="changePassLabel" prefHeight="17.0" prefWidth="497.0">
+                                 <VBox.margin>
+                                    <Insets left="30.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <Button fx:id="signInButton" mnemonicParsing="false" onAction="#chagePassword" prefHeight="43.0" prefWidth="110.0" stylesheets="@../webapp/css/create.css" text="Submit">
+                                 <VBox.margin>
+                                    <Insets left="30.0" right="30.0" top="10.0" />
+                                 </VBox.margin>
+                              </Button>
+                              <Label fx:id="notificationLabel" textFill="#ff001a">
+                                 <VBox.margin>
+                                    <Insets left="30.0" top="10.0" />
+                                 </VBox.margin>
+                              </Label>
+                           </children>
+                           <VBox.margin>
+                              <Insets right="30.0" />
+                           </VBox.margin>
+                        </VBox>
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+         </children>
+      </StackPane>
+   </children>
+</HBox>

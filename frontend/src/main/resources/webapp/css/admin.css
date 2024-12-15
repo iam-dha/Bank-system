@@ -1,0 +1,46 @@
+.table-view {
+    -fx-background-color: #ffffff; /* Màu nền chính */
+    -fx-font-family: "Arial"; /* Phông chữ chuyên nghiệp */
+    -fx-font-size: 14px; /* Kích thước chữ */
+    -fx-padding: 5px; /* Khoảng cách bên trong */
+}
+
+.table-view .column-header {
+    -fx-background-color: #5C72DF; /* Màu nền tiêu đề cột */
+    -fx-text-fill: #ffffff; /* Màu chữ trắng */
+    -fx-font-weight: bold; /* Chữ đậm */
+    -fx-font-size: 15px; /* Kích thước chữ tiêu đề */
+    -fx-alignment: CENTER; /* Canh giữa nội dung tiêu đề */
+    -fx-border-color: transparent; /* Không có viền */
+}
+
+.table-row-cell {
+    -fx-background-color: #ffffff; /* Màu nền dòng */
+    -fx-text-fill: #333333; /* Màu chữ chính */
+    -fx-border-color: transparent; /* Không có viền */
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #5C72DF; /* Màu nền khi chọn */
+    -fx-text-fill: #ffffff; /* Màu chữ khi chọn */
+}
+
+.table-cell {
+    -fx-alignment: CENTER_LEFT; /* Canh trái nội dung */
+    -fx-padding: 5px; /* Khoảng cách trong từng ô */
+}
+
+.table-cell:selected {
+    -fx-background-color: #5C72DF; /* Màu nền khi ô được chọn */
+    -fx-text-fill: #ffffff; /* Màu chữ khi ô được chọn */
+}
+
+.table-view .virtual-flow .scroll-bar {
+    -fx-background-color: #e6e6e6; /* Màu nền thanh cuộn */
+}
+
+.table-view .virtual-flow .scroll-bar:horizontal .thumb,
+.table-view .virtual-flow .scroll-bar:vertical .thumb {
+    -fx-background-color: #5C72DF; /* Màu của thanh cuộn */
+    -fx-background-radius: 5px; /* Bo góc */
+}

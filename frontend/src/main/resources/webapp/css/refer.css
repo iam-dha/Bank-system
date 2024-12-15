@@ -1,0 +1,123 @@
+.tranferHbox {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+}
+.label1 {
+    -fx-background-color: #B3BACD;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+
+}
+.text1 {
+    -fx-background-color: #F2F5FA;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+}
+.signInButton {
+  -fx-background-color: #5C72DF; /* Màu xanh dương */
+  -fx-text-fill: white; /* Màu chữ trắng */
+  -fx-font-size: 16px; /* Kích thước chữ */
+  -fx-padding: 5px 10px; /* Khoảng cách lề trong */
+  -fx-border-radius: 5px; /* Bo góc */
+  -fx-cursor: hand; /* Biểu tượng chuột khi di chuột qua */
+  -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 1); /* Hiệu ứng đổ bóng */
+}
+
+.signInButton:hover {
+  -fx-background-color: #576aca; /* Màu xanh đậm hơn khi di chuột qua */
+}
+
+.signInButton:pressed {
+  -fx-background-color: #0062cc; /* Màu xanh đậm nhất khi nhấn */
+  -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 2, 0, 0, 1); /* Hiệu ứng đổ bóng khi nhấn */
+ }
+ .choice-box {
+     -fx-background-color: #5C72DF; /* Màu nền */
+     -fx-text-fill: #ffffff;       /* Màu chữ */
+     -fx-border-color: #7587DD;   /* Màu viền */
+     -fx-border-radius: 5px;      /* Bo tròn góc viền */            /* Khoảng cách bên trong */
+     -fx-background-radius: 5px;      /* Bo tròn góc viền */            /* Khoảng cách bên trong */
+ }
+ .choice-box:hover {
+     -fx-background-color: #5C72DF; /* Màu nền khi hover */
+ }
+ .choice-box .list-cell {
+     -fx-text-fill: #ffffff;       /* Màu chữ của các mục trong danh sách */
+ }
+ /* Alert chính */
+ .success-alert .dialog-pane {
+     -fx-background-color: #f0fff4; /* Nền màu xanh nhạt */
+     -fx-border-color: #4CAF50;    /* Viền màu xanh lá cây */
+     -fx-border-radius: 10;
+     -fx-background-radius: 10;
+ }
+
+ /* Tiêu đề của Alert */
+ .success-alert .header-panel {
+     -fx-background-color: #4CAF50; /* Nền tiêu đề */
+     -fx-text-fill: white;          /* Chữ màu trắng */
+     -fx-font-size: 18px;
+     -fx-font-weight: bold;
+     -fx-padding: 10px;
+ }
+
+ /* Nội dung Alert thành công*/
+ .success-alert .content {
+     -fx-text-fill: #2e7d32; /* Màu chữ xanh đậm */
+     -fx-font-size: 14px;
+     -fx-padding: 10px;
+ }
+
+ /* Nút bấm */
+ .success-alert .button-bar .button {
+     -fx-background-color: #4CAF50; /* Nút xanh lá */
+     -fx-text-fill: white;          /* Chữ nút màu trắng */
+     -fx-font-weight: bold;
+     -fx-background-radius: 5;
+     -fx-border-color: transparent;
+     -fx-cursor: hand;
+ }
+
+ .success-alert .button-bar .button:hover {
+     -fx-background-color: #45a049; /* Nút xanh đậm hơn khi hover */
+ }
+
+ .success-alert .button-bar .button:pressed {
+     -fx-background-color: #3e8e41; /* Nút tối hơn khi bấm */
+ }
+ /* Tiêu đề của Alert cho Invalid OTP */
+ .invalid-otp-alert .header-panel {
+     -fx-background-color: #f44336; /* Nền màu đỏ */
+     -fx-text-fill: white;          /* Chữ màu trắng */
+     -fx-font-size: 18px;           /* Kích thước chữ */
+     -fx-font-weight: bold;         /* Chữ in đậm */
+     -fx-padding: 10px;             /* Khoảng cách */
+ }
+
+ /* Nội dung Alert Invalid OTP */
+
+ .invalid-otp-alert .content {
+     -fx-text-fill: #d32f2f; /* Màu chữ đỏ */
+     -fx-font-size: 14px;
+     -fx-padding: 10px;
+ }
+
+ /* Nút bấm */
+ .invalid-otp-alert .button-bar .button {
+     -fx-background-color: #f44336; /* Nút đỏ */
+     -fx-text-fill: white;          /* Chữ nút màu trắng */
+     -fx-font-weight: bold;
+     -fx-background-radius: 5;
+     -fx-border-color: transparent;
+     -fx-cursor: hand;
+ }
+
+ .invalid-otp-alert .button-bar .button:hover {
+     -fx-background-color: #e53935; /* Nút đậm hơn khi hover */
+ }
+
+ .invalid-otp-alert .button-bar .button:pressed {
+     -fx-background-color: #d32f2f; /* Nút tối hơn khi bấm */
+ }
+
