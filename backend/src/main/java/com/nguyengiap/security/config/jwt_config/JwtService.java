@@ -40,10 +40,6 @@ public class JwtService {
         if (userDetails instanceof com.nguyengiap.security.database_model.user.User) {
             claims.put("role", ((com.nguyengiap.security.database_model.user.User)userDetails).getRole().name());
         }
-
-        if(((com.nguyengiap.security.database_model.user.User)userDetails).getRole().name().equals("USER")) {
-            userSessionService.saveUserSession(userDetails.getUsername(), generateToken(claims, userDetails));
-        }
         return generateToken(claims, userDetails);
     }
 
@@ -52,7 +48,7 @@ public class JwtService {
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 10))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

@@ -20,14 +20,17 @@ import lombok.Setter;
 public class UserSession {
     @Id
     @Column(nullable = false, unique = true)
-    private String username;
+    private String account;
 
-    @Column(nullable = false)
-    private String token;
+    private String firstName;
 
-    @Column(name = "last_activity")
-    private LocalDateTime lastActivity;
+    private String lastName;
 
-    @Column(name = "is_active")
-    private boolean isActive;
+    private String email;
+
+    private String phoneNumber;
+
+    private long balance;
+
+    private LocalDateTime endTime;
 }

@@ -14,32 +14,19 @@ public class UserSessionService {
     @Autowired
     private UserSessionRepository sessionRepository;
 
-    public void saveUserSession(String username, String token) {
+    public void saveUserSession(String account, String firstName, String lastName, String email, String phoneNumber, long balance, LocalDateTime endTime) {
         UserSession session = new UserSession();
-        session.setUsername(username);
-        session.setToken(token);
-        session.setLastActivity(LocalDateTime.now());
-        session.setActive(true);
+        session.setAccount(account);
+        session.setFirstName(firstName);
+        session.setLastName(lastName);
+        session.setEmail(email);
+        session.setPhoneNumber(phoneNumber);
+        session.setBalance(balance);
+        session.setEndTime(endTime);
         sessionRepository.save(session);
     }
 
-    public void deactivateSession(String token) {
-        sessionRepository.findByToken(token)
-            .ifPresent(session -> {
-                session.setActive(false);
-                sessionRepository.save(session);
-            });
-    }
-
-    public List<UserSession> getActiveSessions() {
-        return sessionRepository.findByIsActiveTrue();
-    }
-
-    public void updateLastActivity(String token) {
-        sessionRepository.findByToken(token)
-            .ifPresent(session -> {
-                session.setLastActivity(LocalDateTime.now());
-                sessionRepository.save(session);
-            });
+    public List<UserSession> getUserSession() {
+        return sessionRepository.findAll();
     }
 }

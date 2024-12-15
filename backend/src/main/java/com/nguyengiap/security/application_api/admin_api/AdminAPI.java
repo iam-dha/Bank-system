@@ -1,5 +1,6 @@
 package com.nguyengiap.security.application_api.admin_api;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +17,7 @@ import com.nguyengiap.security.database_model.user.User;
 import com.nguyengiap.security.model.request_model.request_model_for_admin.ChangeUserInformationRequest;
 import com.nguyengiap.security.model.request_model.request_model_for_admin.DeleteUserRequest;
 import com.nguyengiap.security.model.request_model.request_model_for_admin.TransferBetweenUser;
+import com.nguyengiap.security.model.response_model.ActiveUserResponse;
 import com.nguyengiap.security.model.response_model.BalanceWithAccount;
 import com.nguyengiap.security.model.response_model.UnauthorizedAccount;
 import com.nguyengiap.security.service.user_service.UserService;
@@ -184,10 +186,35 @@ class AdminAPI {
         final String role = jwtService.extractRole(token.substring(7));
 
         if(role.equals("ADMIN")) {
-            List<UserSession> listSession = userSessionService.getActiveSessions();
-            return ResponseEntity.status(200).body(listSession);
+            try {
+                List<ActiveUserResponse> listUser = new ArrayList<>();
+                List<UserSession> listSession = userSessionService.getUserSession();
+                
+                for(UserSession session : listSession) {
+                    ActiveUserResponse user = ActiveUserResponse.builder()
+                                    .account(session.getAccount())
+                                    .firstName(session.getFirstName())
+                                    .lastName(session.getLastName())
+                                    .email(session.getEmail())
+                                    .phoneNumber(session.getPhoneNumber())
+                                    .balance(session.getBalance())
+                                    .build();
+                    listUser.add(user);
+                }
+                return ResponseEntity.status(200).body(listUser);
+            } catch (Exception e) {
+                return ResponseEntity.status(500)
+                    .body(UnauthorizedAccount.builder()
+                        .status(500)
+                        .message("Error retrieving user sessions: " + e.getMessage())
+                        .build());
+            }
         } else {
-            return ResponseEntity.status(403).body(UnauthorizedAccount.builder().status(403).message("You are not admin"));
+            return ResponseEntity.status(403)
+                .body(UnauthorizedAccount.builder()
+                    .status(403)
+                    .message("You are not admin")
+                    .build());
         }
     }
 
