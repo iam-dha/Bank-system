@@ -54,4 +54,8 @@ public class UserService {
             String address, String phoneNumber) {
         userRepository.changeUserInformation(account, password, firstName, lastName, email, address, phoneNumber);
     }
+
+    public void deleteUser(String account) {
+        userRepository.deleteUser(account);
+    }
 }
