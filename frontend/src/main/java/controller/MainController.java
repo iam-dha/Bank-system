@@ -24,10 +24,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import model.Credential;
-import model.Notification;
-import model.Transaction;
-import model.User;
+import model.*;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.net.URI;
@@ -119,7 +117,8 @@ public class MainController implements Initializable {
     private Credential credetial;
     private String _fromdate = "01/01/2024";
     private String _todate = "10/12/2024";
-
+    private long [] income = new long[12];
+    private long [] expense = new long[12];
 
     public void getUserInformation(){
         Credential credential = User.getCredential();
@@ -290,8 +289,8 @@ public class MainController implements Initializable {
         overview.setMouseTransparent(false);
         setting.setMouseTransparent(true);
         setting.setVisible(false);
-        initialize();
         switchToOverview();
+        initialize();
         fromDate.setOnAction(e -> {
             LocalDate selectedDate = fromDate.getValue(); // Get selected date
             if (selectedDate != null) {
@@ -345,6 +344,7 @@ public class MainController implements Initializable {
     public void switchToOverview(){
         setNotification();
         getUserInformation();
+        getChartData();
         balanceLabel.setText(user.getFund());
         welcomeLabel.setText("Welcome, " + user.getFirstname());
         tranfer.setVisible(false);
@@ -430,8 +430,8 @@ public class MainController implements Initializable {
         xAxis.setTickMarkVisible(false);  // Ẩn các dấu chia dọc trên trục Y
         xAxis.setTickMarkVisible(false);
         // Dữ liệu mẫu
-        double[] income = {1200, 1500, 1700, 1600, 1800, 2000, 2100, 1900, 2200, 2400, 2300, 2500};
-        double[] expense = {800, 1000, 1900, 1100, 1300, 2300, 1500, 1200, 2600, 1000, 900, 950};
+        //long[] income = {1200, 1500, 1700, 1600, 1800, 2000, 2100, 1900, 2200, 2400, 2300, 2500};
+        //long[] expense = {800, 1000, 1900, 1100, 1300, 2300, 1500, 1200, 2600, 1000, 900, 950};
 
         // Tạo Series cho Tiền vào (Income)
         XYChart.Series<String, Number> incomeSeries = new XYChart.Series<>();
@@ -463,6 +463,47 @@ public class MainController implements Initializable {
 
         // Thêm Series vào AreaChart
         areaChart.getData().addAll(incomeSeries, expenseSeries);
+    }
+    public void getChartData(){
+        Credential credential = User.getCredential();
+        String _token = credential.getToken();
+        String _account = user.getAccount();
+        String _year = "2024";
+        String reqEndpoint = "http://13.239.134.221:8080/api/v1/bank-api/monthly-transition-summary";
+        String endpoint = String.format("%s?account=%s&year=%s",reqEndpoint, _account, _year);
+        HttpResponse<String> response = null;
+        ArrayList<TransistionSummary> transitionArrayList = null;
+        try{
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(endpoint))
+                    .header("Content-Type", "application/json")
+                    .header("Authorization", String.format("Bearer %s", _token))
+                    .GET()
+                    .build();
+
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println(response.body());
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        if(response.statusCode() == 200){
+            try{
+                ObjectMapper objectMapper = new ObjectMapper();
+                transitionArrayList = objectMapper.readValue(response.body(), new TypeReference<ArrayList<TransistionSummary>>() {
+                });
+                for(TransistionSummary s : transitionArrayList){
+                    income[s.getMonth()] = s.getIncome();
+                    expense[s.getMonth()] = s.getExpense();
+                }
+            } catch(Exception e){
+                System.out.println(e.getMessage());
+            }
+        } else {
+
+            System.out.println("Please check getChartData function");
+        }
     }
     @FXML
     public void logOut(ActionEvent event){
