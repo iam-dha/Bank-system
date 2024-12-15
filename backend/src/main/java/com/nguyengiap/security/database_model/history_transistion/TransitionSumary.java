@@ -11,11 +11,32 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TransitionSumary {
-    @Id
     private int month;
-    @Column(columnDefinition = "integer default 0")
     private long expense;
-    @Column(columnDefinition = "integer default 0")
     private long income;
+
+    public long getExpense() {
+        return expense;
+    }
+
+    public void setExpense(long expense) {
+        this.expense = expense;
+    }
+
+    public long getIncome() {
+        return income;
+    }
+
+    public void setIncome(long income) {
+        this.income = income;
+    }
+
+    public int getMonth() {
+        return month;
+    }
+
+    public void setMonth(int month) {
+        this.month = month;
+    }
 }
 
