@@ -289,7 +289,7 @@ public class MainController implements Initializable {
         overview.setMouseTransparent(false);
         setting.setMouseTransparent(true);
         setting.setVisible(false);
-        switchToOverview();
+        getUserInformation();
         initialize();
         fromDate.setOnAction(e -> {
             LocalDate selectedDate = fromDate.getValue(); // Get selected date
@@ -309,6 +309,7 @@ public class MainController implements Initializable {
                 System.out.println("No date selected.");
             }
         });
+        switchToOverview();
     }
     public void switchToTranfer(ActionEvent e){
         getUserInformation();
@@ -344,7 +345,7 @@ public class MainController implements Initializable {
     public void switchToOverview(){
         setNotification();
         getUserInformation();
-        getChartData();
+        configChart();
         balanceLabel.setText(user.getFund());
         welcomeLabel.setText("Welcome, " + user.getFirstname());
         tranfer.setVisible(false);
@@ -415,7 +416,53 @@ public class MainController implements Initializable {
 
     public void initialize() {
         myChoiceBox.getItems().addAll("HUST BANK", "NEU BANK", "HNUE BANK");
-        //myChoiceBox.setValue("Option 1");
+        myChoiceBox.setValue("HUST BANK");
+        configChart();
+    }
+    public void getChartData(){
+        Credential credential = User.getCredential();
+        String _token = credential.getToken();
+        String _account = user.getAccount();
+        String _year = String.valueOf(LocalDate.now().getYear());
+        String reqEndpoint = "http://13.239.134.221:8080/api/v1/bank-api/monthly-transition-summary";
+        String endpoint = String.format("%s?account=%s&year=%s",reqEndpoint, _account, _year);
+        HttpResponse<String> response = null;
+        ArrayList<TransistionSummary> transitionArrayList = null;
+        try{
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(endpoint))
+                    .header("Content-Type", "application/json")
+                    .header("Authorization", String.format("Bearer %s", _token))
+                    .GET()
+                    .build();
+
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println(response.body());
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        if(response.statusCode() == 200){
+            try{
+                ObjectMapper objectMapper = new ObjectMapper();
+                transitionArrayList = objectMapper.readValue(response.body(), new TypeReference<ArrayList<TransistionSummary>>() {
+                });
+                for(TransistionSummary s : transitionArrayList){
+                    income[s.getMonth()] = s.getIncome();
+                    expense[s.getMonth()] = s.getExpense();
+                }
+            } catch(Exception e){
+                System.out.println(e.getMessage());
+            }
+        } else {
+
+            System.out.println("Please check getChartData function");
+        }
+    }
+
+    public void configChart(){
+        getChartData();
         areaChart.setVerticalGridLinesVisible(false);
         // Cấu hình trục X (Months)
         xAxis.setCategories(FXCollections.observableArrayList(
@@ -464,47 +511,7 @@ public class MainController implements Initializable {
         // Thêm Series vào AreaChart
         areaChart.getData().addAll(incomeSeries, expenseSeries);
     }
-    public void getChartData(){
-        Credential credential = User.getCredential();
-        String _token = credential.getToken();
-        String _account = user.getAccount();
-        String _year = "2024";
-        String reqEndpoint = "http://13.239.134.221:8080/api/v1/bank-api/monthly-transition-summary";
-        String endpoint = String.format("%s?account=%s&year=%s",reqEndpoint, _account, _year);
-        HttpResponse<String> response = null;
-        ArrayList<TransistionSummary> transitionArrayList = null;
-        try{
-            HttpClient client = HttpClient.newHttpClient();
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI(endpoint))
-                    .header("Content-Type", "application/json")
-                    .header("Authorization", String.format("Bearer %s", _token))
-                    .GET()
-                    .build();
 
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println(response.body());
-        }
-        catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        if(response.statusCode() == 200){
-            try{
-                ObjectMapper objectMapper = new ObjectMapper();
-                transitionArrayList = objectMapper.readValue(response.body(), new TypeReference<ArrayList<TransistionSummary>>() {
-                });
-                for(TransistionSummary s : transitionArrayList){
-                    income[s.getMonth()] = s.getIncome();
-                    expense[s.getMonth()] = s.getExpense();
-                }
-            } catch(Exception e){
-                System.out.println(e.getMessage());
-            }
-        } else {
-
-            System.out.println("Please check getChartData function");
-        }
-    }
     @FXML
     public void logOut(ActionEvent event){
         try {
