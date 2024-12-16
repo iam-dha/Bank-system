@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -15,8 +17,17 @@ public class TransitionHistoryService {
     @Autowired
     final TransitionHistoryRepository transitionHistoryRepository;
 
-    public void saveTransitionHistory(TransitionHistory request) {
-        transitionHistoryRepository.save(request);
+    public void saveTransitionHistory(String fromAccount, String toAccount, String fromUserName, String toUserName, long fund, String message) {
+        transitionHistoryRepository.save(TransitionHistory.builder()
+                .fromAccount(fromAccount)
+                .toAccount(toAccount)
+                .balance(fund)
+                .dateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
+                .time(LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm")))
+                .fromUserName(fromUserName)
+                .toUserName(toUserName)
+                .message(message)
+                .build());
     }
 
     public List<TransitionHistory> findTransitionByAccount(String account) {

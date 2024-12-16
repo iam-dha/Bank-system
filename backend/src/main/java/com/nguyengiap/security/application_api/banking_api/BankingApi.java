@@ -54,10 +54,11 @@ public class BankingApi {
 
     @Transactional
     @PostMapping("/banking")
-    public ResponseEntity<?> banking(@RequestBody BankingRequest request, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> banking(@RequestBody BankingRequest request,
+            @RequestHeader("Authorization") String token) {
 
         final String account = jwtService.extractUserName(token.substring(7));
-        
+
         // Kiểm tra xem tài khoản token và request có khớp không
         if (!account.equals(request.getFromAccount())) {
             return ResponseEntity.status(403)
@@ -84,7 +85,8 @@ public class BankingApi {
     }
 
     @PostMapping("/banking-otp")
-    public ResponseEntity<?> bankingOTP(@RequestBody BankingRequestOTP request, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> bankingOTP(@RequestBody BankingRequestOTP request,
+            @RequestHeader("Authorization") String token) {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         String formattedDate = now.format(formatter);
@@ -93,7 +95,7 @@ public class BankingApi {
         String formattedHour = now.format(formatterTime);
 
         final String account = jwtService.extractUserName(token.substring(7));
-        
+
         // Kiểm tra xem tài khoản token và request có khớp không
         if (!account.equals(request.getFromAccount())) {
             return ResponseEntity.status(403)
@@ -162,7 +164,10 @@ public class BankingApi {
                                 .time(formattedHour)
                                 .build();
                         // Lưu giao dịch
-                        transitionHistoryService.saveTransitionHistory(transitionHistory);
+                        transitionHistoryService.saveTransitionHistory(transitionHistory.getFromAccount(),
+                                transitionHistory.getToAccount(), transitionHistory.getFromUserName(),
+                                transitionHistory.getToUserName(), transitionHistory.getBalance(),
+                                transitionHistory.getMessage());
                         return ResponseEntity
                                 .ok(UnauthorizedAccount.builder().status(200).message("Banking successful").build());
                     } else {
@@ -187,10 +192,11 @@ public class BankingApi {
             @RequestParam(required = false) String dateTime,
             @RequestParam(required = false) String message) {
         final String accountToken = jwtService.extractUserName(token.substring(7));
-        
+
         if (!accountToken.equals(account)) {
             return ResponseEntity.status(403)
-                    .body(UnauthorizedAccount.builder().status(403).message("You can only check your own transactions").build());
+                    .body(UnauthorizedAccount.builder().status(403).message("You can only check your own transactions")
+                            .build());
         }
 
         Optional<User> checkAccount = userService.findByAccount(account);
@@ -231,10 +237,11 @@ public class BankingApi {
             @RequestParam String endDate) {
         final String accountToken = jwtService.extractUserName(token.substring(7));
         final String role = jwtService.extractRole(token.substring(7));
-        
+
         if (!accountToken.equals(account) && role.equals("USER")) {
             return ResponseEntity.status(403)
-                    .body(UnauthorizedAccount.builder().status(403).message("You can only check your own transactions").build());
+                    .body(UnauthorizedAccount.builder().status(403).message("You can only check your own transactions")
+                            .build());
         }
 
         Optional<User> checkAccount = userService.findByAccount(account);
@@ -257,7 +264,8 @@ public class BankingApi {
 
         if (!accountToken.equals(account)) {
             return ResponseEntity.status(403)
-                    .body(UnauthorizedAccount.builder().status(403).message("You can only check your own transactions").build());
+                    .body(UnauthorizedAccount.builder().status(403).message("You can only check your own transactions")
+                            .build());
         }
         Optional<User> checkAccount = userService.findByAccount(account);
         if (checkAccount.isEmpty()) {
