@@ -61,8 +61,13 @@ class AdminAPI {
                         return ResponseEntity.status(403)
                                 .body(UnauthorizedAccount.builder().status(403).message("Email already exists").build());
                     }
-                    String newEncodedPassword = passwordEncoder.encode(request.getPassword());
-                    userService.changeUserInformation(request.getAccount(), newEncodedPassword, request.getFirstName(),
+                    
+                    String password = user.get().getPassword(); // Keep existing password by default
+                    if (request.getPassword() != null && !request.getPassword().isEmpty()) {
+                        password = passwordEncoder.encode(request.getPassword()); // Only encode new password if provided
+                    }
+                    
+                    userService.changeUserInformation(request.getAccount(), password, request.getFirstName(),
                             request.getLastName(), request.getEmail(), request.getAddress(), request.getPhoneNumber());
                     return ResponseEntity.status(200).body(
                             UnauthorizedAccount.builder().status(200).message("Change information successfully").build());
@@ -191,15 +196,16 @@ class AdminAPI {
                 List<UserSession> listSession = userSessionService.getUserSession();
                 
                 for(UserSession session : listSession) {
-                    ActiveUserResponse user = ActiveUserResponse.builder()
-                                    .account(session.getAccount())
-                                    .firstName(session.getFirstName())
-                                    .lastName(session.getLastName())
-                                    .email(session.getEmail())
-                                    .phoneNumber(session.getPhoneNumber())
-                                    .fund(session.getFund())
+                    Optional<User> user = userService.findByAccount(session.getAccount());
+                    ActiveUserResponse userResponse = ActiveUserResponse.builder()
+                                    .account(user.get().getAccount())
+                                    .firstName(user.get().getFirstName())
+                                    .lastName(user.get().getLastName())
+                                    .email(user.get().getEmail())
+                                    .phoneNumber(user.get().getPhoneNumber())
+                                    .fund(user.get().getFund())
                                     .build();
-                    listUser.add(user);
+                    listUser.add(userResponse);
                 }
                 return ResponseEntity.status(200).body(listUser);
             } catch (Exception e) {

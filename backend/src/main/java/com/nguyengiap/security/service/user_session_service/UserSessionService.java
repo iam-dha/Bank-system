@@ -14,14 +14,9 @@ public class UserSessionService {
     @Autowired
     private UserSessionRepository sessionRepository;
 
-    public void saveUserSession(String account, String firstName, String lastName, String email, String phoneNumber, long balance, LocalDateTime endTime) {
+    public void saveUserSession(String account, LocalDateTime endTime) {
         UserSession session = new UserSession();
         session.setAccount(account);
-        session.setFirstName(firstName);
-        session.setLastName(lastName);
-        session.setEmail(email);
-        session.setPhoneNumber(phoneNumber);
-        session.setFund(balance);
         session.setEndTime(endTime);
         sessionRepository.save(session);
     }
