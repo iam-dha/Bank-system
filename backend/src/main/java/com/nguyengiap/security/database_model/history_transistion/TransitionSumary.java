@@ -10,16 +10,33 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "_transitionSummary")
 public class TransitionSumary {
-    @Id
-    private String account;
-    @Id
-    private double month;
-    @Column(columnDefinition = "integer default 0")
-    private double expense;
-    @Column(columnDefinition = "integer default 0")
-    private double income;
+    private int month;
+    private long expense;
+    private long income;
+
+    public long getExpense() {
+        return expense;
+    }
+
+    public void setExpense(long expense) {
+        this.expense = expense;
+    }
+
+    public long getIncome() {
+        return income;
+    }
+
+    public void setIncome(long income) {
+        this.income = income;
+    }
+
+    public int getMonth() {
+        return month;
+    }
+
+    public void setMonth(int month) {
+        this.month = month;
+    }
 }
 
