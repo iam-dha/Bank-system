@@ -21,16 +21,6 @@ public class UserSession {
     @Id
     @Column(nullable = false, unique = true)
     private String account;
-
-    private String firstName;
-
-    private String lastName;
-
-    private String email;
-
-    private String phoneNumber;
-
-    private long fund;
-
+    
     private LocalDateTime endTime;
 }

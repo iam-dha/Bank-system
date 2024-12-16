@@ -69,7 +69,7 @@ public class AuthenticationService {
                 LocalDateTime endTime = expirationDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 
                 if(role.equals("USER")) {
-                        userSessionService.saveUserSession(user.getAccount(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhoneNumber(), user.getFund(), endTime);
+                        userSessionService.saveUserSession(user.getAccount(), endTime);
                 }
 
                 return AuthenticationResponse.builder()

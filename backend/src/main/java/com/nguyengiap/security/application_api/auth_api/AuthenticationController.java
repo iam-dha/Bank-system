@@ -1,5 +1,6 @@
 package com.nguyengiap.security.application_api.auth_api;
 
+import com.nguyengiap.security.config.jwt_config.JwtService;
 import com.nguyengiap.security.database_model.history_transistion.TransitionHistory;
 import com.nguyengiap.security.database_model.notification_table.NotificationTableOverViewService;
 import com.nguyengiap.security.database_model.notification_table.NotificationTableOverview;
@@ -47,6 +48,9 @@ public class AuthenticationController {
 
     @Autowired
     private final NotificationTableOverViewService notificationTableOverviewService;
+
+    @Autowired
+    private final JwtService jwtService;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(
@@ -170,15 +174,26 @@ public class AuthenticationController {
 
     @PostMapping("/buff-money")
     public ResponseEntity<?> buffMoney(
-            @RequestBody BuffMoneyRequest request) {
+            @RequestBody BuffMoneyRequest request,
+            @RequestHeader("Authorization") String token) {
+        if(token == null) {
+            return ResponseEntity.status(401)
+                    .body(UnauthorizedAccount.builder().status(401).message("Token is required").build());
+        }
+        final String role = jwtService.extractRole(token.substring(7));
         Optional<User> user = userService.findByAccount(request.getAccount());
-        if (user.isPresent()) {
+        if (user.isPresent() && role.equals("ADMIN")) {
             userService.bankingToAccount(request.getAccount(), request.getFund());
             return ResponseEntity
                     .ok(UnauthorizedAccount.builder().status(200).message("Buff money successful").build());
         } else {
-            return ResponseEntity.status(401)
-                    .body(UnauthorizedAccount.builder().status(401).message("Account not found").build());
+            if(!user.isPresent()) {
+                return ResponseEntity.status(401)
+                        .body(UnauthorizedAccount.builder().status(401).message("Account not found").build());
+            } else {
+                return ResponseEntity.status(401)
+                        .body(UnauthorizedAccount.builder().status(401).message("You are not admin").build());
+            }
         }
     }
 
@@ -198,7 +213,7 @@ public class AuthenticationController {
                                                                 .toUserName(toAccount.get().getFirstName() + " " + toAccount.get().getLastName())
                                                                 .message(request.getMessage())
                                                                 .build();
-                transitionHistoryService.saveTransitionHistory(transitionHistory);
+                transitionHistoryService.saveTransitionHistory(transitionHistory.getFromAccount(), transitionHistory.getToAccount(), transitionHistory.getFromUserName(), transitionHistory.getToUserName(), transitionHistory.getBalance(), transitionHistory.getMessage());
                 return ResponseEntity.ok(
                         UnauthorizedAccount.builder().status(200).message("Fake transaction created successfully").build());
             } else {
