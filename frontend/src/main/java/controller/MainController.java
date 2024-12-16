@@ -116,7 +116,7 @@ public class MainController implements Initializable {
     private User user;
     private Credential credetial;
     private String _fromdate = "01/01/2024";
-    private String _todate = "10/12/2024";
+    private String _todate = "31/12/2024";
     private long [] income = new long[12];
     private long [] expense = new long[12];
 
@@ -189,7 +189,9 @@ public class MainController implements Initializable {
                     System.out.println("Error");
                 }
                 int response_code = response.statusCode();
+                System.out.println("history" + response_code);
                 if (response_code == 200) {
+                    System.out.println(response.body());
                     try {
                         ObjectMapper objectMapper = new ObjectMapper();
                         ArrayList<Transaction> responseList = objectMapper.readValue(response.body(), new TypeReference<ArrayList<Transaction>>() {
@@ -210,12 +212,14 @@ public class MainController implements Initializable {
                             public int compare(Transaction t1, Transaction t2) {
                                 // First compare by dateTime
                                 int dateTimeComparison = t1.getDateTime().compareTo(t2.getDateTime());
-                                if (dateTimeComparison != 0) {
-                                    return dateTimeComparison;
-                                }
-
-                                // If dateTime is equal, compare by time
-                                return t1.getTime().compareTo(t2.getTime());
+//                                if (dateTimeComparison != 0) {
+//                                    return dateTimeComparison;
+//                                }
+//
+//                                // If dateTime is equal, compare by time
+//                                return t1.getTime().compareTo(t2.getTime());
+                                //temporary
+                                return dateTimeComparison;
                             }
                         });
                         ObservableList<Transaction> observableTransactions = FXCollections.observableArrayList(transactionArrayList);
@@ -230,6 +234,7 @@ public class MainController implements Initializable {
                     }
                     catch (Exception except){
                         System.out.println("NULL");
+                        except.printStackTrace();
                     }
                 }
                 else {
@@ -325,7 +330,6 @@ public class MainController implements Initializable {
         history.setMouseTransparent(true);
         setting.setMouseTransparent(true);
         setting.setVisible(false);
-        transactionTable.getItems().clear();
     }
     public void switchToSetting(){
         getUserInformation();
@@ -368,8 +372,10 @@ public class MainController implements Initializable {
         history.setMouseTransparent(false);
         fromDate.setValue(LocalDate.of(2024, 1, 1));
         toDate.setValue(LocalDate.now());
+        keywordToSearch.clear();
         setting.setMouseTransparent(true);
         setting.setVisible(false);
+        transactionTable.getItems().clear();
     }
 
     public void cleartransfer(){
@@ -557,7 +563,15 @@ public class MainController implements Initializable {
         }
         String _toaccount = receiverAccTextfield.getText();
         HttpResponse<String> response = null;
-        if (_receiverBank == null){
+        if(_message == null || _message.trim().isEmpty() ||
+                _amount == null || _amount.trim().isEmpty() ||
+                _receiverBank == null || _receiverBank.trim().isEmpty() ||
+                _toaccount == null || _toaccount.trim().isEmpty()){
+            transactionErrLabel.setText("ERROR: Fill all the blank.");
+            transactionErrLabel.setVisible(true);
+            cleartransfer();
+        }
+        else if (_receiverBank == null){
             transactionErrLabel.setText("ERROR: Fill all the blank.");
             transactionErrLabel.setVisible(true);
             cleartransfer();
@@ -567,13 +581,10 @@ public class MainController implements Initializable {
             transactionErrLabel.setVisible(true);
             cleartransfer();
         }
-        else if(_message == null || _message.trim().isEmpty() ||
-                _amount == null || _amount.trim().isEmpty() ||
-                _receiverBank == null || _receiverBank.trim().isEmpty() ||
-                _toaccount == null || _toaccount.trim().isEmpty()){
-            transactionErrLabel.setText("ERROR: Fill all the blank.");
+        else if (!checkInteger(_amount)){
+            transactionErrLabel.setText("ERROR: Amount must be an integer");
             transactionErrLabel.setVisible(true);
-            cleartransfer();
+            amountTextField.clear();
         }
         else {
             try {
@@ -680,6 +691,17 @@ public class MainController implements Initializable {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+    public boolean checkInteger(String str) {
+        if (str == null || str.isEmpty()) {
+            return false;
+        }
+        try {
+            Integer.parseInt(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
         }
     }
 }
