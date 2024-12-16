@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TableColumn?>
@@ -18,7 +19,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AdminController">
    <children>
       <VBox prefHeight="560.0" prefWidth="247.0" style="-fx-background-color: #576aca;">
          <children>
@@ -37,7 +38,7 @@
                   <Line endX="201.99998474121094" endY="87.29289245605469" layoutX="22.0" layoutY="58.0" startX="-2.799999237060547" startY="87.29289245605469" stroke="WHITE" />
                </children>
             </AnchorPane>
-            <Button mnemonicParsing="false" onAction="#switchToOverview" prefHeight="26.0" prefWidth="248.0" styleClass="menu-button" stylesheets="@../webapp/css/main.css" text="     Manage">
+            <Button mnemonicParsing="false" onAction="#switchToManage" prefHeight="26.0" prefWidth="248.0" styleClass="menu-button" stylesheets="@../webapp/css/main.css" text="     Manage">
                <VBox.margin>
                   <Insets left="15.0" right="15.0" top="50.0" />
                </VBox.margin>
@@ -109,7 +110,7 @@
       </VBox>
       <StackPane prefHeight="720.0" prefWidth="777.0">
          <children>
-            <VBox fx:id="history" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #F2F5FA;">
+            <VBox fx:id="manage" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #F2F5FA;">
                <children>
                   <Label prefHeight="38.0" prefWidth="136.0" text="Manage" textFill="#414c69">
                      <font>
@@ -121,7 +122,7 @@
                   </Label>
                   <HBox prefHeight="45.0" prefWidth="778.0">
                      <children>
-                        <TextField prefHeight="46.0" prefWidth="632.0" promptText="Search for account" styleClass="text-field" stylesheets="@../webapp/css/history.css">
+                        <TextField fx:id="accountToSearch" prefHeight="46.0" prefWidth="632.0" promptText="Search for account" styleClass="text-field" stylesheets="@../webapp/css/history.css">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
@@ -137,7 +138,7 @@
                               <Image url="@../webapp/image/search.png" />
                            </image>
                         </ImageView>
-                        <Button mnemonicParsing="false" onAction="#getHistoryTransaction" prefHeight="53.0" prefWidth="82.0" styleClass="signInButton" stylesheets="@../webapp/css/history.css" text="Search">
+                        <Button mnemonicParsing="false" onAction="#getUserInformation" prefHeight="53.0" prefWidth="82.0" styleClass="signInButton" stylesheets="@../webapp/css/history.css" text="Search">
                            <HBox.margin>
                               <Insets left="600.0" />
                            </HBox.margin>
@@ -150,9 +151,14 @@
                         <Insets left="30.0" top="20.0" />
                      </VBox.margin>
                   </HBox>
+                  <Label fx:id="searchErrorLabel" prefHeight="17.0" prefWidth="630.0" textFill="RED">
+                     <VBox.margin>
+                        <Insets left="30.0" top="10.0" />
+                     </VBox.margin>
+                  </Label>
                   <StackPane prefHeight="599.0" prefWidth="778.0">
                      <children>
-                        <VBox opacity="0.0" prefHeight="200.0" prefWidth="100.0">
+                        <VBox fx:id="activeUser" prefHeight="200.0" prefWidth="100.0">
                            <children>
                               <Label prefHeight="37.0" prefWidth="194.0" text=" Active account" textFill="#414c69">
                                  <font>
@@ -165,15 +171,14 @@
                                     <Circle fill="#0ccc3c" radius="7.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
                                  </graphic>
                               </Label>
-                              <TableView fx:id="transactionTable" prefHeight="455.0" prefWidth="727.0">
+                              <TableView fx:id="activeUserTable" prefHeight="455.0" prefWidth="727.0">
                                  <columns>
-                                    <TableColumn fx:id="timeColumn" prefWidth="39.20001447200775" text="ID" />
-                                    <TableColumn fx:id="messageColumn" prefWidth="104.0" text="Account" />
-                                    <TableColumn fx:id="fromAccountColumn" prefWidth="100.00000762939453" text="First Name" />
-                                    <TableColumn fx:id="toAccountColumn" prefWidth="106.40003967285156" text="Last Name" />
-                                    <TableColumn prefWidth="164.80001831054688" text="Email" />
-                                    <TableColumn minWidth="0.0" prefWidth="112.79998779296875" text="Phone" />
-                                    <TableColumn prefWidth="99.2000732421875" text="Balance" />
+                                    <TableColumn fx:id="accountColumn" prefWidth="104.0" text="Account" />
+                                    <TableColumn fx:id="firstNameColumn" prefWidth="100.00000762939453" text="First Name" />
+                                    <TableColumn fx:id="lastNameColumn" prefWidth="100.40003967285156" text="Last Name" />
+                                    <TableColumn fx:id="emailColumn" prefWidth="164.80001831054688" text="Email" />
+                                    <TableColumn fx:id="phoneColumn" minWidth="0.0" prefWidth="112.79998779296875" text="Phone" />
+                                    <TableColumn fx:id="balanceColumn" prefWidth="143.0" text="Balance" />
                                  </columns>
                                  <VBox.margin>
                                     <Insets left="30.0" right="20.0" />
@@ -181,7 +186,7 @@
                               </TableView>
                            </children>
                         </VBox>
-                        <VBox prefHeight="200.0" prefWidth="100.0">
+                        <VBox fx:id="userInformation" opacity="0.0" prefHeight="200.0" prefWidth="100.0">
                            <children>
                               <VBox prefHeight="557.0" prefWidth="778.0" styleClass="vbox" stylesheets="@../webapp/css/history.css">
                                  <padding>
@@ -271,12 +276,12 @@
                               </VBox>
                               <HBox prefHeight="100.0" prefWidth="200.0" stylesheets="@../webapp/css/history.css">
                                  <children>
-                                    <Button mnemonicParsing="false" style="-fx-background-color: #cc3300;" styleClass="signInButton" text="Remove">
+                                    <Button mnemonicParsing="false" onAction="#removeUser" style="-fx-background-color: #cc3300;" styleClass="signInButton" text="Remove">
                                        <HBox.margin>
                                           <Insets right="545.0" />
                                        </HBox.margin>
                                     </Button>
-                                    <Button fx:id="signInButton" mnemonicParsing="false" onAction="#chagePassword" prefHeight="34.0" prefWidth="90.0" stylesheets="@../webapp/css/create.css" text="Edit" />
+                                    <Button fx:id="signInButton" mnemonicParsing="false" onAction="#changeUserInformation" prefHeight="34.0" prefWidth="90.0" stylesheets="@../webapp/css/create.css" text="Edit" />
                                  </children>
                                  <VBox.margin>
                                     <Insets left="30.0" />
@@ -294,7 +299,7 @@
                   <Insets />
                </StackPane.margin>
             </VBox>
-            <VBox fx:id="tranfer" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #F2F5FA;">
+            <VBox fx:id="transfer" opacity="0.0" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #F2F5FA;">
                <children>
                   <HBox prefHeight="75.0" prefWidth="778.0">
                      <children>
@@ -383,7 +388,7 @@
                                                 <Insets left="30.0" />
                                              </padding>
                                           </Label>
-                                          <Button fx:id="send" mnemonicParsing="false" onAction="#popOtp" prefHeight="38.0" prefWidth="108.0" styleClass="signInButton" text="Send">
+                                          <Button fx:id="send" mnemonicParsing="false" onAction="#transferFund" prefHeight="38.0" prefWidth="108.0" styleClass="signInButton" text="Send">
                                              <VBox.margin>
                                                 <Insets left="30.0" top="10.0" />
                                              </VBox.margin>
@@ -509,6 +514,100 @@
                         </VBox>
                      </children>
                   </HBox>
+               </children>
+            </VBox>
+            <VBox fx:id="history" opacity="0.0" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #F2F5FA;" stylesheets="@../webapp/css/admin.css">
+               <children>
+                  <Label prefHeight="38.0" prefWidth="136.0" text="HISTORY" textFill="#414c69">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets left="30.0" top="30.0" />
+                     </VBox.margin>
+                  </Label>
+                  <HBox prefHeight="45.0" prefWidth="778.0">
+                     <children>
+                        <TextField fx:id="keywordToSearch" prefHeight="46.0" prefWidth="632.0" promptText="Search for name, description.." styleClass="text-field" stylesheets="@../webapp/css/history.css">
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                           <padding>
+                              <Insets left="50.0" />
+                           </padding>
+                        </TextField>
+                        <ImageView fitHeight="31.0" fitWidth="32.0" opacity="0.7" pickOnBounds="true" preserveRatio="true">
+                           <HBox.margin>
+                              <Insets left="-625.0" top="7.0" />
+                           </HBox.margin>
+                           <image>
+                              <Image url="@../webapp/image/search.png" />
+                           </image>
+                        </ImageView>
+                        <Button mnemonicParsing="false" onAction="#getHistoryTransaction" prefHeight="53.0" prefWidth="82.0" styleClass="signInButton" stylesheets="@../webapp/css/history.css" text="Search">
+                           <HBox.margin>
+                              <Insets left="600.0" />
+                           </HBox.margin>
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                        </Button>
+                     </children>
+                     <VBox.margin>
+                        <Insets left="30.0" top="20.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <VBox prefHeight="100.0" prefWidth="300.0">
+                           <children>
+                              <Label prefHeight="22.0" prefWidth="62.0" text="From" textFill="#414c69">
+                                 <font>
+                                    <Font name="System Bold" size="16.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets left="10.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <DatePicker fx:id="fromDate" prefHeight="46.0" prefWidth="210.0" styleClass="date-picker" stylesheets="@../webapp/css/history.css" />
+                              <Label fx:id="historyError" prefHeight="34.0" prefWidth="305.0" textFill="RED" wrapText="true" />
+                           </children>
+                           <HBox.margin>
+                              <Insets left="30.0" />
+                           </HBox.margin>
+                           <VBox.margin>
+                              <Insets left="30.0" right="20.0" />
+                           </VBox.margin>
+                        </VBox>
+                        <VBox prefHeight="100.0" prefWidth="234.0">
+                           <children>
+                              <Label prefHeight="22.0" prefWidth="40.0" text="To" textFill="#414c69">
+                                 <font>
+                                    <Font name="System Bold" size="16.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets left="10.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <DatePicker fx:id="toDate" prefHeight="46.0" prefWidth="210.0" stylesheets="@../webapp/css/history.css" />
+                           </children>
+                        </VBox>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="20.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <TableView fx:id="transactionTable1" prefHeight="418.0" prefWidth="727.0">
+                     <columns>
+                        <TableColumn fx:id="timeColumn1" prefWidth="116.0" text="Time" />
+                        <TableColumn fx:id="fromAccountColumn1" prefWidth="135.0" text="From Account" />
+                        <TableColumn fx:id="toAccountColumn1" prefWidth="143.0" text="To Account" />
+                        <TableColumn fx:id="messageColumn1" prefWidth="332.0" text="Message" />
+                     </columns>
+                     <VBox.margin>
+                        <Insets left="30.0" right="20.0" />
+                     </VBox.margin>
+                  </TableView>
                </children>
             </VBox>
          </children>

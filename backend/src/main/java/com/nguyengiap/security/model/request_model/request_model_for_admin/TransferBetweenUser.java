@@ -1,12 +1,13 @@
-package com.nguyengiap.security.application_api.admin_api;
+package com.nguyengiap.security.model.request_model.request_model_for_admin;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-class TranferBetweenUser {
+public class TransferBetweenUser {
     private String fromAccount;
     private String toAccount;
+    private String message;
     private long fund;
 }

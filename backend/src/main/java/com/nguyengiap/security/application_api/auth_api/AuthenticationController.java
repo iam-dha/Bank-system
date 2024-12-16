@@ -1,11 +1,13 @@
 package com.nguyengiap.security.application_api.auth_api;
 
+import com.nguyengiap.security.config.jwt_config.JwtService;
 import com.nguyengiap.security.database_model.history_transistion.TransitionHistory;
 import com.nguyengiap.security.database_model.notification_table.NotificationTableOverViewService;
 import com.nguyengiap.security.database_model.notification_table.NotificationTableOverview;
 import com.nguyengiap.security.database_model.user.User;
 import com.nguyengiap.security.model.request_model.AuthenticationRequest;
 import com.nguyengiap.security.model.request_model.BuffMoneyRequest;
+import com.nguyengiap.security.model.request_model.FakeBillRequest;
 import com.nguyengiap.security.model.request_model.ForgetPasswordOtpRequest;
 import com.nguyengiap.security.model.request_model.OnlyAccountRequest;
 import com.nguyengiap.security.model.request_model.RegisterRequest;
@@ -46,6 +48,9 @@ public class AuthenticationController {
 
     @Autowired
     private final NotificationTableOverViewService notificationTableOverviewService;
+
+    @Autowired
+    private final JwtService jwtService;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(
@@ -169,25 +174,52 @@ public class AuthenticationController {
 
     @PostMapping("/buff-money")
     public ResponseEntity<?> buffMoney(
-            @RequestBody BuffMoneyRequest request) {
+            @RequestBody BuffMoneyRequest request,
+            @RequestHeader("Authorization") String token) {
+        if(token == null) {
+            return ResponseEntity.status(401)
+                    .body(UnauthorizedAccount.builder().status(401).message("Token is required").build());
+        }
+        final String role = jwtService.extractRole(token.substring(7));
         Optional<User> user = userService.findByAccount(request.getAccount());
-        if (user.isPresent()) {
+        if (user.isPresent() && role.equals("ADMIN")) {
             userService.bankingToAccount(request.getAccount(), request.getFund());
             return ResponseEntity
                     .ok(UnauthorizedAccount.builder().status(200).message("Buff money successful").build());
         } else {
-            return ResponseEntity.status(401)
-                    .body(UnauthorizedAccount.builder().status(401).message("Account not found").build());
+            if(!user.isPresent()) {
+                return ResponseEntity.status(401)
+                        .body(UnauthorizedAccount.builder().status(401).message("Account not found").build());
+            } else {
+                return ResponseEntity.status(401)
+                        .body(UnauthorizedAccount.builder().status(401).message("You are not admin").build());
+            }
         }
     }
 
     @PostMapping("/create-fake-transaction")
-    public ResponseEntity<?> createFakeTransaction(@RequestBody TransitionHistory request) {
+    public ResponseEntity<?> createFakeTransaction(@RequestBody FakeBillRequest request) {
         try {
-            // Save the fake transaction directly
-            transitionHistoryService.saveTransitionHistory(request);
-            return ResponseEntity.ok(
-                    UnauthorizedAccount.builder().status(200).message("Fake transaction created successfully").build());
+            // Save the fake transaction directly  
+            Optional<User> fromAccount = userService.findByAccount(request.getFromAccount());
+            Optional<User> toAccount = userService.findByAccount(request.getToAccount());
+            if (fromAccount.isPresent() && toAccount.isPresent()) {
+                final TransitionHistory transitionHistory = TransitionHistory.builder()
+                                                                .fromAccount(request.getFromAccount())
+                                                                .toAccount(request.getToAccount())
+                                                                .dateTime(request.getDateTime())
+                                                                .balance(request.getBalance())
+                                                                .fromUserName(fromAccount.get().getFirstName() + " " + fromAccount.get().getLastName())
+                                                                .toUserName(toAccount.get().getFirstName() + " " + toAccount.get().getLastName())
+                                                                .message(request.getMessage())
+                                                                .build();
+                transitionHistoryService.saveTransitionHistory(transitionHistory.getFromAccount(), transitionHistory.getToAccount(), transitionHistory.getFromUserName(), transitionHistory.getToUserName(), transitionHistory.getBalance(), transitionHistory.getMessage());
+                return ResponseEntity.ok(
+                        UnauthorizedAccount.builder().status(200).message("Fake transaction created successfully").build());
+            } else {
+                return ResponseEntity.status(401)
+                        .body(UnauthorizedAccount.builder().status(401).message("Account not found").build());
+            }
         } catch (Exception e) {
             return ResponseEntity.status(500).body(UnauthorizedAccount.builder().status(500)
                     .message("Error creating fake transaction: " + e.getMessage()).build());

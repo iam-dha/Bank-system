@@ -2,19 +2,20 @@ package com.nguyengiap.security.model.response_model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Data
 @Builder
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
-@Getter
-public class AuthenticationResponse {
-    private String token;
+public class ActiveUserResponse {
     private String account;
-    private String role;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String phoneNumber;
+    private long fund;
 }
