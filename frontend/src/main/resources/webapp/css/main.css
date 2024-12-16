@@ -16,3 +16,13 @@
 .menu-button:focused {
     -fx-background-color: #6379E7; /* Màu nền khi được chọn */
 }
+.scroll-pane .corner {
+    -fx-background-color: transparent;
+}
+.scroll-pane {
+    -fx-background-radius: 10; /* Bo tròn nền */
+    -fx-border-radius: 10;    /* Bo tròn viền */
+    -fx-padding: 5;           /* Tạo khoảng cách giữa nội dung và viền */
+    -fx-background-color: #ffffff; /* Màu nền (tùy chỉnh) */
+    -fx-border-color: #cccccc;     /* Màu viền (tùy chỉnh) */
+}

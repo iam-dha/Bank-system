@@ -8,6 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.Parent;
@@ -19,9 +20,12 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.*;
@@ -36,6 +40,10 @@ import java.net.http.HttpResponse;
 import java.util.*;
 
 public class MainController implements Initializable {
+    @FXML
+    private VBox notiVbox;
+    @FXML
+    private ScrollPane scrollPane;
     @FXML
     private VBox tranfer;
     @FXML
@@ -259,8 +267,57 @@ public class MainController implements Initializable {
         addrTextField.setText(user.getAddress());
         addrTextField.setMouseTransparent(true);
     }
+    public AnchorPane createNotiContainer(String time, String title, String message){
+        AnchorPane NotiContainer = new AnchorPane();
+        NotiContainer.setId("borderPaneNoti");
+        NotiContainer.setPrefHeight(150.0F);
+        NotiContainer.setPrefWidth(200.0F);
+//        NotiContainer.setStyle(
+//                "-fx-border-color: #d3d3d3; " +    // Màu viền xám nhạt
+//                        "-fx-border-width: 1; " +          // Độ dày viền là 1px
+//                        "-fx-border-radius: 10;"           // Bo góc viền với bán kính 10px
+//        );
 
+
+        // Tạo VBox để chứa các thành phần bên trong
+        VBox vBox = new VBox();
+        vBox.prefWidthProperty().bind(NotiContainer.widthProperty());
+        vBox.prefHeightProperty().bind(NotiContainer.heightProperty());
+
+        vBox.setPadding(new Insets(4, 5, 4, 5)); // Đệm bên trong VBox
+
+        // Tạo Label cho thời gian
+        Label timeLabel = new Label(time);
+        timeLabel.setTextFill(javafx.scene.paint.Color.web("#949494"));
+        VBox.setMargin(timeLabel, new Insets(4, 0, 0, 5)); // Đệm riêng cho Label
+
+        // Tạo Label cho tiêu đề
+        Label titleLabel = new Label(title);
+        titleLabel.setPrefSize(200.0, 22.0);
+        titleLabel.setTextFill(javafx.scene.paint.Color.web("#414c69"));
+        titleLabel.setWrapText(true);
+        titleLabel.setFont(Font.font("System Bold", 16));
+        VBox.setMargin(titleLabel, new Insets(10, 5, 0, 5)); // Đệm riêng cho tiêu đề
+
+        // Tạo Text cho nội dung
+        Text messageText = new Text(message);
+        messageText.setWrappingWidth(200.0);
+        VBox.setMargin(messageText, new Insets(0, 5, 0, 5)); // Đệm riêng cho Text
+
+        // Thêm các thành phần vào VBox
+        vBox.getChildren().addAll(timeLabel, titleLabel, messageText);
+
+        // Thêm VBox vào AnchorPane
+        NotiContainer.getChildren().add(vBox);
+        return NotiContainer;
+    }
+    public void addNotiContainer(String time, String title, String message) {
+        AnchorPane ContentContainer = createNotiContainer(time,title,message);
+        notiVbox.getChildren().add(ContentContainer);
+        //VBox.setMargin(ContentContainer, new Insets((double)10.0F * ratio, (double)20.0F * ratio, (double)10.0F * ratio, (double)20.0F * ratio));
+    }
     public void setNotification(){
+
         HttpResponse<String> response = null;
         ArrayList<Notification> notificationArrayList = null;
         try{
@@ -277,13 +334,47 @@ public class MainController implements Initializable {
             });
         }
         catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
-        Notification _notification1 = notificationArrayList.get(0);
-        Notification _notification2 = notificationArrayList.get(1);
-        notification1.setText(String.format("%s\n%s\n%s", _notification1.getDateTime(), _notification1.getTitle(), _notification1.getMessage()));
-        notification2.setText(String.format("%s\n%s\n%s", _notification2.getDateTime(), _notification2.getTitle(), _notification2.getMessage()));
+        try{
+            assert notificationArrayList != null;
+            for(Notification s : notificationArrayList){
+                addNotiContainer(s.getDateTime(),s.getTitle(),s.getMessage());
+            }
+        } catch(NullPointerException e){
+            System.out.println(e.getMessage());
+        }
+
+//        Notification _notification1 = notificationArrayList.get(0);
+//        Notification _notification2 = notificationArrayList.get(1);
+//        notification1.setText(String.format("%s\n%s\n%s", _notification1.getDateTime(), _notification1.getTitle(), _notification1.getMessage()));
+//        notification2.setText(String.format("%s\n%s\n%s", _notification2.getDateTime(), _notification2.getTitle(), _notification2.getMessage()));
     }
+
+//    public void setNotification(){
+//        HttpResponse<String> response = null;
+//        ArrayList<Notification> notificationArrayList = null;
+//        try{
+//            HttpClient client = HttpClient.newHttpClient();
+//            HttpRequest request = HttpRequest.newBuilder()
+//                    .uri(new URI("http://13.239.134.221:8080/api/v1/auth/get-notification"))
+//                    .GET()
+//                    .build();
+//
+//            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+//            System.out.println(response.body());
+//            ObjectMapper objectMapper = new ObjectMapper();
+//            notificationArrayList = objectMapper.readValue(response.body(), new TypeReference<ArrayList<Notification>>() {
+//            });
+//        }
+//        catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        Notification _notification1 = notificationArrayList.get(0);
+//        Notification _notification2 = notificationArrayList.get(1);
+//        notification1.setText(String.format("%s\n%s\n%s", _notification1.getDateTime(), _notification1.getTitle(), _notification1.getMessage()));
+//        notification2.setText(String.format("%s\n%s\n%s", _notification2.getDateTime(), _notification2.getTitle(), _notification2.getMessage()));
+//    }
 
     public void initialize(URL url, ResourceBundle rb) {
         tranfer.setVisible(false);
@@ -314,6 +405,9 @@ public class MainController implements Initializable {
                 System.out.println("No date selected.");
             }
         });
+        notiVbox.prefWidthProperty().bind(this.scrollPane.widthProperty());
+        notiVbox.setMaxWidth(this.scrollPane.getPrefWidth());
+        notiVbox.setMaxHeight(this.scrollPane.getPrefHeight());
         switchToOverview();
     }
     public void switchToTranfer(ActionEvent e){
@@ -468,6 +562,7 @@ public class MainController implements Initializable {
     }
 
     public void configChart(){
+        areaChart.getData().clear();
         getChartData();
         areaChart.setVerticalGridLinesVisible(false);
         // Cấu hình trục X (Months)
@@ -504,18 +599,27 @@ public class MainController implements Initializable {
             expenseSeries.getData().add(expenseData);
         }
         for (XYChart.Data<String, Number> data : incomeSeries.getData()) {
-            // Tạo Tooltip cho incomeData
-            Tooltip incomeTooltip = new Tooltip("Income: " + data.getYValue());
-            Tooltip.install(data.getNode(), incomeTooltip);
+            if (data.getNode() != null && data.getNode().getUserData() == null) { // Chỉ thêm Tooltip nếu chưa có
+                Tooltip incomeTooltip = new Tooltip("Income: " + data.getYValue());
+                Tooltip.install(data.getNode(), incomeTooltip);
+                data.getNode().setUserData(true); // Đánh dấu đã thêm Tooltip
+            }
         }
 
         for (XYChart.Data<String, Number> data : expenseSeries.getData()) {
-            Tooltip expenseTooltip = new Tooltip("Expense: " + data.getYValue());
-            Tooltip.install(data.getNode(), expenseTooltip);
+            if (data.getNode() != null && data.getNode().getUserData() == null) { // Chỉ thêm Tooltip nếu chưa có
+                Tooltip expenseTooltip = new Tooltip("Expense: " + data.getYValue());
+                Tooltip.install(data.getNode(), expenseTooltip);
+                data.getNode().setUserData(true); // Đánh dấu đã thêm Tooltip
+            }
         }
 
         // Thêm Series vào AreaChart
         areaChart.getData().addAll(incomeSeries, expenseSeries);
+    }
+
+    public void setChartTooltip(){
+
     }
 
     @FXML

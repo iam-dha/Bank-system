@@ -208,6 +208,7 @@ public class AdminController implements Initializable {
         fromDate.setValue(LocalDate.of(2024, 1, 1));
         toDate.setValue(LocalDate.now());
         keywordToSearch.clear();
+        transactionTable.getItems().clear();
     }
 
     private void setUserInformation(){
@@ -343,6 +344,7 @@ public class AdminController implements Initializable {
     }
 
     public void submitChange(){
+        searchErrorLabel.setVisible(false);
         HttpResponse<String> response = null;
         try{
             HttpClient client = HttpClient.newHttpClient();
@@ -367,6 +369,7 @@ public class AdminController implements Initializable {
                 searchErrorLabel.setTextFill(Color.RED);
                 searchErrorLabel.setVisible(true);
                 emailTextField.setText(user.getEmail());
+                userIdentity.setMouseTransparent(false);
             }
             else if (response.statusCode() == 200){
                 searchErrorLabel.setText("Account change successfully");
@@ -477,52 +480,53 @@ public class AdminController implements Initializable {
             }
             int response_code = response.statusCode();
             System.out.println(response.body());
-            if (response_code == 401) {
+            if (response_code == 403) {
                 //Not enough Money
                 transactionErrLabel.setText("ERROR: Not enough money");
                 transactionErrLabel.setVisible(true);
                 cleartransfer();
-            }
-            else if (response_code == 404) {
+            } else if (response_code == 404) {
                 //User not found
                 transactionErrLabel.setText("ERROR: Receiver or Sender is not found");
                 transactionErrLabel.setVisible(true);
                 cleartransfer();
             }
-            else if (response_code == 200) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Transaction Successful");
-                alert.setHeaderText("Transfer Completed!");
-                alert.setContentText("Your transfer was processed successfully.\nThank you for using our service!");
-                // Thêm nút tùy chỉnh (nếu cần)
-                alert.getButtonTypes().setAll(ButtonType.OK);
-
-                // Thêm CSS để tùy chỉnh giao diện
-                alert.getDialogPane().getStylesheets().add(
-                        getClass().getResource("/webapp/css/refer.css").toExternalForm()
-                );
-                alert.getDialogPane().getStyleClass().add("success-alert");
-
-                // Hiển thị alert
-                alert.showAndWait();
-            }
             else {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("The transaction has not been processed.");
-                alert.setHeaderText("Transfer Failed!");
-                alert.setContentText("Your transaction was unsuccessful due to Server error");
-                // Thêm nút tùy chỉnh (nếu cần)
-                alert.getButtonTypes().setAll(ButtonType.OK);
-                // Thêm CSS để tùy chỉnh giao diện
-                alert.getDialogPane().getStylesheets().add(
-                        getClass().getResource("/webapp/css/refer.css").toExternalForm()
-                );
-                alert.getDialogPane().getStyleClass().add("invalid-otp-alert");
+                if (response_code == 200) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Transaction Successful");
+                    alert.setHeaderText("Transfer Completed!");
+                    alert.setContentText("Your transfer was processed successfully.\nThank you for using our service!");
+                    // Thêm nút tùy chỉnh (nếu cần)
+                    alert.getButtonTypes().setAll(ButtonType.OK);
 
-                // Hiển thị alert
-                alert.showAndWait();
+                    // Thêm CSS để tùy chỉnh giao diện
+                    alert.getDialogPane().getStylesheets().add(
+                            getClass().getResource("/webapp/css/refer.css").toExternalForm()
+                    );
+                    alert.getDialogPane().getStyleClass().add("success-alert");
+
+                    // Hiển thị alert
+                    alert.showAndWait();
+                }
+                else {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("The transaction has not been processed.");
+                    alert.setHeaderText("Transfer Failed!");
+                    alert.setContentText("Your transaction was unsuccessful due to Server error");
+                    // Thêm nút tùy chỉnh (nếu cần)
+                    alert.getButtonTypes().setAll(ButtonType.OK);
+                    // Thêm CSS để tùy chỉnh giao diện
+                    alert.getDialogPane().getStylesheets().add(
+                            getClass().getResource("/webapp/css/refer.css").toExternalForm()
+                    );
+                    alert.getDialogPane().getStyleClass().add("invalid-otp-alert");
+
+                    // Hiển thị alert
+                    alert.showAndWait();
+                }
+                switchToTranfer(event);
             }
-            switchToTranfer(event);
         }
     }
 

@@ -10,6 +10,7 @@
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -72,9 +73,9 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Button mnemonicParsing="false" onAction="#switchToHistory" prefHeight="26.0" prefWidth="298.0" styleClass="menu-button" stylesheets="@../webapp/css/main.css" text="      History">
+            <Button mnemonicParsing="false" onAction="#switchToHistory" prefHeight="45.0" prefWidth="253.0" styleClass="menu-button" stylesheets="@../webapp/css/main.css" text="      History">
                <VBox.margin>
-                  <Insets right="15.0" top="5.0" />
+                  <Insets left="2.0" right="15.0" top="5.0" />
                </VBox.margin>
                <font>
                   <Font name="System Bold" size="16.0" />
@@ -126,6 +127,9 @@
                </font>
             </Button>
          </children>
+         <HBox.margin>
+            <Insets />
+         </HBox.margin>
       </VBox>
       <StackPane prefHeight="720.0" prefWidth="777.0">
          <children>
@@ -184,30 +188,25 @@
                         </VBox>
                         <VBox prefHeight="295.0" prefWidth="275.0">
                            <children>
-                              <Label text="Notification">
+                              <Label text="Notification" textFill="#414c69">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
                                  <VBox.margin>
                                     <Insets left="30.0" />
                                  </VBox.margin></Label>
-                              <Pane prefHeight="140.0" prefWidth="275.0">
-                                 <children>
-                                    <Label fx:id="notification1" alignment="TOP_LEFT" layoutX="14.0" layoutY="29.0" prefHeight="109.0" prefWidth="245.0" textFill="#006aff" wrapText="true">
-                                       <padding>
-                                          <Insets left="10.0" top="10.0" />
-                                       </padding></Label>
-                                 </children>
-                              </Pane>
-                              <Pane layoutX="10.0" layoutY="30.0" prefHeight="140.0" prefWidth="275.0">
-                                 <children>
-                                    <Label fx:id="notification2" alignment="TOP_LEFT" layoutX="14.0" layoutY="29.0" prefHeight="109.0" prefWidth="245.0" textFill="#006aff" wrapText="true">
-                                       <padding>
-                                          <Insets left="10.0" top="10.0" />
-                                       </padding>
-                                    </Label>
-                                 </children>
-                              </Pane>
+                              <ScrollPane fx:id="scrollPane" prefHeight="278.0" prefWidth="214.0" stylesheets="@../webapp/css/main.css">
+                                 <VBox.margin>
+                                    <Insets left="30.0" right="30.0" top="10.0" />
+                                 </VBox.margin>
+                                 <styleClass>
+                                    <String fx:value="corner" />
+                                    <String fx:value="scroll-pane" />
+                                 </styleClass>
+                                 <content>
+                                    <VBox fx:id="notiVbox" prefHeight="250.0" prefWidth="200.0" />
+                                 </content>
+                              </ScrollPane>
                            </children>
                         </VBox>
                      </children>
@@ -408,7 +407,7 @@
                      </children>
                   </HBox>
                </children></VBox>
-            <VBox fx:id="history" opacity="0.0" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #F2F5FA;" stylesheets="@../webapp/css/admin.css">
+            <VBox fx:id="history" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #F2F5FA;" stylesheets="@../webapp/css/admin.css">
                <children>
                   <Label prefHeight="38.0" prefWidth="136.0" text="HISTORY" textFill="#414c69">
                      <font>
@@ -505,7 +504,7 @@
                   <Insets />
                </StackPane.margin>
             </VBox>
-            <VBox fx:id="setting" opacity="0.0" prefHeight="200.0" prefWidth="100.0">
+            <VBox fx:id="setting" prefHeight="200.0" prefWidth="100.0">
                <children>
                   <Label prefHeight="100.0" prefWidth="481.0" text="Setting" textFill="#414c69">
                      <font>
@@ -555,7 +554,7 @@
                                     <Insets bottom="10.0" left="30.0" right="215.0" />
                                  </VBox.margin>
                               </TextField>
-                              <TextField fx:id="userTextField" layoutX="40.0" layoutY="228.0" promptText="Username" stylesheets="@../webapp/css/create.css">
+                              <TextField fx:id="userTextField" layoutX="40.0" layoutY="228.0" prefWidth="400.0" promptText="Username" stylesheets="@../webapp/css/create.css">
                                  <VBox.margin>
                                     <Insets bottom="10.0" left="30.0" right="215.0" />
                                  </VBox.margin>
