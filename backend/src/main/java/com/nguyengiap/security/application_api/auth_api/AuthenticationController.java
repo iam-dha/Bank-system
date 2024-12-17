@@ -176,7 +176,7 @@ public class AuthenticationController {
     public ResponseEntity<?> buffMoney(
             @RequestBody BuffMoneyRequest request,
             @RequestHeader("Authorization") String token) {
-        if(token == null) {
+        if (token == null) {
             return ResponseEntity.status(401)
                     .body(UnauthorizedAccount.builder().status(401).message("Token is required").build());
         }
@@ -187,7 +187,7 @@ public class AuthenticationController {
             return ResponseEntity
                     .ok(UnauthorizedAccount.builder().status(200).message("Buff money successful").build());
         } else {
-            if(!user.isPresent()) {
+            if (!user.isPresent()) {
                 return ResponseEntity.status(401)
                         .body(UnauthorizedAccount.builder().status(401).message("Account not found").build());
             } else {
@@ -200,22 +200,17 @@ public class AuthenticationController {
     @PostMapping("/create-fake-transaction")
     public ResponseEntity<?> createFakeTransaction(@RequestBody FakeBillRequest request) {
         try {
-            // Save the fake transaction directly  
+            // Save the fake transaction directly
             Optional<User> fromAccount = userService.findByAccount(request.getFromAccount());
             Optional<User> toAccount = userService.findByAccount(request.getToAccount());
             if (fromAccount.isPresent() && toAccount.isPresent()) {
-                final TransitionHistory transitionHistory = TransitionHistory.builder()
-                                                                .fromAccount(request.getFromAccount())
-                                                                .toAccount(request.getToAccount())
-                                                                .dateTime(request.getDateTime())
-                                                                .balance(request.getBalance())
-                                                                .fromUserName(fromAccount.get().getFirstName() + " " + fromAccount.get().getLastName())
-                                                                .toUserName(toAccount.get().getFirstName() + " " + toAccount.get().getLastName())
-                                                                .message(request.getMessage())
-                                                                .build();
-                transitionHistoryService.saveTransitionHistory(transitionHistory.getFromAccount(), transitionHistory.getToAccount(), transitionHistory.getFromUserName(), transitionHistory.getToUserName(), transitionHistory.getBalance(), transitionHistory.getMessage());
+                transitionHistoryService.saveFakeTransitionHistory(request.getFromAccount(), request.getToAccount(),
+                        fromAccount.get().getFirstName() + " " + fromAccount.get().getLastName(),
+                        toAccount.get().getFirstName() + " " + toAccount.get().getLastName(), request.getDateTime(),
+                        request.getTime(), request.getBalance(), request.getMessage());
                 return ResponseEntity.ok(
-                        UnauthorizedAccount.builder().status(200).message("Fake transaction created successfully").build());
+                        UnauthorizedAccount.builder().status(200).message("Fake transaction created successfully")
+                                .build());
             } else {
                 return ResponseEntity.status(401)
                         .body(UnauthorizedAccount.builder().status(401).message("Account not found").build());
@@ -229,7 +224,8 @@ public class AuthenticationController {
     @PostMapping("/notification")
     public ResponseEntity<?> notification(@RequestBody NotificationTableOverview request) {
         notificationTableOverviewService.saveNotification(request);
-        return ResponseEntity.ok(UnauthorizedAccount.builder().status(200).message("Notification saved successfully").build());
+        return ResponseEntity
+                .ok(UnauthorizedAccount.builder().status(200).message("Notification saved successfully").build());
     }
 
     @GetMapping("/get-notification")

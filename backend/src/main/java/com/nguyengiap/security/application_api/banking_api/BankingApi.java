@@ -192,8 +192,8 @@ public class BankingApi {
             @RequestParam(required = false) String dateTime,
             @RequestParam(required = false) String message) {
         final String accountToken = jwtService.extractUserName(token.substring(7));
-
-        if (!accountToken.equals(account)) {
+        final String role = jwtService.extractRole(token.substring(7));
+        if (!accountToken.equals(account) && role.equals("USER")) {
             return ResponseEntity.status(403)
                     .body(UnauthorizedAccount.builder().status(403).message("You can only check your own transactions")
                             .build());

@@ -30,6 +30,19 @@ public class TransitionHistoryService {
                 .build());
     }
 
+    public void saveFakeTransitionHistory(String fromAccount, String toAccount, String fromUserName, String toUserName, String dateTime, String time, long fund, String message) {
+        transitionHistoryRepository.save(TransitionHistory.builder()
+                .fromAccount(fromAccount)
+                .toAccount(toAccount)
+                .balance(fund)
+                .dateTime(dateTime)
+                .time(time)
+                .fromUserName(fromUserName)
+                .toUserName(toUserName)
+                .message(message)
+                .build());
+    }
+
     public List<TransitionHistory> findTransitionByAccount(String account) {
         return transitionHistoryRepository.findTransitionByAccount(account);
     }

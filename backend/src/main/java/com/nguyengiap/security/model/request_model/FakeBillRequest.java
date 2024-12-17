@@ -10,5 +10,6 @@ public class FakeBillRequest {
     private String toAccount;
     private long balance;
     private String dateTime;
+    private String time;
     private String message;
 }
